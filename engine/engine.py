@@ -13,6 +13,7 @@ from minimax_trad import MinimaxTrad
 from mode import Mode
 from player import Player
 from player_type import PlayerType
+from stockfishplayer import StockfishPlayer
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
@@ -30,11 +31,13 @@ LOGGER.addHandler(file_handler)
 class Engine:
 
     def __init__(self, args: argparse.Namespace):
+        self.args: argparse.Namespace = args
+
         self.screen_ready_event = threading.Event()
         self.screen = None
 
-        white_player = self.__get_player(args.white)
-        black_player = self.__get_player(args.black)
+        white_player = self.__get_player(args.white, chess.WHITE)
+        black_player = self.__get_player(args.black, chess.BLACK)
         self.white_player = white_player
         self.black_player = black_player
         self.board = chess.Board()
@@ -42,21 +45,25 @@ class Engine:
 
         self.screen = ChessBoardScreen(self.board, self.screen_ready_event) if self.is_graphic_mode else None
 
-        self.engine_thread = threading.Thread(target=self.__run)
-        self.engine_thread.daemon = True
-        self.engine_thread.start()
+        if self.screen is not None:
+            self.engine_thread = threading.Thread(target=self.__run)
+            self.engine_thread.daemon = True
+            self.engine_thread.start()
 
-        self.screen.run()
+            self.screen.run()
+        else:
+            self.__run()
 
-    @staticmethod
-    def __get_player(player_type: str) -> Player:
+    def __get_player(self, player_type: str, color: chess.Color) -> Player:
         match player_type:
             case PlayerType.HUMAN.value:
-                return HumanPlayer()
+                return HumanPlayer(self.args)
+            case PlayerType.STOCKFISH.value:
+                return StockfishPlayer(self.args, color)
             case PlayerType.MINI_MAX_TRAD.value:
-                return MinimaxTrad()
+                return MinimaxTrad(self.args)
             case PlayerType.MINI_MAX_NN.value:
-                return MinimaxNN()
+                return MinimaxNN(self.args)
 
     def __run(self) -> None:
         if self.is_graphic_mode:
@@ -75,7 +82,8 @@ class Engine:
     def __handle_game_over(self) -> None:
         LOGGER.info(f'GAME OVER - {self.__get_game_status()}')
         self.__save_moves_to_file()
-        self.screen.running = False
+        if self.screen is not None:
+            self.screen.running = False
 
     def __get_game_status(self) -> str | None:
         if self.board.is_checkmate():
@@ -97,7 +105,7 @@ class Engine:
             return 'Draw by the seventy-five-move rule'
         return None
 
-    def __save_moves_to_file(self, filename: str = 'game_1.txt') -> None:
+    def __save_moves_to_file(self, filename: str = 'out/game_1.txt') -> None:
         with open(filename, mode='w', encoding='utf-8') as file:
             file.write(f'Result: {self.__get_game_status()}\n\n')
             for i, move in enumerate(self.board.move_stack):

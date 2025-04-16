@@ -16,4 +16,4 @@ PIECE_NAME_TO_IMAGE_NAME = {
     'K': 'white-king'
 }
 
-LOG_FILE_NAME = 'logs.log'
+LOG_FILE_NAME = 'out/logs.log'
