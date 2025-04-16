@@ -10,6 +10,8 @@ from constants import SCREEN_WIDTH, SCREEN_HEIGHT, BOARD_SIZE, SQUARE_SIZE, WHIT
 
 class ChessBoardScreen:
     def __init__(self, board: chess.Board, screen_ready_event: threading.Event):
+        self.running = True
+
         self.new_move: str = ''
         self.should_get_new_move = False
         self.new_move_ready_event = threading.Event()
@@ -61,14 +63,13 @@ class ChessBoardScreen:
 
     def run(self):
         self.screen_ready_event.set()
-        running = True
-        while running:
+        while self.running:
             for event in pg.event.get():
                 if self.should_get_new_move and event.type == pg.MOUSEBUTTONDOWN:
                     pos: Tuple[int, int] = pg.mouse.get_pos()
                     self.__handle_mouse_click(pos)
                 if event.type == pg.QUIT:
-                    running = False
+                    self.running = False
 
             self.__draw_chess_board()
             self.__draw_chess_pieces()

@@ -15,3 +15,5 @@ PIECE_NAME_TO_IMAGE_NAME = {
     'P': 'white-pawn', 'R': 'white-rook', 'N': 'white-knight', 'B': 'white-bishop', 'Q': 'white-queen',
     'K': 'white-king'
 }
+
+LOG_FILE_NAME = 'logs.log'
