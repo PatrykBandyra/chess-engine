@@ -17,3 +17,5 @@ PIECE_NAME_TO_IMAGE_NAME = {
 }
 
 LOG_FILE_NAME = 'out/logs.log'
+
+STOCKFISH_PATH = '../stockfish_ai/stockfish-windows-x86-64-avx2/stockfish/stockfish-windows-x86-64-avx2.exe'
