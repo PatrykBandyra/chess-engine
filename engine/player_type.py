@@ -2,8 +2,8 @@ from enum import Enum
 
 
 class PlayerType(Enum):
-    HUMAN = 'Human'
-    MINI_MAX_TRAD = 'Minimax Trad'
-    MINI_MAX_NN = 'Minimax NN'
-    MONTE_CARLO_TREE_SEARCH = 'MCTS Heuristics Rollout'
-    STOCKFISH = 'Stockfish'
+    HUMAN = 'H'
+    MINIMAX_TRAD = 'MINIMAX_TRAD'
+    MINIMAX_NN = 'MINIMAX_NN'
+    MONTE_CARLO_TREE_SEARCH = 'MONTE_CARLO_TREE_SEARCH'
+    STOCKFISH = 'STOCKFISH'

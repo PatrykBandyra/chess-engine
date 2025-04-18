@@ -12,7 +12,7 @@ class ChessBoardScreen:
     def __init__(self, board: chess.Board, screen_ready_event: threading.Event):
         self.running = True
 
-        self.new_move: str = ''
+        self.new_move: chess.Move | None = None
         self.should_get_new_move = False
         self.new_move_ready_event = threading.Event()
 
@@ -97,7 +97,7 @@ class ChessBoardScreen:
                 target_square = clicked_square
                 move = chess.Move(self.selected_piece_square, target_square)
                 if move in self.possible_moves:
-                    self.new_move = move.uci()
+                    self.new_move = move
                     self.should_get_new_move = False
                     self.new_move_ready_event.set()
 
@@ -113,7 +113,7 @@ class ChessBoardScreen:
             return row * BOARD_SIZE + col
         return None
 
-    def get_move_uci(self) -> str:
+    def get_move(self) -> chess.Move:
         self.should_get_new_move = True
         self.new_move_ready_event.wait()
         self.new_move_ready_event.clear()

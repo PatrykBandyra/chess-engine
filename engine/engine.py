@@ -1,12 +1,11 @@
 import argparse
-import logging
 import threading
 
 import chess
 import chess.pgn
 
 from chess_board_screen import ChessBoardScreen
-from constants import LOG_FILE_NAME
+from constants import LOGGER
 from human_player import HumanPlayer
 from minimax_nn import MinimaxNN
 from minimax_trad import MinimaxTrad
@@ -14,18 +13,6 @@ from mode import Mode
 from player import Player
 from player_type import PlayerType
 from stockfishplayer import StockfishPlayer
-
-LOGGER = logging.getLogger(__name__)
-LOGGER.setLevel(logging.DEBUG)
-FORMATTER = logging.Formatter('%(asctime)s: %(name)s: %(levelname)s: %(message)s')
-stream_handler = logging.StreamHandler()
-stream_handler.setFormatter(FORMATTER)
-LOGGER.addHandler(stream_handler)
-
-file_handler = logging.FileHandler(LOG_FILE_NAME, mode='w')
-file_handler.setLevel(logging.DEBUG)
-file_handler.setFormatter(FORMATTER)
-LOGGER.addHandler(file_handler)
 
 
 class Engine:
@@ -60,9 +47,9 @@ class Engine:
                 return HumanPlayer(self.args)
             case PlayerType.STOCKFISH.value:
                 return StockfishPlayer(self.args, color)
-            case PlayerType.MINI_MAX_TRAD.value:
-                return MinimaxTrad(self.args)
-            case PlayerType.MINI_MAX_NN.value:
+            case PlayerType.MINIMAX_TRAD.value:
+                return MinimaxTrad(self.args, color)
+            case PlayerType.MINIMAX_NN.value:
                 return MinimaxNN(self.args)
 
     def __run(self) -> None:
