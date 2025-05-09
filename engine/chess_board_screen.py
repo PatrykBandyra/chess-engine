@@ -28,6 +28,10 @@ class ChessBoardScreen:
         self.possible_moves: List[chess.Move] = []
         self.highlighted_squares: List[str] = []
 
+        # Settings
+        self.current_color: chess.Color | None = chess.WHITE
+        self.current_piece: chess.PieceType | None = chess.PAWN
+
     @staticmethod
     def __load_pieces() -> Dict[str, pg.Surface]:
         return {piece_name: pg.image.load(f'assets/{image_name}.png') for piece_name, image_name in
@@ -118,3 +122,54 @@ class ChessBoardScreen:
         self.new_move_ready_event.wait()
         self.new_move_ready_event.clear()
         return self.new_move
+
+    def run_settings(self) -> None:
+        while self.running:
+            for event in pg.event.get():
+                if event.type == pg.MOUSEBUTTONDOWN:
+                    pos: Tuple[int, int] = pg.mouse.get_pos()
+                    if event.button == 1:
+                        self.__place_chess_piece(pos)
+                    elif event.button == 3:
+                        self.__remove_chess_piece(pos)
+
+                if event.type == pg.KEYDOWN:
+                    match event.key:
+                        case pg.K_1:
+                            self.current_color = chess.WHITE
+                        case pg.K_2:
+                            self.current_color = chess.BLACK
+                        case pg.K_p:
+                            self.current_piece = chess.PAWN
+                        case pg.K_r:
+                            self.current_piece = chess.ROOK
+                        case pg.K_b:
+                            self.current_piece = chess.BISHOP
+                        case pg.K_n:
+                            self.current_piece = chess.KNIGHT
+                        case pg.K_q:
+                            self.current_piece = chess.QUEEN
+                        case pg.K_k:
+                            self.current_piece = chess.KING
+                        case _:
+                            pass
+
+                if event.type == pg.QUIT:
+                    self.running = False
+
+            self.__draw_chess_board()
+            self.__draw_chess_pieces()
+
+            pg.display.flip()
+        pg.quit()
+
+    def __place_chess_piece(self, pos) -> None:
+        clicked_square = self.__get_square_index_from_pos(pos)
+        if clicked_square is not None:
+            piece: chess.Piece = chess.Piece(self.current_piece, self.current_color)
+            self.board.set_piece_at(clicked_square, piece)
+
+    def __remove_chess_piece(self, pos) -> None:
+        clicked_square = self.__get_square_index_from_pos(pos)
+        if clicked_square is not None:
+            self.board.remove_piece_at(clicked_square)

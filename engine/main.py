@@ -1,5 +1,7 @@
 import argparse
+import logging
 
+from constants import LOGGER, FORMATTER
 from engine import Engine
 from mode import Mode
 from player_type import PlayerType
@@ -28,11 +30,17 @@ def skill_level(arg: str) -> int:
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description='Chess engine')
     parser.add_argument('-w', '--white', help='White player', type=str, choices=[p.value for p in PlayerType],
-                        required=True)
-    parser.add_argument('-b', '--black', help='Black player', type=str, choices=[p.value for p in PlayerType],
-                        required=True)
-    parser.add_argument('-m', '--mode', help='Graphical or background mode', type=str, choices=[m.value for m in Mode],
                         required=False)
+    parser.add_argument('-b', '--black', help='Black player', type=str, choices=[p.value for p in PlayerType],
+                        required=False)
+    parser.add_argument('-m', '--mode', help='Graphical | background | settings', type=str,
+                        choices=[m.value for m in Mode], required=False)
+    parser.add_argument('-e', '--empty', help='Initial board state in settings mode is empty', action='store_true',
+                        required=False)
+    parser.add_argument('-i', '--input', help='Initial board state fen input file', type=str, required=False)
+    parser.add_argument('-o', '--output', help='Final board state fen output file', type=str, required=False)
+    parser.add_argument('-g', '--game', help='Game moves output txt file', type=str, required=False)
+    parser.add_argument('-l', '--logs', help='Game logs file', type=str, required=False)
     parser.add_argument('-dw', '--depth_white', help='Stockfish depth for white', type=depth, required=False)
     parser.add_argument('-sw', '--skill_white', help='Stockfish skill level for white', type=skill_level,
                         required=False)
@@ -42,8 +50,17 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+def add_logs_file(args: argparse.Namespace) -> None:
+    if args.logs:
+        file_handler = logging.FileHandler(f'out/{args.logs}', mode='w')
+        file_handler.setLevel(logging.DEBUG)
+        file_handler.setFormatter(FORMATTER)
+        LOGGER.addHandler(file_handler)
+
+
 def main() -> None:
     args = parse_args()
+    add_logs_file(args)
     Engine(args)
 
 

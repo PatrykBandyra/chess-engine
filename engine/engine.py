@@ -19,27 +19,43 @@ class Engine:
 
     def __init__(self, args: argparse.Namespace):
         self.args: argparse.Namespace = args
+        self.is_graphic_mode = True if args.mode == Mode.G.value else False
+        self.is_settings_mode = True if args.mode == Mode.S.value else False
 
         self.screen_ready_event = threading.Event()
         self.screen = None
 
-        white_player = self.__get_player(args.white, chess.WHITE)
-        black_player = self.__get_player(args.black, chess.BLACK)
-        self.white_player = white_player
-        self.black_player = black_player
-        self.board = chess.Board()
-        self.is_graphic_mode = True if args.mode == Mode.G.value else False
+        self.white_player: Player | None = None
+        self.black_player: Player | None = None
 
-        self.screen = ChessBoardScreen(self.board, self.screen_ready_event) if self.is_graphic_mode else None
+        if not self.is_settings_mode:
+            self.white_player = self.__get_player(args.white, chess.WHITE)
+            self.black_player = self.__get_player(args.black, chess.BLACK)
+
+        self.board: chess.Board = chess.Board()
+        if args.input:
+            self.board = chess.Board(fen=self.__load_fen_from_file())
+        if self.is_settings_mode and args.empty:
+            self.board = chess.Board(fen=None)
+
+        if self.is_graphic_mode or self.is_settings_mode:
+            self.screen = ChessBoardScreen(self.board, self.screen_ready_event)
 
         if self.screen is not None:
-            self.engine_thread = threading.Thread(target=self.__run)
-            self.engine_thread.daemon = True
-            self.engine_thread.start()
+            if self.is_graphic_mode:
+                self.engine_thread = threading.Thread(target=self.__run)
+                self.engine_thread.daemon = True
+                self.engine_thread.start()
 
-            self.screen.run()
+                self.screen.run()
+
+            elif self.is_settings_mode:
+                self.screen.run_settings()
         else:
             self.__run()
+
+        if self.args.output:
+            self.__save_board_to_fen_file()
 
     def __get_player(self, player_type: str, color: chess.Color) -> Player:
         match player_type:
@@ -92,8 +108,16 @@ class Engine:
             return 'Draw by the seventy-five-move rule'
         return None
 
-    def __save_moves_to_file(self, filename: str = 'out/game_1.txt') -> None:
-        with open(filename, mode='w', encoding='utf-8') as file:
+    def __save_moves_to_file(self) -> None:
+        with open(f'out/{self.args.game}', mode='w', encoding='utf-8') as file:
             file.write(f'Result: {self.__get_game_status()}\n\n')
             for i, move in enumerate(self.board.move_stack):
                 file.write(f'{i + 1}: {move.uci()}\n')
+
+    def __save_board_to_fen_file(self) -> None:
+        with open(f'out/{self.args.output}', mode='w', encoding='utf-8') as file:
+            file.write(self.board.fen())
+
+    def __load_fen_from_file(self) -> str:
+        with open(f'out/{self.args.input}', mode='r', encoding='utf-8') as file:
+            return file.read().strip()
