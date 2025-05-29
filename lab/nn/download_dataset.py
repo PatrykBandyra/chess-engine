@@ -4,7 +4,7 @@ import zipfile
 import requests
 
 
-def main() -> None:
+def download_chess_evaluations_dataset() -> None:
     print('Fetching dataset...')
     kaggle_url = 'https://www.kaggle.com/api/v1/datasets/download/ronakbadhe/chess-evaluations'
     zip_file_name = 'archive.zip'
@@ -29,4 +29,4 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    download_chess_evaluations_dataset()
