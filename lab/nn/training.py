@@ -1,3 +1,7 @@
+import argparse
+from typing import List
+import os
+
 import matplotlib.pyplot as plt
 import torch
 import torch.optim as optim
@@ -8,26 +12,49 @@ from dataset import ChessPositionEvaluationsDataset
 from network import ChessEvaluationCNN
 
 
-def main():
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(description='Train a neural network to evaluate chess positions')
+    parser.add_argument('--split', nargs=3, type=float, default=[0.01, 0.01, 0.98],
+                        help='Data split: train val test (the sum must be 1)')
+    parser.add_argument('--os', choices=['windows', 'linux'], default='linux',
+                        help='Choose data loader configuration for your OS (windows or linux)')
+    parser.add_argument('--model-path', type=str, default='model.pth',
+                        help='Path to save the trained model (default: model.pth)')
+    args = parser.parse_args()
+    split: List[float] = args.split
+    if not (abs(sum(split) - 1.0) < 1e-6):
+        raise ValueError(f"The sum of splits {split} must be 1.0!")
+    return args
+
+
+def main() -> None:
+    args = parse_args()
     plt.switch_backend('Agg')
 
+    print('Loading dataset...')
     chess_dataset = ChessPositionEvaluationsDataset()
+    print('Dataset loaded.')
 
+    print('Splitting dataset...')
     train_dataset, validation_dataset, _ = random_split(
         chess_dataset,
-        # [0.001, 0.001, 0.998],
-        [0.01, 0.01, 0.98],
+        args.split,
         generator=torch.Generator().manual_seed(42)
     )
-    data_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=4, pin_memory=True,
-                             persistent_workers=True)
-    val_data_loader = DataLoader(validation_dataset, batch_size=64, shuffle=True, num_workers=4, pin_memory=True,
+    print('Dataset split into train and validation sets.')
+
+    print(f'Creating DataLoaders for {args.os}...')
+    if args.os == 'linux':
+        data_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=4, pin_memory=True,
                                  persistent_workers=True)
-    # # Windows
-    # data_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=0, pin_memory=True,
-    #                          persistent_workers=False)
-    # val_data_loader = DataLoader(validation_dataset, batch_size=64, shuffle=True, num_workers=0, pin_memory=True,
-    #                              persistent_workers=False)
+        val_data_loader = DataLoader(validation_dataset, batch_size=64, shuffle=False, num_workers=4, pin_memory=True,
+                                     persistent_workers=True)
+    else:
+        data_loader = DataLoader(train_dataset, batch_size=64, shuffle=True, num_workers=0, pin_memory=True,
+                                 persistent_workers=False)
+        val_data_loader = DataLoader(validation_dataset, batch_size=64, shuffle=False, num_workers=0, pin_memory=True,
+                                     persistent_workers=False)
+    print('DataLoaders created.')
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model = ChessEvaluationCNN().to(device)
@@ -38,6 +65,11 @@ def main():
     train_losses = []
     validation_losses = []
 
+    model_base = os.path.splitext(args.model_path)[0]
+
+    best_val_loss = float('inf')
+
+    print('Starting training...')
     for epoch in range(num_epochs):
         model.train()
         running_loss = 0.0
@@ -78,9 +110,14 @@ def main():
 
             val_batch_loss_item = val_batch_loss.item()
             validation_losses.append(val_batch_loss_item)
-
             print(f'Epoch [{epoch + 1}/{num_epochs}], Train Loss: {epoch_loss:.4f}, ' +
                   f'Validation Loss: {val_batch_loss_item:.4f}', end='\r')
+
+        # Save best model only if validation loss improves
+        if val_batch_loss_item < best_val_loss:
+            best_val_loss = val_batch_loss_item
+            torch.save(model.state_dict(), args.model_path)
+            print(f'Best model saved to {args.model_path} (val loss: {best_val_loss:.6f})')
 
         # Plotting
         plt.figure(figsize=(10, 5))
@@ -91,10 +128,13 @@ def main():
         plt.title(f'Losses up to Epoch {epoch + 1}')
         plt.legend()
         plt.grid(True)
-        plt.savefig(f'losses_epoch.png')
+        plt.savefig(f'{model_base}_losses_epoch.png')
         plt.close()
 
-        torch.save(model.state_dict(), 'model.pth')
+        if val_batch_loss_item < 1e-4:
+            print(f'Early stopping at epoch {epoch + 1} due to low validation loss: {val_batch_loss_item:.6f}')
+            break
+    print('Training finished.')
 
 
 if __name__ == '__main__':
