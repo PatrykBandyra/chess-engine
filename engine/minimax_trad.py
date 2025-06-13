@@ -4,6 +4,7 @@ import time
 from typing import List
 
 import chess
+from chess.polyglot import ZobristHasher, POLYGLOT_RANDOM_ARRAY
 
 from chess_board_screen import ChessBoardScreen
 from constants import LOGGER
@@ -18,6 +19,7 @@ class MinimaxTrad(Player):
         self.color: chess.Color = color
 
         self.transposition_table = {}
+        self.hasher = ZobristHasher(POLYGLOT_RANDOM_ARRAY)
 
         self.piece_values = {
             chess.PAWN: 1,
@@ -159,7 +161,7 @@ class MinimaxTrad(Player):
         original_alpha: float = alpha  # Store original alpha for TT flag and history update
         original_beta: float = beta  # Store original beta for history update
 
-        board_hash: int = hash(board.fen())
+        board_hash: int = self.hasher.hash_board(board)
         tt_entry = self.transposition_table.get(board_hash)
 
         # Transposition Table Lookup
