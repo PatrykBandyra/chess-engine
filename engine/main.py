@@ -39,6 +39,7 @@ def parse_args() -> argparse.Namespace:
                         required=False)
     parser.add_argument('-i', '--input', help='Initial board state fen input file', type=str, required=False)
     parser.add_argument('-o', '--output', help='Final board state fen output file', type=str, required=False)
+    parser.add_argument('-ob', '--opening_book', help='Use opening book', action='store_true')
     parser.add_argument('-g', '--game', help='Game moves output txt file', type=str, required=False)
     parser.add_argument('-l', '--logs', help='Game logs file', type=str, required=False)
     parser.add_argument('-dw', '--depth_white', help='Stockfish depth for white', type=depth, required=False)

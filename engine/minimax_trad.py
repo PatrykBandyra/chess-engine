@@ -1,10 +1,12 @@
 import argparse
+import bisect
 import math
+import random
 import time
 from typing import List
 
 import chess
-from chess.polyglot import ZobristHasher, POLYGLOT_RANDOM_ARRAY
+from chess.polyglot import ZobristHasher, POLYGLOT_RANDOM_ARRAY, open_reader, Entry
 
 from chess_board_screen import ChessBoardScreen
 from constants import LOGGER
@@ -20,6 +22,10 @@ class MinimaxTrad(Player):
 
         self.transposition_table = {}
         self.hasher = ZobristHasher(POLYGLOT_RANDOM_ARRAY)
+
+        self.use_opening_book: bool = args.opening_book
+        self.is_opening: bool = True
+        self.opening_book = open_reader('codekiddy.bin')
 
         self.piece_values = {
             chess.PAWN: 1,
@@ -42,147 +48,179 @@ class MinimaxTrad(Player):
         self.move_ordering_killer_bonus = 750_000
         self.move_ordering_check_bonus = 500_000
 
-    # Piece-square tables for both white and black (all values declared statically)
-    PAWN_PSQ_WHITE = [  # Indexing: 0 - a1, 1 - b1
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        5.0, 10.0, 10.0, -20.0, -20.0, 10.0, 10.0, 5.0,
-        5.0, -5.0, -10.0, 0.0, 0.0, -10.0, -5.0, 5.0,
-        0.0, 0.0, 0.0, 20.0, 20.0, 0.0, 0.0, 0.0,
-        5.0, 5.0, 10.0, 25.0, 25.0, 10.0, 5.0, 5.0,
-        10.0, 10.0, 20.0, 30.0, 30.0, 20.0, 10.0, 10.0,
-        50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
-    ]
-    PAWN_PSQ_BLACK = [
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0, 50.0,
-        10.0, 10.0, 20.0, 30.0, 30.0, 20.0, 10.0, 10.0,
-        5.0, 5.0, 10.0, 25.0, 25.0, 10.0, 5.0, 5.0,
-        0.0, 0.0, 0.0, 20.0, 20.0, 0.0, 0.0, 0.0,
-        5.0, -5.0, -10.0, 0.0, 0.0, -10.0, -5.0, 5.0,
-        5.0, 10.0, 10.0, -20.0, -20.0, 10.0, 10.0, 5.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
-    ]
-    KNIGHT_PSQ_WHITE = [
-        -50.0, -40.0, -30.0, -30.0, -30.0, -30.0, -40.0, -50.0,
-        -40.0, -20.0, 0.0, 0.0, 0.0, 0.0, -20.0, -40.0,
-        -30.0, 0.0, 10.0, 15.0, 15.0, 10.0, 0.0, -30.0,
-        -30.0, 5.0, 15.0, 20.0, 20.0, 15.0, 5.0, -30.0,
-        -30.0, 0.0, 15.0, 20.0, 20.0, 15.0, 0.0, -30.0,
-        -30.0, 5.0, 10.0, 15.0, 15.0, 10.0, 5.0, -30.0,
-        -40.0, -20.0, 0.0, 5.0, 5.0, 0.0, -20.0, -40.0,
-        -50.0, -40.0, -30.0, -30.0, -30.0, -30.0, -40.0, -50.0
-    ]
-    KNIGHT_PSQ_BLACK = [
-        -50.0, -40.0, -30.0, -30.0, -30.0, -30.0, -40.0, -50.0,
-        -40.0, -20.0, 0.0, 5.0, 5.0, 0.0, -20.0, -40.0,
-        -30.0, 5.0, 10.0, 15.0, 15.0, 10.0, 5.0, -30.0,
-        -30.0, 0.0, 15.0, 20.0, 20.0, 15.0, 0.0, -30.0,
-        -30.0, 5.0, 15.0, 20.0, 20.0, 15.0, 5.0, -30.0,
-        -30.0, 0.0, 10.0, 15.0, 15.0, 10.0, 0.0, -30.0,
-        -40.0, -20.0, 0.0, 0.0, 0.0, 0.0, -20.0, -40.0,
-        -50.0, -40.0, -30.0, -30.0, -30.0, -30.0, -40.0, -50.0
-    ]
-    BISHOP_PSQ_WHITE = [
-        -20.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -20.0,
-        -10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -10.0,
-        -10.0, 0.0, 5.0, 10.0, 10.0, 5.0, 0.0, -10.0,
-        -10.0, 5.0, 5.0, 10.0, 10.0, 5.0, 5.0, -10.0,
-        -10.0, 0.0, 10.0, 10.0, 10.0, 10.0, 0.0, -10.0,
-        -10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, -10.0,
-        -10.0, 5.0, 0.0, 0.0, 0.0, 0.0, 5.0, -10.0,
-        -20.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -20.0
-    ]
-    BISHOP_PSQ_BLACK = [
-        -20.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -20.0,
-        -10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -10.0,
-        -10.0, 5.0, 0.0, 0.0, 0.0, 0.0, 5.0, -10.0,
-        -10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, -10.0,
-        -10.0, 0.0, 10.0, 10.0, 10.0, 10.0, 0.0, -10.0,
-        -10.0, 5.0, 5.0, 10.0, 10.0, 5.0, 5.0, -10.0,
-        -10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -10.0,
-        -20.0, -10.0, -10.0, -10.0, -10.0, -10.0, -10.0, -20.0
-    ]
-    ROOK_PSQ_WHITE = [
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-        5.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 5.0,
-        -5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -5.0,
-        -5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -5.0,
-        -5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -5.0,
-        -5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -5.0,
-        -5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -5.0,
-        0.0, 0.0, 0.0, 5.0, 5.0, 0.0, 0.0, 0.0
-    ]
-    ROOK_PSQ_BLACK = [
-        0.0, 0.0, 0.0, 5.0, 5.0, 0.0, 0.0, 0.0,
-        -5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -5.0,
-        -5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -5.0,
-        -5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -5.0,
-        -5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -5.0,
-        -5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -5.0,
-        5.0, 10.0, 10.0, 10.0, 10.0, 10.0, 10.0, 5.0,
-        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
-    ]
-    QUEEN_PSQ_WHITE = [
-        -20.0, -10.0, -10.0, -5.0, -5.0, -10.0, -10.0, -20.0,
-        -10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -10.0,
-        -10.0, 0.0, 5.0, 5.0, 5.0, 5.0, 0.0, -10.0,
-        -5.0, 0.0, 5.0, 5.0, 5.0, 5.0, 0.0, -5.0,
-        0.0, 0.0, 5.0, 5.0, 5.0, 5.0, 0.0, -5.0,
-        -10.0, 5.0, 5.0, 5.0, 5.0, 5.0, 0.0, -10.0,
-        -10.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, -10.0,
-        -20.0, -10.0, -10.0, -5.0, -5.0, -10.0, -10.0, -20.0
-    ]
-    QUEEN_PSQ_BLACK = [
-        -20.0, -10.0, -10.0, -5.0, -5.0, -10.0, -10.0, -20.0,
-        -10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -10.0,
-        -10.0, 0.0, 5.0, 0.0, 0.0, 0.0, 0.0, -10.0,
-        -10.0, 5.0, 5.0, 5.0, 5.0, 5.0, 0.0, -10.0,
-        0.0, 0.0, 5.0, 5.0, 5.0, 5.0, 0.0, -5.0,
-        -5.0, 0.0, 5.0, 5.0, 5.0, 5.0, 0.0, -5.0,
-        -10.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -10.0,
-        -20.0, -10.0, -10.0, -5.0, -5.0, -10.0, -10.0, -20.0
-    ]
-    KING_PSQ_WHITE = [
-        -30.0, -40.0, -40.0, -50.0, -50.0, -40.0, -40.0, -30.0,
-        -30.0, -40.0, -40.0, -50.0, -50.0, -40.0, -40.0, -30.0,
-        -30.0, -40.0, -40.0, -50.0, -50.0, -40.0, -40.0, -30.0,
-        -30.0, -40.0, -40.0, -50.0, -50.0, -40.0, -40.0, -30.0,
-        -20.0, -30.0, -30.0, -40.0, -40.0, -30.0, -30.0, -20.0,
-        -10.0, -20.0, -20.0, -20.0, -20.0, -20.0, -20.0, -10.0,
-        20.0, 20.0, 0.0, 0.0, 0.0, 0.0, 20.0, 20.0,
-        20.0, 30.0, 10.0, 0.0, 0.0, 10.0, 30.0, 20.0
-    ]
-    KING_PSQ_BLACK = [
-        20.0, 30.0, 10.0, 0.0, 0.0, 10.0, 30.0, 20.0,
-        20.0, 20.0, 0.0, 0.0, 0.0, 0.0, 20.0, 20.0,
-        -10.0, -20.0, -20.0, -20.0, -20.0, -20.0, -20.0, -10.0,
-        -20.0, -30.0, -30.0, -40.0, -40.0, -30.0, -30.0, -20.0,
-        -30.0, -40.0, -40.0, -50.0, -50.0, -40.0, -40.0, -30.0,
-        -30.0, -40.0, -40.0, -50.0, -50.0, -40.0, -40.0, -30.0,
-        -30.0, -40.0, -40.0, -50.0, -50.0, -40.0, -40.0, -30.0,
-        -30.0, -40.0, -40.0, -50.0, -50.0, -40.0, -40.0, -30.0
-    ]
-
-    PIECE_SQUARE_TABLES_WHITE = {
-        chess.PAWN: PAWN_PSQ_WHITE,
-        chess.KNIGHT: KNIGHT_PSQ_WHITE,
-        chess.BISHOP: BISHOP_PSQ_WHITE,
-        chess.ROOK: ROOK_PSQ_WHITE,
-        chess.QUEEN: QUEEN_PSQ_WHITE,
-        chess.KING: KING_PSQ_WHITE
+    PIECE_SQUARE_TABLE_MID = {
+        chess.PAWN: [
+            0, 0, 0, 0, 0, 0, 0, 0,
+            5, 10, 10, -20, -20, 10, 10, 5,
+            5, -5, -10, 0, 0, -10, -5, 5,
+            0, 0, 0, 20, 20, 0, 0, 0,
+            5, 5, 10, 25, 25, 10, 5, 5,
+            10, 10, 20, 30, 30, 20, 10, 10,
+            50, 50, 50, 50, 50, 50, 50, 50,
+            0, 0, 0, 0, 0, 0, 0, 0
+        ],
+        chess.KNIGHT: [
+            -50, -40, -30, -30, -30, -30, -40, -50,
+            -40, -20, 0, 0, 0, 0, -20, -40,
+            -30, 0, 10, 15, 15, 10, 0, -30,
+            -30, 5, 15, 20, 20, 15, 5, -30,
+            -30, 0, 15, 20, 20, 15, 0, -30,
+            -30, 5, 10, 15, 15, 10, 5, -30,
+            -40, -20, 0, 5, 5, 0, -20, -40,
+            -50, -40, -30, -30, -30, -30, -40, -50
+        ],
+        chess.BISHOP: [
+            -20, -10, -10, -10, -10, -10, -10, -20,
+            -10, 0, 0, 0, 0, 0, 0, -10,
+            -10, 0, 5, 10, 10, 5, 0, -10,
+            -10, 5, 5, 10, 10, 5, 5, -10,
+            -10, 0, 10, 10, 10, 10, 0, -10,
+            -10, 10, 10, 10, 10, 10, 10, -10,
+            -10, 5, 0, 0, 0, 0, 5, -10,
+            -20, -10, -10, -10, -10, -10, -10, -20
+        ],
+        chess.ROOK: [
+            0, 0, 0, 0, 0, 0, 0, 0,
+            5, 10, 10, 10, 10, 10, 10, 5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            0, 0, 0, 5, 5, 0, 0, 0
+        ],
+        chess.QUEEN: [
+            -20, -10, -10, -5, -5, -10, -10, -20,
+            -10, 0, 0, 0, 0, 0, 0, -10,
+            -10, 0, 5, 5, 5, 5, 0, -10,
+            -5, 0, 5, 5, 5, 5, 0, -5,
+            0, 0, 5, 5, 5, 5, 0, -5,
+            -10, 5, 5, 5, 5, 5, 0, -10,
+            -10, 0, 5, 0, 0, 0, 0, -10,
+            -20, -10, -10, -5, -5, -10, -10, -20
+        ],
+        chess.KING: [
+            -30, -40, -40, -50, -50, -40, -40, -30,
+            -30, -40, -40, -50, -50, -40, -40, -30,
+            -30, -40, -40, -50, -50, -40, -40, -30,
+            -30, -40, -40, -50, -50, -40, -40, -30,
+            -20, -30, -30, -40, -40, -30, -30, -20,
+            -10, -20, -20, -20, -20, -20, -20, -10,
+            20, 20, 0, 0, 0, 0, 20, 20,
+            20, 30, 10, 0, 0, 10, 30, 20
+        ]
     }
-    PIECE_SQUARE_TABLES_BLACK = {
-        chess.PAWN: PAWN_PSQ_BLACK,
-        chess.KNIGHT: KNIGHT_PSQ_BLACK,
-        chess.BISHOP: BISHOP_PSQ_BLACK,
-        chess.ROOK: ROOK_PSQ_BLACK,
-        chess.QUEEN: QUEEN_PSQ_BLACK,
-        chess.KING: KING_PSQ_BLACK
+    PIECE_SQUARE_TABLE_END = {
+        chess.PAWN: [
+            0, 0, 0, 0, 0, 0, 0, 0,
+            5, 10, 10, -20, -20, 10, 10, 5,
+            5, -5, -10, 0, 0, -10, -5, 5,
+            0, 0, 0, 20, 20, 0, 0, 0,
+            5, 5, 10, 25, 25, 10, 5, 5,
+            10, 10, 20, 30, 30, 20, 10, 10,
+            50, 50, 50, 50, 50, 50, 50, 50,
+            0, 0, 0, 0, 0, 0, 0, 0
+        ],
+        chess.KNIGHT: [
+            -50, -40, -30, -30, -30, -30, -40, -50,
+            -40, -20, 0, 0, 0, 0, -20, -40,
+            -30, 0, 10, 15, 15, 10, 0, -30,
+            -30, 5, 15, 20, 20, 15, 5, -30,
+            -30, 0, 15, 20, 20, 15, 0, -30,
+            -30, 5, 10, 15, 15, 10, 5, -30,
+            -40, -20, 0, 5, 5, 0, -20, -40,
+            -50, -40, -30, -30, -30, -30, -40, -50
+        ],
+        chess.BISHOP: [
+            -20, -10, -10, -10, -10, -10, -10, -20,
+            -10, 0, 0, 0, 0, 0, 0, -10,
+            -10, 0, 5, 10, 10, 5, 0, -10,
+            -10, 5, 5, 10, 10, 5, 5, -10,
+            -10, 0, 10, 10, 10, 10, 0, -10,
+            -10, 10, 10, 10, 10, 10, 10, -10,
+            -10, 5, 0, 0, 0, 0, 5, -10,
+            -20, -10, -10, -10, -10, -10, -10, -20
+        ],
+        chess.ROOK: [
+            0, 0, 0, 0, 0, 0, 0, 0,
+            5, 10, 10, 10, 10, 10, 10, 5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            -5, 0, 0, 0, 0, 0, 0, -5,
+            0, 0, 0, 5, 5, 0, 0, 0
+        ],
+        chess.QUEEN: [
+            -20, -10, -10, -5, -5, -10, -10, -20,
+            -10, 0, 0, 0, 0, 0, 0, -10,
+            -10, 0, 5, 5, 5, 5, 0, -10,
+            -5, 0, 5, 5, 5, 5, 0, -5,
+            0, 0, 5, 5, 5, 5, 0, -5,
+            -10, 5, 5, 5, 5, 5, 0, -10,
+            -10, 0, 5, 0, 0, 0, 0, -10,
+            -20, -10, -10, -5, -5, -10, -10, -20
+        ],
+        chess.KING: [
+            -50, -40, -30, -20, -20, -30, -40, -50,
+            -30, -20, -10, 0, 0, -10, -20, -30,
+            -30, -10, 20, 30, 30, 20, -10, -30,
+            -30, -10, 30, 40, 40, 30, -10, -30,
+            -30, -10, 30, 40, 40, 30, -10, -30,
+            -30, -10, 20, 30, 30, 20, -10, -30,
+            -30, -30, 0, 0, 0, 0, -30, -30,
+            -50, -30, -30, -30, -30, -30, -30, -50
+        ]
     }
 
     def make_move(self, board: chess.Board, screen: ChessBoardScreen) -> None:
+        """
+        Chooses and plays a move for the current player.
+        - In the opening phase, selects a move from the opening book randomly, weighted by book move weights.
+        - After the opening phase, uses minimax with alpha-beta pruning to select the best move.
+        - Move ordering heuristics used:
+            * Promotions are prioritized highest.
+            * Captures are ordered by Most Valuable Victim - Least Valuable Aggressor (MVV-LVA).
+            * Killer moves (moves that caused beta cutoffs in previous searches) are prioritized.
+            * History heuristic: quiet moves that have historically caused cutoffs are boosted.
+            * Checks are given a bonus.
+        This improves search efficiency and playing strength by exploring promising moves first.
+        """
         start_time: float = time.perf_counter()
+
+        if self.use_opening_book and self.is_opening:
+            entries: List[Entry] = list(self.opening_book.find_all(board))
+            if entries:
+                weights = [entry.weight for entry in entries]
+                weights_sum = sum(weights)
+                if weights_sum > 0:
+                    cum_weights = []
+                    cum_sum = 0
+                    for weight in weights:
+                        cum_sum += weight
+                        cum_weights.append(cum_sum)
+                    r = random.uniform(0, weights_sum)
+                    idx = bisect.bisect_left(cum_weights, r)
+                    entry = entries[idx]
+                    opening_book_best_move = entry.move
+                else:
+                    entry = random.choice(entries)
+                    opening_book_best_move = entry.move
+                board.push(opening_book_best_move)
+
+                end_time: float = time.perf_counter()
+                duration: float = end_time - start_time
+
+                max_weight = max(weights)
+                max_weight_move = next((e for e in entries if e.weight == max_weight), None).move.uci()
+                LOGGER.info(
+                    f'MINIMAX-TRAD - OPENING BOOK; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; ' +
+                    f'move: {opening_book_best_move.uci()}; weight: {entry.weight}; ' +
+                    f'max weight move: {max_weight_move}; max weight: {max_weight}')
+                return
+            else:
+                self.is_opening = False
+                LOGGER.info(f'MINIMAX-TRAD - OPENING BOOK; {"WHITE" if self.color else "BLACK"}; opening phase ended')
 
         # Clearing
         self.transposition_table = {}
@@ -202,20 +240,20 @@ class MinimaxTrad(Player):
         alpha: float = -math.inf
         beta: float = math.inf
 
-        for move in ordered_moves:
-            internal_board.push(move)
+        for opening_book_best_move in ordered_moves:
+            internal_board.push(opening_book_best_move)
             board_value = self.__minimax_alphabeta(internal_board, self.depth - 1, alpha, beta, not is_maximizing)
             internal_board.pop()
 
             if is_maximizing:
                 if board_value > best_value:
                     best_value = board_value
-                    best_move = move
+                    best_move = opening_book_best_move
                 alpha = max(alpha, board_value)
             else:
                 if board_value < best_value:
                     best_value = board_value
-                    best_move = move
+                    best_move = opening_book_best_move
                 beta = min(beta, board_value)
 
         board.push(best_move)
@@ -229,16 +267,24 @@ class MinimaxTrad(Player):
 
     def __order_moves(self, board: chess.Board, moves: List[chess.Move], ply: int) -> List[chess.Move]:
         """
-        Orders moves based on heuristics to improve alpha-beta pruning efficiency.
-        Prioritizes: Promotions, Captures (MVV-LVA), Killer Moves, History Heuristic, Checks, Quiet Moves.
+        Orders a list of legal moves to improve alpha-beta pruning efficiency.
+
+        How it works:
+        - Assigns a score to each move based on several heuristics:
+            * Promotions: Highest priority, large bonus.
+            * Captures: Scored by Most Valuable Victim - Least Valuable Aggressor (MVV-LVA).
+            * Killer moves: Moves that caused beta cutoffs at this ply in previous searches are prioritized.
+            * History heuristic: Quiet moves that have historically caused cutoffs are boosted.
+            * Checks: Moves that give check are given a bonus.
+        - Moves are sorted in descending order of their score, so the most promising moves are searched first.
+        - This ordering increases the likelihood of alpha-beta cutoffs, making the search more efficient and improving engine strength.
 
         Args:
-            board: The current board state
-            moves: A list of legal moves to order
-            ply: The current ply depth (0 for root, 1 for the next level, etc.).
-
+            board: The current board state.
+            moves: List of legal moves to order.
+            ply: The current ply (search depth from root).
         Returns:
-            A list of moves sorted from potentially best to worst
+            List of moves sorted from best to worst according to the heuristics.
         """
         move_scores = []
         killers = self.killer_moves[ply] if 0 <= ply < len(self.killer_moves) else [None, None]
@@ -412,36 +458,50 @@ class MinimaxTrad(Player):
             bonus = depth * depth  # Weight bonus by depth squared
             self.history_heuristic_table[move.from_square][move.to_square] += bonus
 
+    def __get_game_phase(self, board: chess.Board) -> float:
+        """
+        Returns a phase value in [0, 1]: 1.0 = middlegame, 0.0 = endgame, interpolated by non-pawn material.
+        """
+        non_pawn_material = 0.0
+        for piece_type in [chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]:
+            non_pawn_material += len(board.pieces(piece_type, chess.WHITE)) * self.piece_values[piece_type]
+            non_pawn_material += len(board.pieces(piece_type, chess.BLACK)) * self.piece_values[piece_type]
+        endgame_threshold = 20.0
+        middlegame_threshold = 67.0
+        if non_pawn_material >= middlegame_threshold:
+            return 1.0
+        elif non_pawn_material <= endgame_threshold:
+            return 0.0
+        else:
+            return (non_pawn_material - endgame_threshold) / (middlegame_threshold - endgame_threshold)
+
     def __evaluate_board(self, board: chess.Board) -> float:
+        """
+        Evaluates the board using blended middlegame/endgame piece-square tables and material.
+        """
         if board.is_checkmate():
-            if board.turn == chess.WHITE:
-                return -math.inf
-            else:
-                return math.inf
-        elif board.is_stalemate() or board.is_insufficient_material() or \
+            return -math.inf if board.turn == chess.WHITE else math.inf
+        if board.is_stalemate() or board.is_insufficient_material() or \
                 board.is_seventyfive_moves() or board.is_fivefold_repetition():
-            return 0
-
-        white_material = 0.0
-        black_material = 0.0
-        white_positional = 0.0
-        black_positional = 0.0
-
+            return 0.0
+        phase = self.__get_game_phase(board)
+        white_score = 0.0
+        black_score = 0.0
         for piece_type in self.piece_values.keys():
-            white_squares = board.pieces(piece_type, chess.WHITE)
-            black_squares = board.pieces(piece_type, chess.BLACK)
-            white_material += len(white_squares) * self.piece_values[piece_type]
-            black_material += len(black_squares) * self.piece_values[piece_type]
-
-            pst_white = self.PIECE_SQUARE_TABLES_WHITE[piece_type]
-            pst_black = self.PIECE_SQUARE_TABLES_BLACK[piece_type]
-            for sq in white_squares:
-                white_positional += pst_white[sq]
-            for sq in black_squares:
-                black_positional += pst_black[sq]
-
-        # Scale positional score to match material scale
-        positional_scale = 0.01
-        white_score = white_material + positional_scale * white_positional
-        black_score = black_material + positional_scale * black_positional
+            for color in [chess.WHITE, chess.BLACK]:
+                squares = board.pieces(piece_type, color)
+                for sq in squares:
+                    pst_mid = self.PIECE_SQUARE_TABLE_MID[piece_type][
+                        sq if color == chess.WHITE else chess.square_mirror(sq)]
+                    pst_end = self.PIECE_SQUARE_TABLE_END[piece_type][
+                        sq if color == chess.WHITE else chess.square_mirror(sq)]
+                    value = self.piece_values[piece_type] + 0.01 * (phase * pst_mid + (1 - phase) * pst_end)
+                    if color == chess.WHITE:
+                        white_score += value
+                    else:
+                        black_score += value
         return white_score - black_score
+
+    def __del__(self):
+        if hasattr(self, 'opening_book') and self.opening_book is not None:
+            self.opening_book.close()
