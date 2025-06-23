@@ -240,20 +240,20 @@ class MinimaxTrad(Player):
         alpha: float = -math.inf
         beta: float = math.inf
 
-        for opening_book_best_move in ordered_moves:
-            internal_board.push(opening_book_best_move)
+        for move in ordered_moves:
+            internal_board.push(move)
             board_value = self.__minimax_alphabeta(internal_board, self.depth - 1, alpha, beta, not is_maximizing)
             internal_board.pop()
 
             if is_maximizing:
                 if board_value > best_value:
                     best_value = board_value
-                    best_move = opening_book_best_move
+                    best_move = move
                 alpha = max(alpha, board_value)
             else:
                 if board_value < best_value:
                     best_value = board_value
-                    best_move = opening_book_best_move
+                    best_move = move
                 beta = min(beta, board_value)
 
         board.push(best_move)
