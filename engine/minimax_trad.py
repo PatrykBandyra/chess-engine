@@ -342,6 +342,18 @@ class MinimaxTrad(Player):
 
     def __minimax_alphabeta(self, board: chess.Board, depth: int, alpha: float, beta: float,
                             maximizing_player: bool) -> float:
+        """
+        Performs a recursive minimax search with alpha-beta pruning to evaluate the best achievable score
+        from the current board position, assuming optimal play from both sides.
+
+        How it works:
+        - Uses alpha-beta pruning to eliminate branches that cannot affect the final decision, improving efficiency.
+        - At each node, recursively explores legal moves, alternating between maximizing and minimizing player.
+        - Uses a transposition table to cache and reuse previously computed positions, further speeding up the search.
+        - Applies move ordering heuristics (promotions, captures, killer moves, history heuristic, checks) to search the most promising moves first, increasing pruning effectiveness.
+        - Updates killer and history heuristics for quiet moves that cause cutoffs or improve bounds.
+        - Returns the best evaluation found for the current player at this node.
+        """
         current_ply: int = self.depth - depth
         original_alpha: float = alpha  # Store original alpha for TT flag and history update
         original_beta: float = beta  # Store original beta for history update
