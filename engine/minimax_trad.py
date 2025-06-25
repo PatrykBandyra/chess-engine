@@ -246,22 +246,25 @@ class MinimaxTrad(Player):
             internal_board.pop()
 
             if is_maximizing:
-                if board_value > best_value:
+                if (board_value > best_value) or (best_move is None and board_value == best_value):
                     best_value = board_value
                     best_move = move
                 alpha = max(alpha, board_value)
             else:
-                if board_value < best_value:
+                if (board_value < best_value) or (best_move is None and board_value == best_value):
                     best_value = board_value
                     best_move = move
                 beta = min(beta, board_value)
 
-        board.push(best_move)
+        if best_move is not None:
+            board.push(best_move)
+        else:
+            LOGGER.warning('MINIMAX-TRAD: No valid move found. Skipping push.')
 
         end_time: float = time.perf_counter()
         duration: float = end_time - start_time
         LOGGER.info(
-            f'MINIMAX-TRAD; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; move: {best_move.uci()}; ' +
+            f'MINIMAX-TRAD; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; move: {best_move.uci() if best_move else "None"}; ' +
             f'value: {best_value}'
         )
 

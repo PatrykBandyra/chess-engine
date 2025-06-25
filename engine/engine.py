@@ -74,11 +74,11 @@ class Engine:
 
         while not self.board.is_game_over():
             self.white_player.make_move(self.board, self.screen)
-            LOGGER.info(f'White move: {self.board.move_stack[-1].uci()}')
+            LOGGER.info(f'White move: {self.board.move_stack[-1].uci() if len(self.board.move_stack) > 0 else "None"}')
             if self.board.is_game_over():
                 break
             self.black_player.make_move(self.board, self.screen)
-            LOGGER.info(f'Black move: {self.board.move_stack[-1].uci()}')
+            LOGGER.info(f'Black move: {self.board.move_stack[-1].uci() if len(self.board.move_stack) > 0 else "None"}')
 
         self.__handle_game_over()
 
