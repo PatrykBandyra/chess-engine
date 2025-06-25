@@ -51,6 +51,45 @@ class ChessBoardScreen:
             row = (BOARD_SIZE - 1) - (self.selected_piece_square // BOARD_SIZE)
             pg.draw.rect(self.screen, GOLDEN, (col * SQUARE_SIZE, row * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE), 3)
 
+        # Draw the letters (a-h) and numbers (1-8) on the board, slightly bigger and on both sides
+        font = pg.font.SysFont('Arial', 16)
+        for file in range(8):
+            for rank in range(8):
+                x = file * SQUARE_SIZE
+                y = (7 - rank) * SQUARE_SIZE
+                # Draw a file letter at the bottom of the board (include corners)
+                if rank == 0:
+                    letter = chr(ord('a') + file)
+                    text = font.render(letter, True, (0, 0, 0))
+                    text_rect = text.get_rect()
+                    text_rect.centerx = x + SQUARE_SIZE // 2
+                    text_rect.bottom = y + SQUARE_SIZE
+                    self.screen.blit(text, text_rect)
+                # Draw a file letter at the top of the board (include corners)
+                if rank == 7:
+                    letter = chr(ord('a') + file)
+                    text = font.render(letter, True, (0, 0, 0))
+                    text_rect = text.get_rect()
+                    text_rect.centerx = x + SQUARE_SIZE // 2
+                    text_rect.top = y
+                    self.screen.blit(text, text_rect)
+                # Draw rank number at the left of the board (include corners)
+                if file == 0:
+                    number = str(rank + 1)
+                    text = font.render(number, True, (0, 0, 0))
+                    text_rect = text.get_rect()
+                    text_rect.centery = y + SQUARE_SIZE // 2
+                    text_rect.left = x
+                    self.screen.blit(text, text_rect)
+                # Draw rank number at the right of the board (include corners)
+                if file == 7:
+                    number = str(rank + 1)
+                    text = font.render(number, True, (0, 0, 0))
+                    text_rect = text.get_rect()
+                    text_rect.centery = y + SQUARE_SIZE // 2
+                    text_rect.right = x + SQUARE_SIZE
+                    self.screen.blit(text, text_rect)
+
     def __draw_chess_pieces(self) -> None:
         for square, piece in self.board.piece_map().items():
             row = (BOARD_SIZE - 1) - (square // BOARD_SIZE)
