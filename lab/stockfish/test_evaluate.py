@@ -4,7 +4,8 @@ import time
 from stockfish import Stockfish
 
 # Path to your Stockfish binary (adjust if needed)
-STOCKFISH_PATH = r"../../stockfish_ai/stockfish-windows-x86-64-avx2/stockfish/stockfish-windows-x86-64-avx2.exe"
+# STOCKFISH_PATH = r"../../stockfish_ai/stockfish-windows-x86-64-avx2/stockfish/stockfish-windows-x86-64-avx2.exe"
+STOCKFISH_PATH = r"../../stockfish_ai/stockfish/stockfish-ubuntu-x86-64-avx2"
 
 def random_fen():
     board = chess.Board()
