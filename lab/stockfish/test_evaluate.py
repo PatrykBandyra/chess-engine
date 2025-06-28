@@ -19,7 +19,7 @@ def random_fen():
     return board.fen()
 
 def evaluate_fens_with_stockfish(fens):
-    stockfish = Stockfish(STOCKFISH_PATH, parameters={'Threads': 20})
+    stockfish = Stockfish(STOCKFISH_PATH, parameters={'Threads': 5})
     # stockfish = Stockfish(STOCKFISH_PATH, parameters={'Threads': 20, 'Hash': 36000})
     total_time = 0.0
     for i, fen in enumerate(fens):
