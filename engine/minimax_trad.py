@@ -490,9 +490,52 @@ class MinimaxTrad(Player):
         else:
             return (non_pawn_material - endgame_threshold) / (middlegame_threshold - endgame_threshold)
 
+    def __evaluate_pawn_structure(self, board: chess.Board) -> float:
+        """
+        Evaluates pawn structure for both sides, considering doubled, isolated, and passed pawns.
+        Returns a score (positive for White, negative for Black).
+        """
+        score = 0.0
+        for color in [chess.WHITE, chess.BLACK]:
+            pawns = board.pieces(chess.PAWN, color)
+            files = [chess.square_file(sq) for sq in pawns]
+            # Doubled pawns
+            doubled_penalty = sum(files.count(f) - 1 for f in set(files) if files.count(f) > 1)
+            # Isolated pawns
+            isolated_penalty = 0
+            for sq in pawns:
+                file = chess.square_file(sq)
+                has_left = any(chess.square_file(p) == file - 1 for p in pawns)
+                has_right = any(chess.square_file(p) == file + 1 for p in pawns)
+                if not has_left and not has_right:
+                    isolated_penalty += 1
+            # Passed pawns
+            passed_bonus = 0
+            for sq in pawns:
+                file = chess.square_file(sq)
+                rank = chess.square_rank(sq)
+                is_passed = True
+                for opp_sq in board.pieces(chess.PAWN, not color):
+                    opp_file = chess.square_file(opp_sq)
+                    opp_rank = chess.square_rank(opp_sq)
+                    if abs(opp_file - file) <= 1:
+                        if (color == chess.WHITE and opp_rank > rank) or (color == chess.BLACK and opp_rank < rank):
+                            is_passed = False
+                            break
+                if is_passed:
+                    passed_bonus += 1
+            # Penalties and bonuses
+            penalty = -0.25 * doubled_penalty - 0.25 * isolated_penalty
+            bonus = 0.3 * passed_bonus
+            if color == chess.WHITE:
+                score += penalty + bonus
+            else:
+                score -= penalty + bonus
+        return score
+
     def __evaluate_board(self, board: chess.Board) -> float:
         """
-        Evaluates the board using blended middlegame/endgame piece-square tables and material.
+        Evaluates the board using blended middlegame/endgame piece-square tables, material, and pawn structure.
         """
         if board.is_checkmate():
             return -math.inf if board.turn == chess.WHITE else math.inf
@@ -515,7 +558,8 @@ class MinimaxTrad(Player):
                         white_score += value
                     else:
                         black_score += value
-        return white_score - black_score
+        pawn_structure_score = self.__evaluate_pawn_structure(board)
+        return (white_score - black_score) + pawn_structure_score
 
     def __del__(self):
         if hasattr(self, 'opening_book') and self.opening_book is not None:
