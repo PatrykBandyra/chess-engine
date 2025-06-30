@@ -533,9 +533,85 @@ class MinimaxTrad(Player):
                 score -= penalty + bonus
         return score
 
+    def __evaluate_king_safety(self, board: chess.Board) -> float:
+        """
+        Evaluates king safety for both sides.
+        Considers pawn shield and open files near the king.
+        Returns a score (positive for White, negative for Black).
+        """
+        def king_zone_squares(king_sq: int) -> list[int]:
+            zone = [king_sq]
+            rank = chess.square_rank(king_sq)
+            file = chess.square_file(king_sq)
+            # Iterate over the 3x3 grid centered on the king
+            for dr in [-1, 0, 1]:
+                for df in [-1, 0, 1]:
+                    if dr == 0 and df == 0:
+                        continue  # Skip the king's own square
+                    neighbor_rank = rank + dr
+                    neighbor_file = file + df
+                    if 0 <= neighbor_rank < 8 and 0 <= neighbor_file < 8:
+                        neighbor_sq = chess.square(neighbor_file, neighbor_rank)
+                        zone.append(neighbor_sq)
+            return zone
+
+        score = 0.0
+        for color in [chess.WHITE, chess.BLACK]:
+            king_sq = board.king(color)
+            if king_sq is None:
+                continue
+            zone = king_zone_squares(king_sq)
+            # Pawn shield: count friendly pawns in front of king (3 squares in front)
+            shield = 0
+            rank = chess.square_rank(king_sq)
+            file = chess.square_file(king_sq)
+            for df in [-1, 0, 1]:
+                f = file + df
+                if 0 <= f < 8:
+                    if color == chess.WHITE and rank < 7:
+                        sq = chess.square(f, rank + 1)
+                    elif color == chess.BLACK and rank > 0:
+                        sq = chess.square(f, rank - 1)
+                    else:
+                        continue
+                    if board.piece_at(sq) and board.piece_at(sq).piece_type == chess.PAWN and board.piece_at(sq).color == color:
+                        shield += 1
+            # Open files near king: penalty for open/semi-open files
+            open_file_penalty = 0.0
+            for df in [-1, 0, 1]:
+                f = file + df
+                if 0 <= f < 8:
+                    pawns_on_file = any(
+                        chess.square_file(sq) == f and board.piece_at(sq) and board.piece_at(sq).piece_type == chess.PAWN and board.piece_at(sq).color == color
+                        for sq in chess.SQUARES
+                    )
+                    opp_pawns_on_file = any(
+                        chess.square_file(sq) == f and board.piece_at(sq) and board.piece_at(sq).piece_type == chess.PAWN and board.piece_at(sq).color != color
+                        for sq in chess.SQUARES
+                    )
+                    if not pawns_on_file:
+                        if not opp_pawns_on_file:
+                            open_file_penalty += 0.4  # open file
+                        else:
+                            open_file_penalty += 0.2  # semi-open file
+            # King in zone attacked by enemy pieces
+            attack_penalty = 0.0
+            for sq in zone:
+                for attacker in board.attackers(not color, sq):
+                    piece = board.piece_at(attacker)
+                    if piece:
+                        attack_penalty += self.__get_piece_value(piece) * 0.1
+            # Combine: reward pawn shield, penalize open files and attacks
+            king_safety = 0.3 * shield - open_file_penalty - attack_penalty
+            if color == chess.WHITE:
+                score += king_safety
+            else:
+                score -= king_safety
+        return score
+
     def __evaluate_board(self, board: chess.Board) -> float:
         """
-        Evaluates the board using blended middlegame/endgame piece-square tables, material, and pawn structure.
+        Evaluates the board using blended middlegame/endgame piece-square tables, material, pawn structure, and king safety.
         """
         if board.is_checkmate():
             return -math.inf if board.turn == chess.WHITE else math.inf
@@ -559,7 +635,8 @@ class MinimaxTrad(Player):
                     else:
                         black_score += value
         pawn_structure_score = self.__evaluate_pawn_structure(board)
-        return (white_score - black_score) + pawn_structure_score
+        king_safety_score = self.__evaluate_king_safety(board)
+        return (white_score - black_score) + pawn_structure_score + king_safety_score
 
     def __del__(self):
         if hasattr(self, 'opening_book') and self.opening_book is not None:
