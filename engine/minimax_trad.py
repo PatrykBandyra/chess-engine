@@ -173,6 +173,16 @@ class MinimaxTrad(Player):
         ]
     }
 
+    __eval_times = []
+    __eval_times_evaluate_mobility_and_activity = []
+    __eval_times_evaluate_king_safety = []
+    __eval_times_evaluate_pawn_structure = []
+
+    __eval_count = 0
+    __eval_count_evaluate_mobility_and_activity = 0
+    __eval_count_evaluate_king_safety = 0
+    __eval_count_evaluate_pawn_structure = 0
+
     def make_move(self, board: chess.Board, screen: ChessBoardScreen) -> None:
         """
         Chooses and plays a move for the current player.
@@ -495,6 +505,8 @@ class MinimaxTrad(Player):
         Evaluates pawn structure for both sides, considering doubled, isolated, and passed pawns.
         Returns a score (positive for White, negative for Black).
         """
+        start = time.perf_counter()
+
         score = 0.0
         for color in [chess.WHITE, chess.BLACK]:
             pawns = board.pieces(chess.PAWN, color)
@@ -531,6 +543,14 @@ class MinimaxTrad(Player):
                 score += penalty + bonus
             else:
                 score -= penalty + bonus
+        end = time.perf_counter()
+        elapsed = end - start
+        MinimaxTrad.__eval_times_evaluate_pawn_structure.append(elapsed)
+        MinimaxTrad.__eval_count_evaluate_pawn_structure += 1
+        if MinimaxTrad.__eval_count_evaluate_pawn_structure % 200 == 0:
+            avg = sum(MinimaxTrad.__eval_times_evaluate_pawn_structure) / len(MinimaxTrad.__eval_times_evaluate_pawn_structure)
+            print(
+                f"[MinimaxTrad] __evaluate_pawn_structure average time after {MinimaxTrad.__eval_count_evaluate_pawn_structure} calls: {avg:.6f}s")
         return score
 
     def __evaluate_king_safety(self, board: chess.Board) -> float:
@@ -539,6 +559,7 @@ class MinimaxTrad(Player):
         Considers pawn shield and open files near the king.
         Returns a score (positive for White, negative for Black).
         """
+        start = time.perf_counter()
         def king_zone_squares(king_sq: int) -> list[int]:
             zone = [king_sq]
             rank = chess.square_rank(king_sq)
@@ -574,7 +595,8 @@ class MinimaxTrad(Player):
                         sq = chess.square(f, rank - 1)
                     else:
                         continue
-                    if board.piece_at(sq) and board.piece_at(sq).piece_type == chess.PAWN and board.piece_at(sq).color == color:
+                    if board.piece_at(sq) and board.piece_at(sq).piece_type == chess.PAWN and board.piece_at(
+                            sq).color == color:
                         shield += 1
             # Open files near king: penalty for open/semi-open files
             open_file_penalty = 0.0
@@ -582,11 +604,13 @@ class MinimaxTrad(Player):
                 f = file + df
                 if 0 <= f < 8:
                     pawns_on_file = any(
-                        chess.square_file(sq) == f and board.piece_at(sq) and board.piece_at(sq).piece_type == chess.PAWN and board.piece_at(sq).color == color
+                        chess.square_file(sq) == f and board.piece_at(sq) and board.piece_at(
+                            sq).piece_type == chess.PAWN and board.piece_at(sq).color == color
                         for sq in chess.SQUARES
                     )
                     opp_pawns_on_file = any(
-                        chess.square_file(sq) == f and board.piece_at(sq) and board.piece_at(sq).piece_type == chess.PAWN and board.piece_at(sq).color != color
+                        chess.square_file(sq) == f and board.piece_at(sq) and board.piece_at(
+                            sq).piece_type == chess.PAWN and board.piece_at(sq).color != color
                         for sq in chess.SQUARES
                     )
                     if not pawns_on_file:
@@ -607,36 +631,97 @@ class MinimaxTrad(Player):
                 score += king_safety
             else:
                 score -= king_safety
+        end = time.perf_counter()
+        elapsed = end - start
+        MinimaxTrad.__eval_times_evaluate_king_safety.append(elapsed)
+        MinimaxTrad.__eval_count_evaluate_king_safety += 1
+        if MinimaxTrad.__eval_count_evaluate_king_safety % 200 == 0:
+            avg = sum(MinimaxTrad.__eval_times_evaluate_king_safety) / len(MinimaxTrad.__eval_times_evaluate_king_safety)
+            print(f"[MinimaxTrad] __evaluate_king_safety average time after {MinimaxTrad.__eval_count_evaluate_king_safety} calls: {avg:.6f}s")
+        return score
+
+    def __evaluate_mobility_and_activity(self, board: chess.Board) -> float:
+        """
+        Evaluates piece mobility and activity for both sides.
+        Mobility: Number of legal moves for each piece type (except pawns and kings).
+        Activity: Bonus for pieces on advanced ranks and controlling central squares.
+        Returns a score (positive for White, negative for Black).
+        """
+        start = time.perf_counter()
+
+        mobility_weights = {
+            chess.KNIGHT: 0.08,
+            chess.BISHOP: 0.10,
+            chess.ROOK: 0.07,
+            chess.QUEEN: 0.04
+        }
+        activity_bonus = 0.05  # Bonus for a piece on advanced rank or central square
+        central_squares = {chess.D4, chess.D5, chess.E4, chess.E5}
+        score = 0.0
+        for color in [chess.WHITE, chess.BLACK]:
+            color_sign = 1 if color == chess.WHITE else -1
+            for piece_type in [chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]:
+                for sq in board.pieces(piece_type, color):
+                    # Mobility: count legal moves for this piece
+                    mobility = 0
+                    for move in board.legal_moves:
+                        if move.from_square == sq:
+                            mobility += 1
+                    score += color_sign * mobility_weights[piece_type] * mobility
+                    # Activity: advanced rank or central control
+                    rank = chess.square_rank(sq)
+                    if (color == chess.WHITE and rank >= 4) or (color == chess.BLACK and rank <= 3):
+                        score += color_sign * activity_bonus
+                    if sq in central_squares:
+                        score += color_sign * activity_bonus
+        end = time.perf_counter()
+        elapsed = end - start
+        MinimaxTrad.__eval_times_evaluate_mobility_and_activity.append(elapsed)
+        MinimaxTrad.__eval_count_evaluate_mobility_and_activity += 1
+        if MinimaxTrad.__eval_count_evaluate_mobility_and_activity % 200 == 0:
+            avg = sum(MinimaxTrad.__eval_times_evaluate_mobility_and_activity) / len(MinimaxTrad.__eval_times_evaluate_mobility_and_activity)
+            print(
+                f"[MinimaxTrad] __evaluate_mobility_and_activity average time after {MinimaxTrad.__eval_count_evaluate_mobility_and_activity} calls: {avg:.6f}s")
         return score
 
     def __evaluate_board(self, board: chess.Board) -> float:
-        """
-        Evaluates the board using blended middlegame/endgame piece-square tables, material, pawn structure, and king safety.
-        """
+        import time
+        start = time.perf_counter()
+
         if board.is_checkmate():
-            return -math.inf if board.turn == chess.WHITE else math.inf
-        if board.is_stalemate() or board.is_insufficient_material() or \
+            result = -math.inf if board.turn == chess.WHITE else math.inf
+        elif board.is_stalemate() or board.is_insufficient_material() or \
                 board.is_seventyfive_moves() or board.is_fivefold_repetition():
-            return 0.0
-        phase = self.__get_game_phase(board)
-        white_score = 0.0
-        black_score = 0.0
-        for piece_type in self.piece_values.keys():
-            for color in [chess.WHITE, chess.BLACK]:
-                squares = board.pieces(piece_type, color)
-                for sq in squares:
-                    pst_mid = self.PIECE_SQUARE_TABLE_MID[piece_type][
-                        sq if color == chess.WHITE else chess.square_mirror(sq)]
-                    pst_end = self.PIECE_SQUARE_TABLE_END[piece_type][
-                        sq if color == chess.WHITE else chess.square_mirror(sq)]
-                    value = self.piece_values[piece_type] + 0.01 * (phase * pst_mid + (1 - phase) * pst_end)
-                    if color == chess.WHITE:
-                        white_score += value
-                    else:
-                        black_score += value
-        pawn_structure_score = self.__evaluate_pawn_structure(board)
-        king_safety_score = self.__evaluate_king_safety(board)
-        return (white_score - black_score) + pawn_structure_score + king_safety_score
+            result = 0.0
+        else:
+            phase = self.__get_game_phase(board)
+            white_score = 0.0
+            black_score = 0.0
+            for piece_type in self.piece_values.keys():
+                for color in [chess.WHITE, chess.BLACK]:
+                    squares = board.pieces(piece_type, color)
+                    for sq in squares:
+                        pst_mid = self.PIECE_SQUARE_TABLE_MID[piece_type][
+                            sq if color == chess.WHITE else chess.square_mirror(sq)]
+                        pst_end = self.PIECE_SQUARE_TABLE_END[piece_type][
+                            sq if color == chess.WHITE else chess.square_mirror(sq)]
+                        value = self.piece_values[piece_type] + 0.01 * (phase * pst_mid + (1 - phase) * pst_end)
+                        if color == chess.WHITE:
+                            white_score += value
+                        else:
+                            black_score += value
+            pawn_structure_score = self.__evaluate_pawn_structure(board)
+            king_safety_score = self.__evaluate_king_safety(board)
+            mobility_activity_score = self.__evaluate_mobility_and_activity(board)
+            result = (white_score - black_score) + pawn_structure_score + king_safety_score + mobility_activity_score
+        end = time.perf_counter()
+        elapsed = end - start
+        MinimaxTrad.__eval_times.append(elapsed)
+        MinimaxTrad.__eval_count += 1
+        if MinimaxTrad.__eval_count % 200 == 0:
+            avg = sum(MinimaxTrad.__eval_times) / len(MinimaxTrad.__eval_times)
+            print(f"[MinimaxTrad] __evaluate_board average time after {MinimaxTrad.__eval_count} calls: {avg:.6f}s")
+        return result
 
     def __del__(self):
         if hasattr(self, 'opening_book') and self.opening_book is not None:
