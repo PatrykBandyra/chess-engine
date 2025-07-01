@@ -42,12 +42,15 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('-ob', '--opening_book', help='Use opening book', action='store_true')
     parser.add_argument('-g', '--game', help='Game moves output txt file', type=str, required=False)
     parser.add_argument('-l', '--logs', help='Game logs file', type=str, required=False)
-    parser.add_argument('-dw', '--depth_white', help='Stockfish depth for white', type=depth, required=False)
+    parser.add_argument('-dw', '--depth_white', help='Depth for white', type=depth, required=False)
+    parser.add_argument('-dws', '--depth_white_stockfish', help='Stockfish depth for white', type=depth, required=False)
     parser.add_argument('-sw', '--skill_white', help='Stockfish skill level for white', type=skill_level,
                         required=False)
-    parser.add_argument('-db', '--depth_black', help='Stockfish depth for black', type=depth, required=False)
+    parser.add_argument('-db', '--depth_black', help='Depth for black', type=depth, required=False)
+    parser.add_argument('-dbs', '--depth_black_stockfish', help='Stockfish depth for black', type=depth, required=False)
     parser.add_argument('-sb', '--skill_black', help='Stockfish skill level for black', type=skill_level,
                         required=False)
+    parser.add_argument('-sp','--stockfish_path', help='Path to Stockfish binary', type=str, required=False)
     return parser.parse_args()
 
 

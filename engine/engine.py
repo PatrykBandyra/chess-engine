@@ -66,7 +66,9 @@ class Engine:
             case PlayerType.MINIMAX_TRAD.value:
                 return MinimaxTrad(self.args, color)
             case PlayerType.MINIMAX_NN.value:
-                return MinimaxNN(self.args)
+                return MinimaxNN(self.args, color)
+            case _:
+                raise ValueError(f'Unknown player type: {player_type}. Available types: {[p.value for p in PlayerType]}')
 
     def __run(self) -> None:
         if self.is_graphic_mode:
