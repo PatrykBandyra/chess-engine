@@ -7,6 +7,8 @@ import chess.pgn
 from chess_board_screen import ChessBoardScreen
 from constants import LOGGER
 from human_player import HumanPlayer
+from mcts_nn import MCTSNN
+from mcts_trad import MCTSTrad
 from minimax_nn import MinimaxNN
 from minimax_trad import MinimaxTrad
 from mode import Mode
@@ -60,15 +62,20 @@ class Engine:
     def __get_player(self, player_type: str, color: chess.Color) -> Player:
         match player_type:
             case PlayerType.HUMAN.value:
-                return HumanPlayer(self.args)
+                return HumanPlayer(self.args, color)
             case PlayerType.STOCKFISH.value:
                 return StockfishPlayer(self.args, color)
             case PlayerType.MINIMAX_TRAD.value:
                 return MinimaxTrad(self.args, color)
             case PlayerType.MINIMAX_NN.value:
                 return MinimaxNN(self.args, color)
+            case PlayerType.MCTS_TRAD.value:
+                return MCTSTrad(self.args, color)
+            case PlayerType.MCTS_NN.value:
+                return MCTSNN(self.args, color)
             case _:
-                raise ValueError(f'Unknown player type: {player_type}. Available types: {[p.value for p in PlayerType]}')
+                raise ValueError(
+                    f'Unknown player type: {player_type}. Available types: {[p.value for p in PlayerType]}')
 
     def __run(self) -> None:
         if self.is_graphic_mode:
