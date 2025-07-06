@@ -11,6 +11,7 @@ class Player(abc.ABC):
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         self.args: argparse.Namespace = args
         self.color: chess.Color = color
+        self.debug: bool = args.debug
 
     @abc.abstractmethod
     def make_move(self, board: chess.Board, screen: ChessBoardScreen) -> None:
