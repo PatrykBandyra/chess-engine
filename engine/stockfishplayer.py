@@ -13,8 +13,7 @@ from player import Player
 class StockfishPlayer(Player):
 
     def __init__(self, args: argparse.Namespace, color: chess.Color):
-        super().__init__(args)
-        self.color: chess.Color = color
+        super().__init__(args, color)
         self.depth: int = args.depth_white_stockfish if color == chess.WHITE else args.depth_black_stockfish
         self.skill_level: int = args.skill_white if color == chess.WHITE else args.skill_black
         self.stockfish_path: str = args.stockfish_path if args.stockfish_path is not None else STOCKFISH_PATH
