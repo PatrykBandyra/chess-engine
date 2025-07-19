@@ -49,7 +49,7 @@ class MinimaxTrad(PlayerTrad):
 
         if self.use_opening_book and self.is_opening:
             if super().make_move_from_opening_book(board, start_time):
-                return  # Move already made from opening book
+                return  # Move already made from an opening book
 
         # Clearing
         self.transposition_table = {}
