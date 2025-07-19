@@ -8,13 +8,15 @@ from chess.polyglot import ZobristHasher, POLYGLOT_RANDOM_ARRAY
 
 from chess_board_screen import ChessBoardScreen
 from constants import LOGGER
+from opening_book import OpeningBook
 from player_trad import PlayerTrad
 
 
-class MinimaxTrad(PlayerTrad):
+class MinimaxTrad(PlayerTrad, OpeningBook):
 
     def __init__(self, args: argparse.Namespace, color: chess.Color):
-        super().__init__(args, color)
+        PlayerTrad.__init__(self, args, color)
+        OpeningBook.__init__(self, args, color)
         self.depth: int = args.depth_white if color == chess.WHITE else args.depth_black
 
         self.transposition_table = {}
