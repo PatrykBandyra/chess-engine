@@ -299,7 +299,3 @@ class MinimaxTrad(PlayerTrad, OpeningBook):
         if move.promotion is None:  # Captures are implicitly excluded by where this is called
             bonus = depth * depth  # Weight bonus by depth squared
             self.history_heuristic_table[move.from_square][move.to_square] += bonus
-
-    def __del__(self):
-        if hasattr(self, 'opening_book') and self.opening_book is not None:
-            self.opening_book.close()

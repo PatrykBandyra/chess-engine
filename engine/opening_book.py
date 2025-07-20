@@ -52,3 +52,7 @@ class OpeningBook:
             self.is_opening = False
             LOGGER.info(f'OPENING BOOK; {"WHITE" if self.color else "BLACK"}; opening phase ended')
             return self.is_opening
+
+    def __del__(self):
+        if hasattr(self, 'opening_book') and self.opening_book is not None:
+            self.opening_book.close()

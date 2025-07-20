@@ -24,15 +24,6 @@ class PlayerTrad(Player, abc.ABC):
         self.__eval_count_evaluate_king_safety = 0
         self.__eval_count_evaluate_pawn_structure = 0
 
-    PIECE_VALUES = {
-        chess.PAWN: 1,
-        chess.KNIGHT: 3.05,
-        chess.BISHOP: 3.33,
-        chess.ROOK: 5.63,
-        chess.QUEEN: 9.5,
-        chess.KING: 100_000
-    }
-
     PIECE_SQUARE_TABLE_MID = {
         chess.PAWN: [
             0, 0, 0, 0, 0, 0, 0, 0,
