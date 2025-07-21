@@ -3,10 +3,10 @@ import argparse
 import chess
 
 from board_evaluator_nn import BoardEvaluatorNN
-from minimax import Minimax
+from player import Player
 
 
-class MinimaxNN(Minimax):
+class MCTSNN(Player):
 
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)

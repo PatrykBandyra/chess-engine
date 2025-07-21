@@ -1,5 +1,7 @@
 import logging
 
+import chess
+
 SCREEN_WIDTH = 600
 SCREEN_HEIGHT = 600
 
@@ -26,3 +28,17 @@ FORMATTER = logging.Formatter('%(asctime)s: %(levelname)s: %(message)s')
 stream_handler = logging.StreamHandler()
 stream_handler.setFormatter(FORMATTER)
 LOGGER.addHandler(stream_handler)
+
+PIECE_VALUES = {
+    chess.PAWN: 1,
+    chess.KNIGHT: 3.05,
+    chess.BISHOP: 3.33,
+    chess.ROOK: 5.63,
+    chess.QUEEN: 9.5,
+    chess.KING: 100_000
+}
+
+
+def get_piece_value(piece: chess.Piece | None) -> float:
+    """Safely gets the value of a piece, returning 0 if None"""
+    return PIECE_VALUES.get(piece.piece_type, 0) if piece else 0

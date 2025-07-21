@@ -1,15 +1,15 @@
-import abc
 import argparse
 import math
 import time
 
 import chess
 
+from board_evaluator import BoardEvaluator
 from constants import LOGGER
-from player import Player
+from constants import PIECE_VALUES, get_piece_value
 
 
-class PlayerTrad(Player, abc.ABC):
+class BoardEvaluatorTrad(BoardEvaluator):
 
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)
@@ -149,18 +149,14 @@ class PlayerTrad(Player, abc.ABC):
         ]
     }
 
-    def get_piece_value(self, piece: chess.Piece | None) -> float:
-        """Safely gets the value of a piece, returning 0 if None"""
-        return self.PIECE_VALUES.get(piece.piece_type, 0) if piece else 0
-
     def __get_game_phase(self, board: chess.Board) -> float:
         """
         Returns a phase value in [0, 1]: 1.0 = middlegame, 0.0 = endgame, interpolated by non-pawn material.
         """
         non_pawn_material = 0.0
         for piece_type in [chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]:
-            non_pawn_material += len(board.pieces(piece_type, chess.WHITE)) * self.PIECE_VALUES[piece_type]
-            non_pawn_material += len(board.pieces(piece_type, chess.BLACK)) * self.PIECE_VALUES[piece_type]
+            non_pawn_material += len(board.pieces(piece_type, chess.WHITE)) * PIECE_VALUES[piece_type]
+            non_pawn_material += len(board.pieces(piece_type, chess.BLACK)) * PIECE_VALUES[piece_type]
         endgame_threshold = 20.0
         middlegame_threshold = 67.0
         if non_pawn_material >= middlegame_threshold:
@@ -223,7 +219,7 @@ class PlayerTrad(Player, abc.ABC):
                 avg = sum(self.__eval_times_evaluate_pawn_structure) / len(
                     self.__eval_times_evaluate_pawn_structure)
                 LOGGER.debug(
-                    f'{"WHITE" if self.color else "BLACK"} __evaluate_pawn_structure average time after {self.__eval_count_evaluate_pawn_structure} calls: {avg:.6f}s')
+                    f'{"WHITE" if self.color else "BLACK"} BoardEvaluatorTrad.__evaluate_pawn_structure() average time after {self.__eval_count_evaluate_pawn_structure} calls: {avg:.6f}s')
         return score
 
     def __evaluate_king_safety(self, board: chess.Board) -> float:
@@ -299,7 +295,7 @@ class PlayerTrad(Player, abc.ABC):
                 for attacker in board.attackers(not color, sq):
                     piece = board.piece_at(attacker)
                     if piece:
-                        attack_penalty += self.get_piece_value(piece) * 0.1
+                        attack_penalty += get_piece_value(piece) * 0.1
             # Combine: reward pawn shield, penalize open files and attacks
             king_safety = 0.3 * shield - open_file_penalty - attack_penalty
             if color == chess.WHITE:
@@ -315,7 +311,7 @@ class PlayerTrad(Player, abc.ABC):
                 avg = sum(self.__eval_times_evaluate_king_safety) / len(
                     self.__eval_times_evaluate_king_safety)
                 LOGGER.debug(
-                    f'{"WHITE" if self.color else "BLACK"} __evaluate_king_safety average time after {self.__eval_count_evaluate_king_safety} calls: {avg:.6f}s')
+                    f'{"WHITE" if self.color else "BLACK"} BoardEvaluatorTrad.__evaluate_king_safety() average time after {self.__eval_count_evaluate_king_safety} calls: {avg:.6f}s')
         return score
 
     def __evaluate_mobility_and_activity(self, board: chess.Board) -> float:
@@ -362,7 +358,7 @@ class PlayerTrad(Player, abc.ABC):
                 avg = sum(self.__eval_times_evaluate_mobility_and_activity) / len(
                     self.__eval_times_evaluate_mobility_and_activity)
                 LOGGER.debug(
-                    f'{"WHITE" if self.color else "BLACK"} __evaluate_mobility_and_activity average time after {self.__eval_count_evaluate_mobility_and_activity} calls: {avg:.6f}s')
+                    f'{"WHITE" if self.color else "BLACK"} BoardEvaluatorTrad.__evaluate_mobility_and_activity() average time after {self.__eval_count_evaluate_mobility_and_activity} calls: {avg:.6f}s')
         return score
 
     def evaluate_board(self, board: chess.Board) -> float:
@@ -378,7 +374,7 @@ class PlayerTrad(Player, abc.ABC):
             phase = self.__get_game_phase(board)
             white_score = 0.0
             black_score = 0.0
-            for piece_type in self.PIECE_VALUES.keys():
+            for piece_type in PIECE_VALUES.keys():
                 for color in [chess.WHITE, chess.BLACK]:
                     squares = board.pieces(piece_type, color)
                     for sq in squares:
@@ -386,7 +382,7 @@ class PlayerTrad(Player, abc.ABC):
                             sq if color == chess.WHITE else chess.square_mirror(sq)]
                         pst_end = self.PIECE_SQUARE_TABLE_END[piece_type][
                             sq if color == chess.WHITE else chess.square_mirror(sq)]
-                        value = self.PIECE_VALUES[piece_type] + 0.01 * (phase * pst_mid + (1 - phase) * pst_end)
+                        value = PIECE_VALUES[piece_type] + 0.01 * (phase * pst_mid + (1 - phase) * pst_end)
                         if color == chess.WHITE:
                             white_score += value
                         else:
@@ -403,5 +399,5 @@ class PlayerTrad(Player, abc.ABC):
             if self.__eval_count % 200 == 0:
                 avg = sum(self.__eval_times) / len(self.__eval_times)
                 LOGGER.debug(
-                    f'{"WHITE" if self.color else "BLACK"} __evaluate_board average time after {self.__eval_count} calls: {avg:.6f}s')
+                    f'{"WHITE" if self.color else "BLACK"} BoardEvaluatorTrad.evaluate_board() average time after {self.__eval_count} calls: {avg:.6f}s')
         return result

@@ -18,7 +18,7 @@ class OpeningBook:
         self.is_opening: bool = True
         self.opening_book = open_reader('codekiddy.bin')
 
-    def make_move_from_opening_book(self, board: chess.Board, start_time: float) -> bool:
+    def make_move(self, board: chess.Board, start_time: float) -> bool:
         entries: List[Entry] = list(self.opening_book.find_all(board))
         if entries:
             weights = [entry.weight for entry in entries]
