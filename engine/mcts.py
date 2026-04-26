@@ -2,9 +2,11 @@ import abc
 import argparse
 import math
 import time
+from collections import OrderedDict
 from typing import List, Optional
 
 import chess
+import chess.polyglot
 
 from chess_board_screen import ChessBoardScreen
 from constants import LOGGER
@@ -44,6 +46,8 @@ class MCTSNode:
 
 class MCTS(Player):
 
+    EVAL_CACHE_MAX_SIZE = 500_000
+
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)
 
@@ -51,6 +55,7 @@ class MCTS(Player):
         self.order_moves_mcts = OrderMovesMCTS(args, color)
 
         self.mcts_time_budget: float = args.mcts_time
+        self.__eval_cache: OrderedDict[int, float] = OrderedDict()
 
     @abc.abstractmethod
     def evaluate_board(self, board: chess.Board) -> float:
@@ -97,9 +102,17 @@ class MCTS(Player):
         return child_node
 
     def __simulate(self, node: MCTSNode) -> float:
-        raw = self.evaluate_board(node.board)
-        v = 1.0 / (1.0 + math.exp(-raw / 4.0))  # sigmoid normalization to [0, 1], white perspective
-        return v if node.player == chess.BLACK else 1.0 - v  # convert to parent's perspective (convention B)
+        board_hash = chess.polyglot.zobrist_hash(node.board)
+        if board_hash in self.__eval_cache:
+            self.__eval_cache.move_to_end(board_hash)
+            v = self.__eval_cache[board_hash]
+        else:
+            raw = self.evaluate_board(node.board)
+            v = 1.0 / (1.0 + math.exp(-raw / 4.0))  # sigmoid normalization to [0, 1], white perspective
+            self.__eval_cache[board_hash] = v
+            if len(self.__eval_cache) > self.EVAL_CACHE_MAX_SIZE:
+                self.__eval_cache.popitem(last=False)  # evict least recently used
+        return v if node.player == chess.BLACK else 1.0 - v  # convert to parent's perspective
 
     def __backpropagate(self, node: MCTSNode, value: float) -> None:
         while node is not None:
