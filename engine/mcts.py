@@ -45,7 +45,6 @@ class MCTSNode:
 
 
 class MCTS(Player):
-
     EVAL_CACHE_MAX_SIZE = 500_000
 
     def __init__(self, args: argparse.Namespace, color: chess.Color):
@@ -56,6 +55,8 @@ class MCTS(Player):
 
         self.mcts_time_budget: float = args.mcts_time
         self.__eval_cache: OrderedDict[int, float] = OrderedDict()
+        self.__root: Optional[MCTSNode] = None
+        self.__last_best_child: Optional[MCTSNode] = None
 
     @abc.abstractmethod
     def evaluate_board(self, board: chess.Board) -> float:
@@ -69,7 +70,7 @@ class MCTS(Player):
         self.__run_mcts(board, start_time)
 
     def __run_mcts(self, board: chess.Board, start_time: float) -> None:
-        root = MCTSNode(board)
+        root = self.__get_or_create_root(board)
         end_time = time.perf_counter() + self.mcts_time_budget
         while time.perf_counter() < end_time:
             node = self.__select(root)
@@ -80,12 +81,31 @@ class MCTS(Player):
         if root.children:
             best_child = root.most_visited_child()
             board.push(best_child.move)
+            self.__root = root
+            self.__last_best_child = best_child
             duration = time.perf_counter() - start_time
             LOGGER.info(
                 f'MCTS-TRAD; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; move: {best_child.move.uci()}; visits: {best_child.visits}'
             )
         else:
+            self.__root = None
+            self.__last_best_child = None
             LOGGER.warning('MCTS-TRAD: No valid move found. Skipping push.')
+
+    def __get_or_create_root(self, board: chess.Board) -> MCTSNode:
+        if self.__last_best_child is not None:
+            opponent_move = board.move_stack[-1] if board.move_stack else None
+            if opponent_move:
+                for child in self.__last_best_child.children:
+                    if child.move == opponent_move:
+                        child.parent = None  # detach from old tree for GC
+                        self.__root = None
+                        self.__last_best_child = None
+                        return child
+        # Fallback: create a new root
+        self.__root = None
+        self.__last_best_child = None
+        return MCTSNode(board)
 
     def __select(self, node: MCTSNode) -> MCTSNode:
         while node.is_fully_expanded() and node.children:
