@@ -1,7 +1,6 @@
 import abc
 import argparse
 import math
-import random
 import time
 from typing import List, Optional
 
@@ -50,7 +49,6 @@ class MCTS(Player):
         self.opening_book = OpeningBook(args, color)
         self.order_moves_mcts = OrderMovesMCTS(args, color)
 
-        self.depth: int = args.depth_white if color == chess.WHITE else args.depth_black
         self.mcts_time_budget: float = args.mcts_time
 
     @abc.abstractmethod
@@ -98,16 +96,7 @@ class MCTS(Player):
         return child_node
 
     def __simulate(self, node: MCTSNode) -> float:
-        sim_board = node.board.copy(stack=False)
-        moves_played = 0
-        while not sim_board.is_game_over() and moves_played < self.depth:
-            legal_moves = list(sim_board.legal_moves)
-            if not legal_moves:
-                break
-            move = random.choice(legal_moves)
-            sim_board.push(move)
-            moves_played += 1
-        return self.evaluate_board(sim_board)
+        return self.evaluate_board(node.board)
 
     def __backpropagate(self, node: MCTSNode, value: float) -> None:
         while node is not None:
