@@ -50,12 +50,16 @@ class OrderMovesMinimax(OrderMoves):
             is_promotion: bool = move.promotion is not None
             is_capture: bool = board.is_capture(move)
 
-            # 1. Promotions
+            # 1. Check bonus (applied to all move types: promotions, captures, and quiet moves)
+            if board.gives_check(move):
+                score += self.move_ordering_check_bonus
+
+            # 2. Promotions
             if is_promotion:
                 score += (self.move_ordering_promotion_bonus +
                           get_piece_value(chess.Piece(move.promotion, board.turn)))
 
-            # 2. Captures (MVV-LVA: Most Valuable Victim - Least Valuable Aggressor)
+            # 3. Captures (MVV-LVA: Most Valuable Victim - Least Valuable Aggressor)
             elif is_capture:  # If both promotion and capture, then prefer promotion score
                 move_piece: chess.Piece = board.piece_at(move.from_square)
                 captured_piece: chess.Piece | None = board.piece_at(move.to_square)
@@ -68,7 +72,7 @@ class OrderMovesMinimax(OrderMoves):
                 aggressor_value: float = get_piece_value(move_piece)
                 score += self.move_ordering_capture_bonus + (captured_piece_value - aggressor_value / 10)
 
-            # 3. Quiet Moves (apply Killer and History Heuristics)
+            # 4. Quiet Moves (apply Killer and History Heuristics)
             else:
                 is_killer: bool = move == killers[0] or move == killers[1]
                 if is_killer:
@@ -77,14 +81,6 @@ class OrderMovesMinimax(OrderMoves):
                 history_score = self.history_heuristic_table[move.from_square][move.to_square]
                 score += history_score
 
-                # 4. Checks (check if the move puts the opponent in check)
-                is_check: bool = board.gives_check(move)
-
-                if is_check:
-                    # Add check bonus, potentially less if already highly scored
-                    # Check bonus might be less relevant now with history heuristic also boosting good quiet checks
-                    if score < self.move_ordering_check_bonus * 1.5:  # Avoid excessive bonus stacking
-                        score += self.move_ordering_check_bonus
 
             move_scores.append((score, move))
 
