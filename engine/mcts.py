@@ -27,12 +27,13 @@ class MCTSNode:
     def is_fully_expanded(self):
         return len(self.untried_moves) == 0
 
-    def best_child(self, c_param=1.4):
+    def best_child(self, c_param=math.sqrt(2)):
         """
         Selects the best child node based on the UCT (Upper Confidence Bound for Trees) formula.
+        Values are normalized to [0, 1], so the standard c = sqrt(2) is used.
         """
         choices_weights = [
-            (child.value / child.visits) + c_param * math.sqrt(2 * math.log(self.visits) / child.visits)
+            (child.value / child.visits) + c_param * math.sqrt(math.log(self.visits) / child.visits)
             for child in self.children
         ]
         return self.children[choices_weights.index(max(choices_weights))]
@@ -96,13 +97,13 @@ class MCTS(Player):
         return child_node
 
     def __simulate(self, node: MCTSNode) -> float:
-        return self.evaluate_board(node.board)
+        raw = self.evaluate_board(node.board)
+        v = 1.0 / (1.0 + math.exp(-raw / 4.0))  # sigmoid normalization to [0, 1], white perspective
+        return v if node.player == chess.BLACK else 1.0 - v  # convert to parent's perspective (convention B)
 
     def __backpropagate(self, node: MCTSNode, value: float) -> None:
         while node is not None:
             node.visits += 1
-            if node.player == self.color:
-                node.value += value
-            else:
-                node.value -= value
+            node.value += value
+            value = 1.0 - value  # complement: flip perspective for the next level
             node = node.parent
