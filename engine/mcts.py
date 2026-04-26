@@ -16,8 +16,12 @@ from player import Player
 
 
 class MCTSNode:
-    def __init__(self, board: chess.Board, parent: Optional['MCTSNode'] = None, move: Optional[chess.Move] = None):
-        self.board = board.copy(stack=False)
+    __slots__ = ('board', 'parent', 'move', 'children', 'untried_moves',
+                 'visits', 'value', 'player', 'is_terminal', '_moves_sorted')
+
+    def __init__(self, board: chess.Board, parent: Optional['MCTSNode'] = None,
+                 move: Optional[chess.Move] = None, _copy: bool = True):
+        self.board = board.copy(stack=False) if _copy else board
         self.parent = parent
         self.move = move
         self.children: List['MCTSNode'] = []
@@ -26,6 +30,7 @@ class MCTSNode:
         self.value = 0.0
         self.player = board.turn
         self.is_terminal: bool = board.is_game_over()
+        self._moves_sorted: bool = False
 
     def is_fully_expanded(self):
         return len(self.untried_moves) == 0
@@ -75,6 +80,7 @@ class MCTS(Player):
     def __run_mcts(self, board: chess.Board, start_time: float) -> None:
         root = self.__get_or_create_root(board)
         end_time = time.perf_counter() + self.mcts_time_budget
+        iterations = 0
         while time.perf_counter() < end_time:
             node = self.__select(root)
             if node.is_terminal and node.visits > 0:
@@ -83,6 +89,7 @@ class MCTS(Player):
                 node = self.__expand(node)
             value = self.__simulate(node)
             self.__backpropagate(node, value)
+            iterations += 1
         if root.children:
             best_child = root.most_visited_child()
             board.push(best_child.move)
@@ -90,7 +97,7 @@ class MCTS(Player):
             self.__last_best_child = best_child
             duration = time.perf_counter() - start_time
             LOGGER.info(
-                f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; move: {best_child.move.uci()}; visits: {best_child.visits}'
+                f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; move: {best_child.move.uci()}; visits: {best_child.visits}; iterations: {iterations}'
             )
         else:
             self.__root = None
@@ -118,11 +125,15 @@ class MCTS(Player):
         return node
 
     def __expand(self, node: MCTSNode) -> MCTSNode:
-        move = self.order_moves_mcts.order_moves(node.board, node.untried_moves, None)[0]
-        node.untried_moves.remove(move)
+        if not node._moves_sorted:
+            sorted_moves = self.order_moves_mcts.order_moves(node.board, node.untried_moves, None)
+            sorted_moves.reverse()  # best moves at end for O(1) pop
+            node.untried_moves = sorted_moves
+            node._moves_sorted = True
+        move = node.untried_moves.pop()  # O(1), pops best remaining move
         next_board = node.board.copy(stack=False)
         next_board.push(move)
-        child_node = MCTSNode(next_board, parent=node, move=move)
+        child_node = MCTSNode(next_board, parent=node, move=move, _copy=False)
         node.children.append(child_node)
         return child_node
 

@@ -1,4 +1,5 @@
 import argparse
+import math
 import time
 
 import chess
@@ -31,7 +32,12 @@ class BoardEvaluatorNN(BoardEvaluator):
             start = time.perf_counter()
 
         self.stockfish.set_fen_position(board.fen())
-        value = self.stockfish.get_evaluation()['value'] / 100.0  # Convert centipawns to pawns for consistency
+        evaluation = self.stockfish.get_evaluation()
+        if evaluation['type'] == 'mate':
+            mate_in = evaluation['value']
+            value = math.inf if mate_in > 0 else -math.inf if mate_in < 0 else 0.0
+        else:
+            value = evaluation['value'] / 100.0  # Convert centipawns to pawns for consistency
 
         if self.debug:
             end = time.perf_counter()
