@@ -337,11 +337,9 @@ class BoardEvaluatorTrad(BoardEvaluator):
             color_sign = 1 if color == chess.WHITE else -1
             for piece_type in [chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]:
                 for sq in board.pieces(piece_type, color):
-                    # Mobility: count legal moves for this piece
-                    mobility = 0
-                    for move in board.legal_moves:
-                        if move.from_square == sq:
-                            mobility += 1
+                    board.turn = chess.WHITE
+                    # Mobility: count squares attacked by this piece (pseudo-legal, works for both sides)
+                    mobility = len(board.attacks(sq))
                     score += color_sign * mobility_weights[piece_type] * mobility
                     # Activity: advanced rank or central control
                     rank = chess.square_rank(sq)
