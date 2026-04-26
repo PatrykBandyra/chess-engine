@@ -51,6 +51,7 @@ class MCTS(Player):
         self.order_moves_mcts = OrderMovesMCTS(args, color)
 
         self.depth: int = args.depth_white if color == chess.WHITE else args.depth_black
+        self.mcts_time_budget: float = args.mcts_time
 
     @abc.abstractmethod
     def evaluate_board(self, board: chess.Board) -> float:
@@ -59,14 +60,13 @@ class MCTS(Player):
     def make_move(self, board: chess.Board, screen: ChessBoardScreen) -> None:
         start_time: float = time.perf_counter()
         if self.opening_book.use_opening_book and self.opening_book.is_opening:
-            if super().make_move(board, start_time):
+            if self.opening_book.make_move(board, start_time):
                 return  # Move already made from an opening book
         self.__run_mcts(board, start_time)
 
     def __run_mcts(self, board: chess.Board, start_time: float) -> None:
-        SIMULATION_TIME = 20.0  # seconds
         root = MCTSNode(board)
-        end_time = time.perf_counter() + SIMULATION_TIME
+        end_time = time.perf_counter() + self.mcts_time_budget
         while time.perf_counter() < end_time:
             node = self.__select(root)
             if node.untried_moves:

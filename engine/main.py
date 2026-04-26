@@ -51,6 +51,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('-sb', '--skill_black', help='Stockfish skill level for black', type=skill_level,
                         required=False)
     parser.add_argument('-sp', '--stockfish_path', help='Path to Stockfish binary', type=str, required=False)
+    parser.add_argument('-mt', '--mcts_time', help='MCTS time budget in seconds', type=float, default=20.0,
+                        required=False)
     parser.add_argument('-d', '--debug', help='Debug mode', action='store_true', required=False)
     return parser.parse_args()
 

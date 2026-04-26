@@ -3,10 +3,10 @@ import argparse
 import chess
 
 from board_evaluator_nn import BoardEvaluatorNN
-from player import Player
+from mcts import MCTS
 
 
-class MCTSNN(Player):
+class MCTSNN(MCTS):
 
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)
