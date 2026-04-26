@@ -12,7 +12,8 @@ class OrderMovesMCTS(OrderMoves):
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)
 
-    def order_moves(self, board: chess.Board, moves: List[chess.Move], ply: int | None) -> List[chess.Move]:
+    def order_moves(self, board: chess.Board, moves: List[chess.Move], ply: int | None,
+                    tt_move: chess.Move | None = None) -> List[chess.Move]:
         """
         Orders moves using heuristics: promotions, captures (MVV-LVA), checks.
         """

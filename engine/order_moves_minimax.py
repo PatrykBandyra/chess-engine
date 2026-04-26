@@ -20,25 +20,33 @@ class OrderMovesMinimax(OrderMoves):
 
         # Approximate values for move ordering heuristics
         self.move_ordering_killer_bonus = 750_000
+        self.move_ordering_tt_move_bonus = 2_000_000
 
-    def order_moves(self, board: chess.Board, moves: List[chess.Move], ply: int | None) -> List[chess.Move]:
+    def order_moves(self, board: chess.Board, moves: List[chess.Move], ply: int | None,
+                    tt_move: chess.Move | None = None) -> List[chess.Move]:
         """
         Orders a list of legal moves to improve alpha-beta pruning efficiency.
 
         How it works:
-        - Assigns a score to each move based on several heuristics:
-            * Promotions: Highest priority, large bonus.
+        - Assigns a score to each move based on several heuristics (in priority order):
+            * TT move (PV move): The best move from the transposition table (found in a previous Iterative
+              Deepening iteration or earlier search) is always searched first with the highest bonus.
+            * Promotions: Very high priority, scored by promoted piece value.
             * Captures: Scored by Most Valuable Victim - Least Valuable Aggressor (MVV-LVA).
             * Killer moves: Moves that caused beta cutoffs at this ply in previous searches are prioritized.
             * History heuristic: Quiet moves that have historically caused cutoffs are boosted.
-            * Checks: Moves that give check are given a bonus.
+            * Checks: Moves that give check receive a bonus (applied to all move types: promotions, captures, and quiet).
         - Moves are sorted in descending order of their score, so the most promising moves are searched first.
-        - This ordering increases the likelihood of alpha-beta cutoffs, making the search more efficient and improving engine strength.
+        - This ordering increases the likelihood of alpha-beta cutoffs, making the search more efficient
+          and improving engine strength. Combined with Iterative Deepening, TT move prioritization ensures
+          the PV move from shallower iterations seeds deeper searches for optimal move ordering.
 
         Args:
             board: The current board state.
             moves: List of legal moves to order.
             ply: The current ply (search depth from root).
+            tt_move: The best move from the transposition table for this position (PV move from a previous
+                     iteration or search). If provided, this move receives the highest ordering bonus.
         Returns:
             List of moves sorted from best to worst according to the heuristics.
         """
@@ -47,6 +55,13 @@ class OrderMovesMinimax(OrderMoves):
 
         for move in moves:
             score: float = 0
+
+            # 0. TT move (PV move from previous iteration) — always searched first
+            if tt_move is not None and move == tt_move:
+                score += self.move_ordering_tt_move_bonus
+                move_scores.append((score, move))
+                continue
+
             is_promotion: bool = move.promotion is not None
             is_capture: bool = board.is_capture(move)
 

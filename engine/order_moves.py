@@ -16,5 +16,6 @@ class OrderMoves(abc.ABC):
         self.move_ordering_check_bonus = 500_000
 
     @abc.abstractmethod
-    def order_moves(self, board: chess.Board, moves: List[chess.Move], ply: int | None) -> List[chess.Move]:
+    def order_moves(self, board: chess.Board, moves: List[chess.Move], ply: int | None,
+                    tt_move: chess.Move | None = None) -> List[chess.Move]:
         pass

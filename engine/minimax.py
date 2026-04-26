@@ -9,7 +9,6 @@ from chess.polyglot import ZobristHasher, POLYGLOT_RANDOM_ARRAY
 
 from chess_board_screen import ChessBoardScreen
 from constants import LOGGER
-from engine import board_evaluator
 from opening_book import OpeningBook
 from order_moves_minimax import OrderMovesMinimax
 from player import Player
@@ -24,6 +23,7 @@ class Minimax(Player):
         self.order_moves_minimax = OrderMovesMinimax(args, color)
 
         self.depth: int = args.depth_white if color == chess.WHITE else args.depth_black
+        self._current_max_depth: int = self.depth
 
         self.transposition_table = {}
         self.hasher = ZobristHasher(POLYGLOT_RANDOM_ARRAY)
@@ -34,16 +34,20 @@ class Minimax(Player):
 
     def make_move(self, board: chess.Board, screen: ChessBoardScreen) -> None:
         """
-        Chooses and plays a move for the current player.
+        Chooses and plays a move for the current player using Iterative Deepening (ID).
         - In the opening phase, selects a move from the opening book randomly, weighted by book move weights.
-        - After the opening phase, uses minimax with alpha-beta pruning to select the best move.
+        - After the opening phase, uses iterative deepening with minimax alpha-beta pruning:
+            * Searches from depth 1 up to self.depth, reusing the transposition table (TT) across iterations.
+            * Each iteration seeds the next with TT entries, enabling PV move prioritization for better ordering.
+            * Early termination if checkmate is found.
         - Move ordering heuristics used:
-            * Promotions are prioritized highest.
+            * TT move (PV move from previous iteration): always searched first.
+            * Promotions are prioritized highest after TT move.
             * Captures are ordered by Most Valuable Victim - Least Valuable Aggressor (MVV-LVA).
             * Killer moves (moves that caused beta cutoffs in previous searches) are prioritized.
             * History heuristic: quiet moves that have historically caused cutoffs are boosted.
             * Checks are given a bonus.
-        This improves search efficiency and playing strength by exploring promising moves first.
+        TT is preserved across moves (not cleared between turns) to retain useful cached positions.
         """
         start_time: float = time.perf_counter()
 
@@ -51,8 +55,7 @@ class Minimax(Player):
             if self.opening_book.make_move(board, start_time):
                 return  # Move already made from an opening book
 
-        # Clearing
-        self.transposition_table = {}
+        # Clearing killer moves and history heuristic (TT is preserved across moves for ID)
         self.order_moves_minimax.killer_moves = [[None, None] for _ in range(self.depth + 1)]
         self.order_moves_minimax.history_heuristic_table = [[0] * 64 for _ in range(64)]
 
@@ -61,33 +64,61 @@ class Minimax(Player):
         legal_moves: List[chess.Move] = list(internal_board.legal_moves)
         if not legal_moves:
             return
-        ordered_moves: List[chess.Move] = self.order_moves_minimax.order_moves(internal_board, legal_moves, ply=0)
 
         best_move: chess.Move | None = None
         best_value: float = -math.inf if self.color == chess.WHITE else math.inf
         is_maximizing: bool = self.color == chess.WHITE
-        alpha: float = -math.inf
-        beta: float = math.inf
+        board_hash: int = self.hasher.hash_board(internal_board)
 
-        for move in ordered_moves:
-            internal_board.push(move)
-            board_value = self.__minimax_alphabeta(internal_board, self.depth - 1, alpha, beta, not is_maximizing)
-            internal_board.pop()
+        # Iterative Deepening: search from depth 1 to self.depth
+        for current_depth in range(1, self.depth + 1):
+            self._current_max_depth = current_depth
+            alpha: float = -math.inf
+            beta: float = math.inf
 
-            if is_maximizing:
-                if (board_value > best_value) or (best_move is None and board_value == best_value):
-                    best_value = board_value
-                    best_move = move
-                alpha = max(alpha, board_value)
-                if beta <= alpha:
-                    break
-            else:
-                if (board_value < best_value) or (best_move is None and board_value == best_value):
-                    best_value = board_value
-                    best_move = move
-                beta = min(beta, board_value)
-                if beta <= alpha:
-                    break
+            # Get TT move from previous iteration for root position
+            tt_entry = self.transposition_table.get(board_hash)
+            tt_move = tt_entry.get('m') if tt_entry else None
+            ordered_moves: List[chess.Move] = self.order_moves_minimax.order_moves(
+                internal_board, legal_moves, ply=0, tt_move=tt_move)
+
+            iteration_best_move: chess.Move | None = None
+            iteration_best_value: float = -math.inf if is_maximizing else math.inf
+
+            for move in ordered_moves:
+                internal_board.push(move)
+                board_value = self.__minimax_alphabeta(internal_board, current_depth - 1, alpha, beta,
+                                                       not is_maximizing)
+                internal_board.pop()
+
+                if is_maximizing:
+                    if (board_value > iteration_best_value) or (
+                            iteration_best_move is None and board_value == iteration_best_value):
+                        iteration_best_value = board_value
+                        iteration_best_move = move
+                    alpha = max(alpha, board_value)
+                    if beta <= alpha:
+                        break
+                else:
+                    if (board_value < iteration_best_value) or (
+                            iteration_best_move is None and board_value == iteration_best_value):
+                        iteration_best_value = board_value
+                        iteration_best_move = move
+                    beta = min(beta, board_value)
+                    if beta <= alpha:
+                        break
+
+            best_move = iteration_best_move
+            best_value = iteration_best_value
+
+            LOGGER.debug(
+                f'{type(self).__name__}; ID iteration depth={current_depth}; '
+                f'move: {best_move.uci() if best_move else "None"}; value: {best_value:.2f}'
+            )
+
+            # Early termination: checkmate found
+            if abs(best_value) == math.inf:
+                break
 
         if best_move is not None:
             board.push(best_move)
@@ -97,7 +128,7 @@ class Minimax(Player):
         end_time: float = time.perf_counter()
         duration: float = end_time - start_time
         LOGGER.info(
-            f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; move: {best_move.uci() if best_move else "None"}; ' +
+            f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; depth: {self.depth}; time: {duration:.6f}s; move: {best_move.uci() if best_move else "None"}; ' +
             f'value: {best_value:.2f}'
         )
 
@@ -110,12 +141,19 @@ class Minimax(Player):
         How it works:
         - Uses alpha-beta pruning to eliminate branches that cannot affect the final decision, improving efficiency.
         - At each node, recursively explores legal moves, alternating between maximizing and minimizing player.
-        - Uses a transposition table to cache and reuse previously computed positions, further speeding up the search.
-        - Applies move ordering heuristics (promotions, captures, killer moves, history heuristic, checks) to search the most promising moves first, increasing pruning effectiveness.
+        - Uses a transposition table (TT) to cache and reuse previously computed positions:
+            * Stores evaluation, depth, flag (Exact/Lower/Upper), and best move (PV move) per position.
+            * On lookup, the TT best move is prioritized in move ordering for maximum cutoff efficiency.
+            * TT entries from shallower Iterative Deepening iterations seed deeper searches,
+              providing PV move ordering that significantly improves pruning.
+        - Applies move ordering heuristics (TT move, promotions, captures, killer moves, history heuristic, checks)
+          to search the most promising moves first, increasing pruning effectiveness.
+        - Uses `_current_max_depth` (set by Iterative Deepening loop) to correctly compute the current ply,
+          ensuring killer moves and history heuristic are indexed properly across ID iterations.
         - Updates killer and history heuristics for quiet moves that cause cutoffs or improve bounds.
         - Returns the best evaluation found for the current player at this node.
         """
-        current_ply: int = self.depth - depth
+        current_ply: int = self._current_max_depth - depth
         original_alpha: float = alpha  # Store original alpha for TT flag and history update
         original_beta: float = beta  # Store original beta for history update
 
@@ -137,7 +175,9 @@ class Minimax(Player):
             return self.evaluate_board(board)
 
         legal_moves: List[chess.Move] = list(board.legal_moves)
-        ordered_moves: List[chess.Move] = self.order_moves_minimax.order_moves(board, legal_moves, ply=current_ply)
+        tt_move = tt_entry.get('m') if tt_entry else None
+        ordered_moves: List[chess.Move] = self.order_moves_minimax.order_moves(board, legal_moves, ply=current_ply,
+                                                                               tt_move=tt_move)
         best_move: chess.Move | None = None
 
         if maximizing_player:
@@ -173,7 +213,7 @@ class Minimax(Player):
                 flag = 'L'  # Lower bound
             # Store in Transposition Table
             if not tt_entry or depth >= tt_entry['d']:
-                self.transposition_table[board_hash] = {'v': max_evaluation, 'd': depth, 'f': flag}
+                self.transposition_table[board_hash] = {'v': max_evaluation, 'd': depth, 'f': flag, 'm': best_move}
 
             return max_evaluation
 
@@ -210,6 +250,6 @@ class Minimax(Player):
                 flag = 'U'  # Upper bound
             # Store in Transposition Table
             if not tt_entry or depth >= tt_entry['d']:
-                self.transposition_table[board_hash] = {'v': min_eval, 'd': depth, 'f': flag}
+                self.transposition_table[board_hash] = {'v': min_eval, 'd': depth, 'f': flag, 'm': best_move}
 
             return min_eval
