@@ -78,9 +78,7 @@ class OrderMovesMinimax(OrderMoves):
                 score += history_score
 
                 # 4. Checks (check if the move puts the opponent in check)
-                board.push(move)
-                is_check: bool = board.is_check()
-                board.pop()
+                is_check: bool = board.gives_check(move)
 
                 if is_check:
                     # Add check bonus, potentially less if already highly scored
