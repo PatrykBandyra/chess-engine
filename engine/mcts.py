@@ -25,6 +25,7 @@ class MCTSNode:
         self.visits = 0
         self.value = 0.0
         self.player = board.turn
+        self.is_terminal: bool = board.is_game_over()
 
     def is_fully_expanded(self):
         return len(self.untried_moves) == 0
@@ -66,6 +67,8 @@ class MCTS(Player):
         start_time: float = time.perf_counter()
         if self.opening_book.use_opening_book and self.opening_book.is_opening:
             if self.opening_book.make_move(board, start_time):
+                self.__root = None
+                self.__last_best_child = None
                 return  # Move already made from an opening book
         self.__run_mcts(board, start_time)
 
@@ -74,6 +77,8 @@ class MCTS(Player):
         end_time = time.perf_counter() + self.mcts_time_budget
         while time.perf_counter() < end_time:
             node = self.__select(root)
+            if node.is_terminal and node.visits > 0:
+                continue  # already evaluated terminal node, skip
             if node.untried_moves:
                 node = self.__expand(node)
             value = self.__simulate(node)
@@ -85,12 +90,12 @@ class MCTS(Player):
             self.__last_best_child = best_child
             duration = time.perf_counter() - start_time
             LOGGER.info(
-                f'MCTS-TRAD; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; move: {best_child.move.uci()}; visits: {best_child.visits}'
+                f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; move: {best_child.move.uci()}; visits: {best_child.visits}'
             )
         else:
             self.__root = None
             self.__last_best_child = None
-            LOGGER.warning('MCTS-TRAD: No valid move found. Skipping push.')
+            LOGGER.warning(f'{type(self).__name__}: No valid move found. Skipping push.')
 
     def __get_or_create_root(self, board: chess.Board) -> MCTSNode:
         if self.__last_best_child is not None:
@@ -108,7 +113,7 @@ class MCTS(Player):
         return MCTSNode(board)
 
     def __select(self, node: MCTSNode) -> MCTSNode:
-        while node.is_fully_expanded() and node.children:
+        while not node.is_terminal and node.is_fully_expanded() and node.children:
             node = node.best_child()
         return node
 
