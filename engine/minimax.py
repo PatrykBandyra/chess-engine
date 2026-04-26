@@ -9,6 +9,7 @@ from chess.polyglot import ZobristHasher, POLYGLOT_RANDOM_ARRAY
 
 from chess_board_screen import ChessBoardScreen
 from constants import LOGGER
+from engine import board_evaluator
 from opening_book import OpeningBook
 from order_moves_minimax import OrderMovesMinimax
 from player import Player
@@ -78,21 +79,25 @@ class Minimax(Player):
                     best_value = board_value
                     best_move = move
                 alpha = max(alpha, board_value)
+                if beta <= alpha:
+                    break
             else:
                 if (board_value < best_value) or (best_move is None and board_value == best_value):
                     best_value = board_value
                     best_move = move
                 beta = min(beta, board_value)
+                if beta <= alpha:
+                    break
 
         if best_move is not None:
             board.push(best_move)
         else:
-            LOGGER.warning('MINIMAX-TRAD: No valid move found. Skipping push.')
+            LOGGER.warning(f'{type(self).__name__}: No valid move found. Skipping push.')
 
         end_time: float = time.perf_counter()
         duration: float = end_time - start_time
         LOGGER.info(
-            f'MINIMAX-TRAD; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; move: {best_move.uci() if best_move else "None"}; ' +
+            f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; move: {best_move.uci() if best_move else "None"}; ' +
             f'value: {best_value:.2f}'
         )
 
@@ -199,7 +204,7 @@ class Minimax(Player):
 
             # Determine TT flag
             flag: str = 'E'  # Exact
-            if min_eval >= beta:
+            if min_eval >= original_beta:
                 flag = 'L'  # Lower bound
             elif min_eval <= alpha:
                 flag = 'U'  # Upper bound
