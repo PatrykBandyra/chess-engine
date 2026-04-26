@@ -39,12 +39,17 @@ class MCTSNode:
         """
         Selects the best child node based on the UCT (Upper Confidence Bound for Trees) formula.
         Values are normalized to [0, 1], so the standard c = sqrt(2) is used.
+        Single-pass with precomputed log(parent.visits).
         """
-        choices_weights = [
-            (child.value / child.visits) + c_param * math.sqrt(math.log(self.visits) / child.visits)
-            for child in self.children
-        ]
-        return self.children[choices_weights.index(max(choices_weights))]
+        log_parent_visits = math.log(self.visits)
+        best = self.children[0]
+        best_score = (best.value / best.visits) + c_param * math.sqrt(log_parent_visits / best.visits)
+        for child in self.children[1:]:
+            score = (child.value / child.visits) + c_param * math.sqrt(log_parent_visits / child.visits)
+            if score > best_score:
+                best_score = score
+                best = child
+        return best
 
     def most_visited_child(self):
         return max(self.children, key=lambda c: c.visits)
@@ -81,7 +86,9 @@ class MCTS(Player):
         root = self.__get_or_create_root(board)
         end_time = time.perf_counter() + self.mcts_time_budget
         iterations = 0
-        while time.perf_counter() < end_time:
+        while True:
+            if iterations & 127 == 0 and time.perf_counter() >= end_time:
+                break
             node = self.__select(root)
             if node.is_terminal and node.visits > 0:
                 continue  # already evaluated terminal node, skip
