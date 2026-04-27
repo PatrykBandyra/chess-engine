@@ -22,6 +22,12 @@ class Minimax(Player):
     # Maximum total check extensions allowed per branch (prevents explosion from series of checks)
     MAX_CHECK_EXTENSIONS: int = 3
 
+    # Maximum number of entries in the transposition table before cleanup is triggered
+    TT_MAX_SIZE: int = 1_000_000
+
+    # Entries older than this many generations can be replaced regardless of depth
+    TT_MAX_AGE: int = 2
+
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)
 
@@ -32,6 +38,7 @@ class Minimax(Player):
         self._current_max_depth: int = self.depth
 
         self.transposition_table = {}
+        self._tt_generation: int = 0
         self.hasher = ZobristHasher(POLYGLOT_RANDOM_ARRAY)
 
     @abc.abstractmethod
@@ -64,6 +71,16 @@ class Minimax(Player):
         # Clearing killer moves and history heuristic (TT is preserved across moves for ID)
         self.order_moves_minimax.killer_moves = [[None, None] for _ in range(self.depth + 1)]
         self.order_moves_minimax.history_heuristic_table = [[0] * 64 for _ in range(64)]
+
+        # Increment TT generation for age-based replacement policy
+        self._tt_generation += 1
+
+        # Cleanup stale TT entries if table exceeds max size
+        if len(self.transposition_table) > self.TT_MAX_SIZE:
+            self.transposition_table = {
+                k: v for k, v in self.transposition_table.items()
+                if self._tt_generation - v['g'] < self.TT_MAX_AGE
+            }
 
         internal_board: chess.Board = board.copy()
 
@@ -242,8 +259,8 @@ class Minimax(Player):
             elif max_evaluation >= beta:
                 flag = 'L'  # Lower bound
             # Store in Transposition Table
-            if not tt_entry or depth >= tt_entry['d']:
-                self.transposition_table[board_hash] = {'v': max_evaluation, 'd': depth, 'f': flag, 'm': best_move}
+            if not tt_entry or depth >= tt_entry['d'] or self._tt_generation - tt_entry['g'] >= self.TT_MAX_AGE:
+                self.transposition_table[board_hash] = {'v': max_evaluation, 'd': depth, 'f': flag, 'm': best_move, 'g': self._tt_generation}
 
             return max_evaluation
 
@@ -282,8 +299,8 @@ class Minimax(Player):
             elif min_eval <= alpha:
                 flag = 'U'  # Upper bound
             # Store in Transposition Table
-            if not tt_entry or depth >= tt_entry['d']:
-                self.transposition_table[board_hash] = {'v': min_eval, 'd': depth, 'f': flag, 'm': best_move}
+            if not tt_entry or depth >= tt_entry['d'] or self._tt_generation - tt_entry['g'] >= self.TT_MAX_AGE:
+                self.transposition_table[board_hash] = {'v': min_eval, 'd': depth, 'f': flag, 'm': best_move, 'g': self._tt_generation}
 
             return min_eval
 
