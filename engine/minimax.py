@@ -38,7 +38,6 @@ class Minimax(Player):
         self.order_moves_minimax = OrderMovesMinimax(args, color)
 
         self.depth: int = args.depth_white if color == chess.WHITE else args.depth_black
-        self._current_max_depth: int = self.depth
 
         self.transposition_table = {}
         self._tt_generation: int = 0
@@ -72,7 +71,9 @@ class Minimax(Player):
                 return  # Move already made from an opening book
 
         # Clearing killer moves and history heuristic (TT is preserved across moves for ID)
-        self.order_moves_minimax.killer_moves = [[None, None] for _ in range(self.depth + 1)]
+        # Killer moves array sized to accommodate check extensions (extra slots for extended branches).
+        killer_size = self.depth + self.MAX_CHECK_EXTENSIONS + 1
+        self.order_moves_minimax.killer_moves = [[None, None] for _ in range(killer_size)]
         self.order_moves_minimax.history_heuristic_table = [[0] * 64 for _ in range(64)]
 
         # Increment TT generation for age-based replacement policy
@@ -98,7 +99,6 @@ class Minimax(Player):
 
         # Iterative Deepening: search from depth 1 to self.depth
         for current_depth in range(1, self.depth + 1):
-            self._current_max_depth = current_depth
 
             # Aspiration Windows: use a narrow window around the previous iteration's score
             if current_depth == 1:
@@ -165,7 +165,8 @@ class Minimax(Player):
             extension = 1 if board.is_check() else 0
             effective_extensions = self.MAX_CHECK_EXTENSIONS - extension
             board_value = self.__minimax_alphabeta(board, depth - 1 + extension, alpha, beta,
-                                                   not is_maximizing, effective_extensions)
+                                                   not is_maximizing, effective_extensions,
+                                                   actual_ply=1)
             board.pop()
 
             if is_maximizing:
@@ -188,7 +189,8 @@ class Minimax(Player):
         return iteration_best_move, iteration_best_value
 
     def __minimax_alphabeta(self, board: chess.Board, depth: int, alpha: float, beta: float,
-                            maximizing_player: bool, extensions_left: int) -> float:
+                            maximizing_player: bool, extensions_left: int,
+                            actual_ply: int, can_null: bool = True) -> float:
         """
         Performs a recursive minimax search with alpha-beta pruning to evaluate the best achievable score
         from the current board position, assuming optimal play from both sides.
@@ -203,12 +205,13 @@ class Minimax(Player):
               providing PV move ordering that significantly improves pruning.
         - Applies move ordering heuristics (TT move, promotions, captures, killer moves, history heuristic, checks)
           to search the most promising moves first, increasing pruning effectiveness.
-        - Uses `_current_max_depth` (set by Iterative Deepening loop) to correctly compute the current ply,
-          ensuring killer moves and history heuristic are indexed properly across ID iterations.
+        - Uses `actual_ply` (true distance from root, incremented per recursive call) to correctly
+          index killer moves and history heuristic, even when check extensions keep `depth` constant
+          across multiple plies.
         - Updates killer and history heuristics for quiet moves that cause cutoffs or improve bounds.
         - Returns the best evaluation found for the current player at this node.
         """
-        current_ply: int = self._current_max_depth - depth
+        current_ply: int = actual_ply  # True ply from root (correct even with check extensions)
         original_alpha: float = alpha  # Store original alpha for TT flag and history update
         original_beta: float = beta  # Store original beta for history update
 
@@ -233,13 +236,17 @@ class Minimax(Player):
 
         # Null Move Pruning: if giving the opponent a free move still results in a cutoff,
         # the position is so good that we can prune this branch without full search.
-        if (depth >= 3
+        # `can_null` prevents consecutive null moves (which would degenerate to evaluating
+        # the position at depth - 2*(1+R) without any real play happening).
+        if (can_null
+                and depth >= 3
                 and not board.is_check()
                 and not self.__is_zugzwang_risk(board)):
             R: int = 2  # Reduction factor
             board.push(chess.Move.null())
             null_eval = self.__minimax_alphabeta(board, depth - 1 - R, alpha, beta,
-                                                not maximizing_player, extensions_left)
+                                                not maximizing_player, extensions_left,
+                                                actual_ply=actual_ply + 1, can_null=False)
             board.pop()
 
             if maximizing_player and null_eval >= beta:
@@ -260,7 +267,8 @@ class Minimax(Player):
                 # Check extension: extend search by 1 ply when the move gives check
                 extension = 1 if extensions_left > 0 and board.is_check() else 0
                 evaluation = self.__minimax_alphabeta(board, depth - 1 + extension, alpha, beta, False,
-                                                     extensions_left - extension)
+                                                     extensions_left - extension,
+                                                     actual_ply=actual_ply + 1)
                 board.pop()
 
                 if evaluation > max_evaluation:
@@ -300,7 +308,8 @@ class Minimax(Player):
                 # Check extension: extend search by 1 ply when the move gives check
                 extension = 1 if extensions_left > 0 and board.is_check() else 0
                 evaluation = self.__minimax_alphabeta(board, depth - 1 + extension, alpha, beta, True,
-                                                     extensions_left - extension)
+                                                     extensions_left - extension,
+                                                     actual_ply=actual_ply + 1)
                 board.pop()
 
                 if evaluation < min_eval:
@@ -357,49 +366,68 @@ class Minimax(Player):
         - Stand-pat: the static evaluation acts as a lower (max player) / upper (min player) bound,
           since the side to move is not forced to make a capture. If the stand-pat already causes
           a beta cutoff (or alpha cutoff for the minimizer), we return immediately.
+          Stand-pat is **not** applied when the side to move is in check — passing is illegal.
+        - Check evasion: when in check, ALL legal moves are searched (not just captures), since
+          a quiet evasion (e.g. king move) may be the only legal reply. If no legal moves exist,
+          the position is checkmate and we return ±inf.
         - Depth limit (`QS_MAX_DEPTH`): caps the recursion to avoid pathological cases with very
           long capture sequences.
-        - Terminal positions: checkmate / stalemate are detected via legal-move generation when
-          searching captures (we evaluate the position statically in such cases).
         - SEE filtering: captures with negative Static Exchange Evaluation (i.e. "bad captures"
-          that lose material on the swap-off) are skipped. Promotions are always searched.
+          that lose material on the swap-off) are skipped (only when not in check).
+          Promotions are always searched.
         - Captures are ordered by MVV-LVA so the most promising are tried first.
         """
-        stand_pat: float = self.evaluate_board(board)
+        in_check: bool = board.is_check()
 
-        # Stand-pat cutoffs / bound updates
-        if maximizing_player:
-            if stand_pat >= beta:
-                return beta
-            if stand_pat > alpha:
-                alpha = stand_pat
+        # Stand-pat is illegal when in check (cannot pass). Skip the stand-pat bound update.
+        if not in_check:
+            stand_pat: float = self.evaluate_board(board)
+
+            if maximizing_player:
+                if stand_pat >= beta:
+                    return beta
+                if stand_pat > alpha:
+                    alpha = stand_pat
+            else:
+                if stand_pat <= alpha:
+                    return alpha
+                if stand_pat < beta:
+                    beta = stand_pat
+
+            # Depth cap for QS — prevents runaway recursion in very tactical positions.
+            if qs_depth >= self.QS_MAX_DEPTH:
+                return stand_pat
         else:
-            if stand_pat <= alpha:
-                return alpha
-            if stand_pat < beta:
-                beta = stand_pat
+            # In check: cannot stand pat. Hard depth cap returns static eval as fallback.
+            if qs_depth >= self.QS_MAX_DEPTH:
+                return self.evaluate_board(board)
 
-        # Depth cap for QS — prevents runaway recursion in very tactical positions.
-        if qs_depth >= self.QS_MAX_DEPTH:
-            return stand_pat
-
-        # Generate only captures and promotions ("noisy" moves)
-        noisy_moves: List[chess.Move] = []
-        for move in board.legal_moves:
-            is_promotion: bool = move.promotion is not None
-            is_capture: bool = board.is_capture(move)
-            if not (is_capture or is_promotion):
-                continue
-            # SEE filtering: skip clearly losing captures (promotions are always considered).
-            if is_capture and not is_promotion:
-                if self.__static_exchange_evaluation(board, move) < 0:
+        # Move generation:
+        # - In check: search ALL legal moves (check evasions, including quiet replies).
+        # - Otherwise: only captures and promotions (noisy moves), with SEE pruning.
+        candidate_moves: List[chess.Move] = []
+        if in_check:
+            candidate_moves = list(board.legal_moves)
+            if not candidate_moves:
+                # Checkmate: side to move is mated.
+                return -math.inf if maximizing_player else math.inf
+        else:
+            for move in board.legal_moves:
+                is_promotion: bool = move.promotion is not None
+                is_capture: bool = board.is_capture(move)
+                if not (is_capture or is_promotion):
                     continue
-            noisy_moves.append(move)
+                # SEE filtering: skip clearly losing captures (promotions are always considered).
+                if is_capture and not is_promotion:
+                    if self.__static_exchange_evaluation(board, move) < 0:
+                        continue
+                candidate_moves.append(move)
 
-        # Order noisy moves by MVV-LVA (with a small bonus for promotions) for better pruning.
-        noisy_moves.sort(key=lambda m: self.__mvv_lva_score(board, m), reverse=True)
+        # Order moves by MVV-LVA (with a small bonus for promotions) for better pruning.
+        # For check evasions this still works: quiet evasions get score 0 and sort last.
+        candidate_moves.sort(key=lambda m: self.__mvv_lva_score(board, m), reverse=True)
 
-        for move in noisy_moves:
+        for move in candidate_moves:
             board.push(move)
             evaluation = self.__quiescence_search(board, alpha, beta, not maximizing_player, qs_depth + 1)
             board.pop()
