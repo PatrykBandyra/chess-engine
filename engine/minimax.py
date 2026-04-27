@@ -450,7 +450,7 @@ class Minimax(Player):
                                                      actual_ply=actual_ply + 1)
                 board.pop()
 
-                if evaluation > max_evaluation:
+                if (evaluation > max_evaluation) or (best_move is None and evaluation == max_evaluation):
                     max_evaluation = evaluation
                     best_move = move
 
@@ -489,8 +489,12 @@ class Minimax(Player):
                 flag = 'U'  # Upper bound
             elif max_evaluation >= beta:
                 flag = 'L'  # Lower bound
-            # Store in Transposition Table
-            if not tt_entry or depth >= tt_entry['d'] or self._tt_generation - tt_entry['g'] >= self.TT_MAX_AGE:
+            # Store in Transposition Table. Re-fetch the current entry because recursive calls may have
+            # written a fresher/deeper entry for the same position via transposition.
+            current_tt_entry = self.transposition_table.get(board_hash)
+            if (not current_tt_entry
+                    or depth >= current_tt_entry['d']
+                    or self._tt_generation - current_tt_entry['g'] >= self.TT_MAX_AGE):
                 self.transposition_table[board_hash] = {'v': self.__score_to_tt(max_evaluation, actual_ply), 'd': depth, 'f': flag, 'm': best_move, 'g': self._tt_generation}
 
             return max_evaluation
@@ -537,7 +541,7 @@ class Minimax(Player):
                                                      actual_ply=actual_ply + 1)
                 board.pop()
 
-                if evaluation < min_eval:
+                if (evaluation < min_eval) or (best_move is None and evaluation == min_eval):
                     min_eval = evaluation
                     best_move = move
 
@@ -576,8 +580,12 @@ class Minimax(Player):
                 flag = 'L'  # Lower bound
             elif min_eval <= alpha:
                 flag = 'U'  # Upper bound
-            # Store in Transposition Table
-            if not tt_entry or depth >= tt_entry['d'] or self._tt_generation - tt_entry['g'] >= self.TT_MAX_AGE:
+            # Store in Transposition Table. Re-fetch the current entry because recursive calls may have
+            # written a fresher/deeper entry for the same position via transposition.
+            current_tt_entry = self.transposition_table.get(board_hash)
+            if (not current_tt_entry
+                    or depth >= current_tt_entry['d']
+                    or self._tt_generation - current_tt_entry['g'] >= self.TT_MAX_AGE):
                 self.transposition_table[board_hash] = {'v': self.__score_to_tt(min_eval, actual_ply), 'd': depth, 'f': flag, 'm': best_move, 'g': self._tt_generation}
 
             return min_eval
