@@ -317,7 +317,8 @@ class BoardEvaluatorTrad(BoardEvaluator):
     def __evaluate_mobility_and_activity(self, board: chess.Board) -> float:
         """
         Evaluates piece mobility and activity for both sides.
-        Mobility: Number of legal moves for each piece type (except pawns and kings).
+        Mobility: Number of attacked squares for each piece type (except pawns and kings),
+        evaluated symmetrically for both colors without changing board.turn.
         Activity: Bonus for pieces on advanced ranks and controlling central squares.
         Returns a score (positive for White, negative for Black).
         """
@@ -337,8 +338,9 @@ class BoardEvaluatorTrad(BoardEvaluator):
             color_sign = 1 if color == chess.WHITE else -1
             for piece_type in [chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]:
                 for sq in board.pieces(piece_type, color):
-                    board.turn = chess.WHITE
-                    # Mobility: count squares attacked by this piece (pseudo-legal, works for both sides)
+                    # Mobility: count squares attacked by this piece (pseudo-legal, works for both sides
+                    # independently of whose turn it is). Do not mutate board.turn here: minimax relies
+                    # on evaluate_board() preserving the exact board state it receives.
                     mobility = len(board.attacks(sq))
                     score += color_sign * mobility_weights[piece_type] * mobility
                     # Activity: advanced rank or central control

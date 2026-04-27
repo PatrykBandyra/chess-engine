@@ -42,6 +42,9 @@ class Minimax(Player):
     # Late Move Pruning: at low depth, skip late quiet moves (after `4 + depth*depth` moves).
     LMP_MAX_DEPTH: int = 4
 
+    # SEE Pruning in main search: at low depth, skip captures with negative SEE (losing trades).
+    SEE_PRUNE_MAX_DEPTH: int = 3
+
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)
 
@@ -75,6 +78,13 @@ class Minimax(Player):
             * Checks are given a bonus.
         TT is preserved across moves (not cleared between turns) to retain useful cached positions.
         """
+        if board.turn != self.color:
+            raise ValueError(
+                f'{type(self).__name__}.make_move called out of turn: '
+                f'player={"WHITE" if self.color else "BLACK"}, '
+                f'board.turn={"WHITE" if board.turn else "BLACK"}'
+            )
+
         start_time: float = time.perf_counter()
 
         if self.opening_book.use_opening_book and self.opening_book.is_opening:
@@ -291,6 +301,7 @@ class Minimax(Player):
 
         if maximizing_player:
             max_evaluation = -math.inf
+            searched_any = False
             for move_count, move in enumerate(ordered_moves):
                 # Late Move Pruning: at low depth, skip late quiet non-checking moves.
                 # Relies on good move ordering — assumes the best moves are tried first.
@@ -313,6 +324,16 @@ class Minimax(Player):
                     if static_eval + depth * self.FUTILITY_MARGIN_PER_DEPTH <= alpha:
                         continue
 
+                # SEE Pruning: at low depth, skip captures that lose material on the swap-off.
+                # Disabled for promotions (SEE underestimates promotion gain) and checks.
+                if (depth <= self.SEE_PRUNE_MAX_DEPTH
+                        and not board.is_check()
+                        and board.is_capture(move) and move.promotion is None
+                        and not board.gives_check(move)
+                        and self.__static_exchange_evaluation(board, move) < 0):
+                    continue
+
+                searched_any = True
                 board.push(move)
                 # Check extension: extend search by 1 ply when the move gives check
                 extension = 1 if extensions_left > 0 and board.is_check() else 0
@@ -331,6 +352,21 @@ class Minimax(Player):
                         self.order_moves_minimax.store_killer_move(current_ply, move)
                         self.order_moves_minimax.update_history_score(move, depth)
                     break
+
+            # Selective pruning must never leave a non-terminal node with the sentinel value (-inf).
+            # If LMP/futility/SEE skipped every legal move, force-search the best ordered move and
+            # return it without storing a TT entry for this node (its bound semantics would be unsafe).
+            if not searched_any:
+                fallback_move = ordered_moves[0] if ordered_moves else None
+                if fallback_move is None:
+                    return self.evaluate_board(board)
+                board.push(fallback_move)
+                extension = 1 if extensions_left > 0 and board.is_check() else 0
+                fallback_evaluation = self.__minimax_alphabeta(
+                    board, depth - 1 + extension, alpha, beta, False,
+                    extensions_left - extension, actual_ply=actual_ply + 1)
+                board.pop()
+                return fallback_evaluation
 
             # After checking all moves, if no cutoff occurred, update history for the best move found
             if beta > alpha and best_move and not board.is_capture(best_move) and best_move.promotion is None:
@@ -353,6 +389,7 @@ class Minimax(Player):
 
         else:
             min_eval = math.inf
+            searched_any = False
             for move_count, move in enumerate(ordered_moves):
                 # Late Move Pruning: at low depth, skip late quiet non-checking moves.
                 if (depth <= self.LMP_MAX_DEPTH
@@ -374,6 +411,16 @@ class Minimax(Player):
                     if static_eval - depth * self.FUTILITY_MARGIN_PER_DEPTH >= beta:
                         continue
 
+                # SEE Pruning: at low depth, skip captures that lose material on the swap-off.
+                # Disabled for promotions (SEE underestimates promotion gain) and checks.
+                if (depth <= self.SEE_PRUNE_MAX_DEPTH
+                        and not board.is_check()
+                        and board.is_capture(move) and move.promotion is None
+                        and not board.gives_check(move)
+                        and self.__static_exchange_evaluation(board, move) < 0):
+                    continue
+
+                searched_any = True
                 board.push(move)
                 # Check extension: extend search by 1 ply when the move gives check
                 extension = 1 if extensions_left > 0 and board.is_check() else 0
@@ -392,6 +439,21 @@ class Minimax(Player):
                         self.order_moves_minimax.store_killer_move(current_ply, move)
                         self.order_moves_minimax.update_history_score(move, depth)
                     break
+
+            # Selective pruning must never leave a non-terminal node with the sentinel value (+inf).
+            # If LMP/futility/SEE skipped every legal move, force-search the best ordered move and
+            # return it without storing a TT entry for this node (its bound semantics would be unsafe).
+            if not searched_any:
+                fallback_move = ordered_moves[0] if ordered_moves else None
+                if fallback_move is None:
+                    return self.evaluate_board(board)
+                board.push(fallback_move)
+                extension = 1 if extensions_left > 0 and board.is_check() else 0
+                fallback_evaluation = self.__minimax_alphabeta(
+                    board, depth - 1 + extension, alpha, beta, True,
+                    extensions_left - extension, actual_ply=actual_ply + 1)
+                board.pop()
+                return fallback_evaluation
 
             # After checking all moves, if no cutoff occurred, update history for the best move found
             if beta > alpha and best_move and not board.is_capture(best_move) and best_move.promotion is None:
@@ -443,8 +505,8 @@ class Minimax(Player):
         - Depth limit (`QS_MAX_DEPTH`): caps the recursion to avoid pathological cases with very
           long capture sequences.
         - SEE filtering: captures with negative Static Exchange Evaluation (i.e. "bad captures"
-          that lose material on the swap-off) are skipped (only when not in check).
-          Promotions are always searched.
+          that lose material on the swap-off) are skipped (only when not in check and not giving check).
+          Promotions and capture-checks are always searched.
         - Captures are ordered by MVV-LVA so the most promising are tried first.
         """
         in_check: bool = board.is_check()
@@ -487,8 +549,8 @@ class Minimax(Player):
                 is_capture: bool = board.is_capture(move)
                 if not (is_capture or is_promotion):
                     continue
-                # SEE filtering: skip clearly losing captures (promotions are always considered).
-                if is_capture and not is_promotion:
+                # SEE filtering: skip clearly losing captures, but keep promotions and capture-checks.
+                if is_capture and not is_promotion and not board.gives_check(move):
                     if self.__static_exchange_evaluation(board, move) < 0:
                         continue
                 candidate_moves.append(move)
