@@ -185,6 +185,22 @@ class Minimax(Player):
         if board.is_game_over():
             return self.evaluate_board(board)
 
+        # Null Move Pruning: if giving the opponent a free move still results in a cutoff,
+        # the position is so good that we can prune this branch without full search.
+        if (depth >= 3
+                and not board.is_check()
+                and not self.__is_zugzwang_risk(board)):
+            R: int = 2  # Reduction factor
+            board.push(chess.Move.null())
+            null_eval = self.__minimax_alphabeta(board, depth - 1 - R, alpha, beta,
+                                                not maximizing_player, extensions_left)
+            board.pop()
+
+            if maximizing_player and null_eval >= beta:
+                return beta
+            elif not maximizing_player and null_eval <= alpha:
+                return alpha
+
         legal_moves: List[chess.Move] = list(board.legal_moves)
         tt_move = tt_entry.get('m') if tt_entry else None
         ordered_moves: List[chess.Move] = self.order_moves_minimax.order_moves(board, legal_moves, ply=current_ply,
@@ -270,6 +286,18 @@ class Minimax(Player):
                 self.transposition_table[board_hash] = {'v': min_eval, 'd': depth, 'f': flag, 'm': best_move}
 
             return min_eval
+
+    def __is_zugzwang_risk(self, board: chess.Board) -> bool:
+        """
+        Simple heuristic to detect positions where null move pruning is unsafe.
+        Returns True if the side to move has only king and pawns (no major/minor pieces),
+        which makes zugzwang likely — passing the turn would genuinely be harmful.
+        """
+        side: chess.Color = board.turn
+        return not bool(
+            board.pieces(chess.KNIGHT, side) | board.pieces(chess.BISHOP, side) |
+            board.pieces(chess.ROOK, side) | board.pieces(chess.QUEEN, side)
+        )
 
     def __quiescence_search(self, board: chess.Board, alpha: float, beta: float,
                             maximizing_player: bool, qs_depth: int) -> float:
