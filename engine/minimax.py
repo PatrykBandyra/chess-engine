@@ -31,6 +31,17 @@ class Minimax(Player):
     # Aspiration window half-width (in evaluation units, e.g. 0.50 = half a pawn)
     ASPIRATION_DELTA: float = 0.50
 
+    # Reverse Futility Pruning: max depth to apply RFP, and margin per depth (in pawns).
+    RFP_MAX_DEPTH: int = 3
+    RFP_MARGIN_PER_DEPTH: float = 1.0
+
+    # Forward Futility Pruning: max depth to apply futility, and margin per depth (in pawns).
+    FUTILITY_MAX_DEPTH: int = 2
+    FUTILITY_MARGIN_PER_DEPTH: float = 1.5
+
+    # Late Move Pruning: at low depth, skip late quiet moves (after `4 + depth*depth` moves).
+    LMP_MAX_DEPTH: int = 4
+
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)
 
@@ -234,6 +245,24 @@ class Minimax(Player):
         if board.is_game_over():
             return self.evaluate_board(board)
 
+        # Static evaluation — computed lazily, reused by RFP and forward futility pruning.
+        static_eval: float | None = None
+
+        # Reverse Futility Pruning (RFP / Static Null Move): if the static evaluation is so high
+        # (for max) / low (for min) that even after losing a margin we'd still cause a cutoff,
+        # we can prune without searching. Cheaper than NMP and very effective at low depth.
+        # Disabled near mate scores (would otherwise mis-prune mate-related lines).
+        if (depth <= self.RFP_MAX_DEPTH
+                and not board.is_check()
+                and not self.__is_zugzwang_risk(board)
+                and abs(beta) < math.inf and abs(alpha) < math.inf):
+            static_eval = self.evaluate_board(board)
+            rfp_margin = depth * self.RFP_MARGIN_PER_DEPTH
+            if maximizing_player and static_eval - rfp_margin >= beta:
+                return beta
+            if not maximizing_player and static_eval + rfp_margin <= alpha:
+                return alpha
+
         # Null Move Pruning: if giving the opponent a free move still results in a cutoff,
         # the position is so good that we can prune this branch without full search.
         # `can_null` prevents consecutive null moves (which would degenerate to evaluating
@@ -262,7 +291,28 @@ class Minimax(Player):
 
         if maximizing_player:
             max_evaluation = -math.inf
-            for move in ordered_moves:
+            for move_count, move in enumerate(ordered_moves):
+                # Late Move Pruning: at low depth, skip late quiet non-checking moves.
+                # Relies on good move ordering — assumes the best moves are tried first.
+                if (depth <= self.LMP_MAX_DEPTH
+                        and move_count >= 4 + depth * depth
+                        and not board.is_check()
+                        and not board.is_capture(move) and move.promotion is None
+                        and not board.gives_check(move)):
+                    continue
+
+                # Forward Futility Pruning: at low depth, skip quiet non-checking moves
+                # whose static evaluation + margin cannot improve alpha.
+                if (depth <= self.FUTILITY_MAX_DEPTH
+                        and not board.is_check()
+                        and not board.is_capture(move) and move.promotion is None
+                        and not board.gives_check(move)
+                        and abs(alpha) < math.inf):
+                    if static_eval is None:
+                        static_eval = self.evaluate_board(board)
+                    if static_eval + depth * self.FUTILITY_MARGIN_PER_DEPTH <= alpha:
+                        continue
+
                 board.push(move)
                 # Check extension: extend search by 1 ply when the move gives check
                 extension = 1 if extensions_left > 0 and board.is_check() else 0
@@ -303,7 +353,27 @@ class Minimax(Player):
 
         else:
             min_eval = math.inf
-            for move in ordered_moves:
+            for move_count, move in enumerate(ordered_moves):
+                # Late Move Pruning: at low depth, skip late quiet non-checking moves.
+                if (depth <= self.LMP_MAX_DEPTH
+                        and move_count >= 4 + depth * depth
+                        and not board.is_check()
+                        and not board.is_capture(move) and move.promotion is None
+                        and not board.gives_check(move)):
+                    continue
+
+                # Forward Futility Pruning: at low depth, skip quiet non-checking moves
+                # whose static evaluation - margin cannot improve beta (lower it).
+                if (depth <= self.FUTILITY_MAX_DEPTH
+                        and not board.is_check()
+                        and not board.is_capture(move) and move.promotion is None
+                        and not board.gives_check(move)
+                        and abs(beta) < math.inf):
+                    if static_eval is None:
+                        static_eval = self.evaluate_board(board)
+                    if static_eval - depth * self.FUTILITY_MARGIN_PER_DEPTH >= beta:
+                        continue
+
                 board.push(move)
                 # Check extension: extend search by 1 ply when the move gives check
                 extension = 1 if extensions_left > 0 and board.is_check() else 0
