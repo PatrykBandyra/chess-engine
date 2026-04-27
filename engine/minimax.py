@@ -8,13 +8,19 @@ import chess
 from chess.polyglot import ZobristHasher, POLYGLOT_RANDOM_ARRAY
 
 from chess_board_screen import ChessBoardScreen
-from constants import LOGGER
+from constants import LOGGER, PIECE_VALUES
 from opening_book import OpeningBook
 from order_moves_minimax import OrderMovesMinimax
 from player import Player
 
 
 class Minimax(Player):
+
+    # Maximum additional plies the quiescence search can extend beyond `depth == 0`
+    QS_MAX_DEPTH: int = 8
+
+    # Maximum total check extensions allowed per branch (prevents explosion from series of checks)
+    MAX_CHECK_EXTENSIONS: int = 3
 
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)
@@ -87,8 +93,11 @@ class Minimax(Player):
 
             for move in ordered_moves:
                 internal_board.push(move)
-                board_value = self.__minimax_alphabeta(internal_board, current_depth - 1, alpha, beta,
-                                                       not is_maximizing)
+                # Check extension at root level
+                extension = 1 if internal_board.is_check() else 0
+                effective_extensions = self.MAX_CHECK_EXTENSIONS - extension
+                board_value = self.__minimax_alphabeta(internal_board, current_depth - 1 + extension, alpha, beta,
+                                                       not is_maximizing, effective_extensions)
                 internal_board.pop()
 
                 if is_maximizing:
@@ -133,7 +142,7 @@ class Minimax(Player):
         )
 
     def __minimax_alphabeta(self, board: chess.Board, depth: int, alpha: float, beta: float,
-                            maximizing_player: bool) -> float:
+                            maximizing_player: bool, extensions_left: int) -> float:
         """
         Performs a recursive minimax search with alpha-beta pruning to evaluate the best achievable score
         from the current board position, assuming optimal play from both sides.
@@ -171,7 +180,9 @@ class Minimax(Player):
             if beta <= alpha:
                 return tt_entry['v']
 
-        if depth == 0 or board.is_game_over():
+        if depth == 0:
+            return self.__quiescence_search(board, alpha, beta, maximizing_player, qs_depth=0)
+        if board.is_game_over():
             return self.evaluate_board(board)
 
         legal_moves: List[chess.Move] = list(board.legal_moves)
@@ -184,7 +195,10 @@ class Minimax(Player):
             max_evaluation = -math.inf
             for move in ordered_moves:
                 board.push(move)
-                evaluation = self.__minimax_alphabeta(board, depth - 1, alpha, beta, False)
+                # Check extension: extend search by 1 ply when the move gives check
+                extension = 1 if extensions_left > 0 and board.is_check() else 0
+                evaluation = self.__minimax_alphabeta(board, depth - 1 + extension, alpha, beta, False,
+                                                     extensions_left - extension)
                 board.pop()
 
                 if evaluation > max_evaluation:
@@ -221,7 +235,10 @@ class Minimax(Player):
             min_eval = math.inf
             for move in ordered_moves:
                 board.push(move)
-                evaluation = self.__minimax_alphabeta(board, depth - 1, alpha, beta, True)
+                # Check extension: extend search by 1 ply when the move gives check
+                extension = 1 if extensions_left > 0 and board.is_check() else 0
+                evaluation = self.__minimax_alphabeta(board, depth - 1 + extension, alpha, beta, True,
+                                                     extensions_left - extension)
                 board.pop()
 
                 if evaluation < min_eval:
@@ -253,3 +270,171 @@ class Minimax(Player):
                 self.transposition_table[board_hash] = {'v': min_eval, 'd': depth, 'f': flag, 'm': best_move}
 
             return min_eval
+
+    def __quiescence_search(self, board: chess.Board, alpha: float, beta: float,
+                            maximizing_player: bool, qs_depth: int) -> float:
+        """
+        Quiescence Search (QS): after the main search reaches depth == 0, continues exploring
+        only "noisy" moves (captures and promotions) until the position becomes quiet.
+        This eliminates the horizon effect — the engine no longer evaluates a position in the
+        middle of an active capture sequence, where a static evaluation would be misleading.
+
+        Key elements:
+        - Stand-pat: the static evaluation acts as a lower (max player) / upper (min player) bound,
+          since the side to move is not forced to make a capture. If the stand-pat already causes
+          a beta cutoff (or alpha cutoff for the minimizer), we return immediately.
+        - Depth limit (`QS_MAX_DEPTH`): caps the recursion to avoid pathological cases with very
+          long capture sequences.
+        - Terminal positions: checkmate / stalemate are detected via legal-move generation when
+          searching captures (we evaluate the position statically in such cases).
+        - SEE filtering: captures with negative Static Exchange Evaluation (i.e. "bad captures"
+          that lose material on the swap-off) are skipped. Promotions are always searched.
+        - Captures are ordered by MVV-LVA so the most promising are tried first.
+        """
+        stand_pat: float = self.evaluate_board(board)
+
+        # Stand-pat cutoffs / bound updates
+        if maximizing_player:
+            if stand_pat >= beta:
+                return beta
+            if stand_pat > alpha:
+                alpha = stand_pat
+        else:
+            if stand_pat <= alpha:
+                return alpha
+            if stand_pat < beta:
+                beta = stand_pat
+
+        # Depth cap for QS — prevents runaway recursion in very tactical positions.
+        if qs_depth >= self.QS_MAX_DEPTH:
+            return stand_pat
+
+        # Generate only captures and promotions ("noisy" moves)
+        noisy_moves: List[chess.Move] = []
+        for move in board.legal_moves:
+            is_promotion: bool = move.promotion is not None
+            is_capture: bool = board.is_capture(move)
+            if not (is_capture or is_promotion):
+                continue
+            # SEE filtering: skip clearly losing captures (promotions are always considered).
+            if is_capture and not is_promotion:
+                if self.__static_exchange_evaluation(board, move) < 0:
+                    continue
+            noisy_moves.append(move)
+
+        # Order noisy moves by MVV-LVA (with a small bonus for promotions) for better pruning.
+        noisy_moves.sort(key=lambda m: self.__mvv_lva_score(board, m), reverse=True)
+
+        for move in noisy_moves:
+            board.push(move)
+            evaluation = self.__quiescence_search(board, alpha, beta, not maximizing_player, qs_depth + 1)
+            board.pop()
+
+            if maximizing_player:
+                if evaluation > alpha:
+                    alpha = evaluation
+                if alpha >= beta:
+                    return beta
+            else:
+                if evaluation < beta:
+                    beta = evaluation
+                if beta <= alpha:
+                    return alpha
+
+        return alpha if maximizing_player else beta
+
+    def __mvv_lva_score(self, board: chess.Board, move: chess.Move) -> float:
+        """Scores a noisy move (capture/promotion) by MVV-LVA for quiescence search ordering."""
+        score: float = 0.0
+        if move.promotion is not None:
+            score += 10_000 + PIECE_VALUES.get(move.promotion, 0)
+        if board.is_en_passant(move):
+            victim_value = PIECE_VALUES[chess.PAWN]
+        else:
+            victim = board.piece_at(move.to_square)
+            victim_value = PIECE_VALUES[victim.piece_type] if victim else 0
+        attacker = board.piece_at(move.from_square)
+        attacker_value = PIECE_VALUES[attacker.piece_type] if attacker else 0
+        score += victim_value - attacker_value / 10.0
+        return score
+
+    def __static_exchange_evaluation(self, board: chess.Board, move: chess.Move) -> float:
+        """
+        Static Exchange Evaluation (SEE): estimates the material gain/loss of a capture
+        sequence on the destination square, assuming both sides recapture optimally with
+        the least valuable attacker (LVA) at each step.
+
+        Used by quiescence search to prune "bad captures" — captures where the swap-off
+        loses material (SEE < 0). Such captures rarely improve the position, so skipping
+        them dramatically reduces the QS branching factor.
+
+        Algorithm:
+        1. Build a "gains" array: gains[i] is the material gained at step i of the swap-off.
+           Step 0 = the value of the originally captured piece.
+           Step i (i > 0) = value of the piece captured at step i, minus gains[i-1].
+        2. After collecting all swap steps, fold the array back via negamax:
+           gains[i-1] = -max(-gains[i-1], gains[i]) — at each level, the side to move chooses
+           whether to continue the exchange or stand pat (not recapture).
+        3. The final gains[0] is the SEE value from the perspective of the side that moved first.
+
+        Notes:
+        - Promotions during the swap are simplified to queen promotions for the gain calculation.
+        - Pinned attackers are filtered out via `board.is_legal()` at each step.
+        - Uses push/pop on the board to simulate the swap without allocating a board copy.
+        """
+        to_sq: int = move.to_square
+
+        # Initial victim value (the piece originally captured by `move`).
+        if board.is_en_passant(move):
+            initial_victim_value: float = PIECE_VALUES[chess.PAWN]
+        else:
+            captured = board.piece_at(to_sq)
+            if captured is None:
+                return 0.0
+            initial_victim_value = PIECE_VALUES[captured.piece_type]
+
+        # Simulate the swap-off using push/pop on the board directly.
+        board.push(move)
+        gains: List[float] = [initial_victim_value]
+        moves_pushed: int = 1  # Track how many moves to pop at the end
+
+        while True:
+            side_to_move: chess.Color = board.turn
+            attackers = board.attackers(side_to_move, to_sq)
+            if not attackers:
+                break
+
+            # Find the least valuable attacker that can legally recapture (handles pins).
+            sorted_attackers = sorted(
+                attackers, key=lambda sq: PIECE_VALUES[board.piece_at(sq).piece_type])
+            chosen_capture: chess.Move | None = None
+            for from_sq in sorted_attackers:
+                attacker_piece = board.piece_at(from_sq)
+                promo = None
+                if (attacker_piece.piece_type == chess.PAWN
+                        and chess.square_rank(to_sq) in (0, 7)):
+                    promo = chess.QUEEN
+                candidate = chess.Move(from_sq, to_sq, promotion=promo)
+                if board.is_legal(candidate):
+                    chosen_capture = candidate
+                    break
+            if chosen_capture is None:
+                break
+
+            # The piece being captured next is whatever currently sits on `to_sq`.
+            victim = board.piece_at(to_sq)
+            if victim is None:
+                break
+            gains.append(PIECE_VALUES[victim.piece_type] - gains[-1])
+            board.push(chosen_capture)
+            moves_pushed += 1
+
+        # Undo all pushed moves to restore the original board state.
+        for _ in range(moves_pushed):
+            board.pop()
+
+        # Negamax fold of the swap list.
+        for i in range(len(gains) - 1, 0, -1):
+            gains[i - 1] = -max(-gains[i - 1], gains[i])
+        return gains[0]
+
