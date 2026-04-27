@@ -12,8 +12,8 @@ def depth(arg: str) -> int:
         value = int(arg)
     except ValueError:
         raise argparse.ArgumentTypeError('Depth must be an integer')
-    if not (0 <= value <= 20):
-        raise argparse.ArgumentTypeError('Depth must be an integer within a range [1, 50]')
+    if not (1 <= value <= 20):
+        raise argparse.ArgumentTypeError('Depth must be an integer within a range [1, 20]')
     return value
 
 

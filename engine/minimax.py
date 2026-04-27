@@ -121,7 +121,7 @@ class Minimax(Player):
         best_move: chess.Move | None = None
         best_value: float = -math.inf if self.color == chess.WHITE else math.inf
         is_maximizing: bool = self.color == chess.WHITE
-        board_hash: int = self.hasher.hash_board(internal_board)
+        board_hash: int = self.hasher(internal_board)
 
         # Iterative Deepening: search from depth 1 to self.depth
         for current_depth in range(1, self.depth + 1):
@@ -149,6 +149,9 @@ class Minimax(Player):
                 beta = math.inf
                 iteration_best_move, iteration_best_value = self.__search_root(
                     internal_board, ordered_moves, current_depth, alpha, beta, is_maximizing)
+
+            self.__store_root_tt_entry(board_hash, current_depth, iteration_best_value,
+                                       iteration_best_move, alpha, beta)
 
             best_move = iteration_best_move
             best_value = iteration_best_value
@@ -213,6 +216,28 @@ class Minimax(Player):
                     break
 
         return iteration_best_move, iteration_best_value
+
+    def __store_root_tt_entry(self, board_hash: int, depth: int, value: float,
+                              best_move: chess.Move | None, alpha: float, beta: float) -> None:
+        """Stores the root search result in TT so the next ID iteration can prioritize its PV move."""
+        if best_move is None:
+            return
+
+        flag: str = 'E'
+        if value <= alpha:
+            flag = 'U'
+        elif value >= beta:
+            flag = 'L'
+
+        tt_entry = self.transposition_table.get(board_hash)
+        if not tt_entry or depth >= tt_entry['d'] or self._tt_generation - tt_entry['g'] >= self.TT_MAX_AGE:
+            self.transposition_table[board_hash] = {
+                'v': self.__score_to_tt(value, actual_ply=0),
+                'd': depth,
+                'f': flag,
+                'm': best_move,
+                'g': self._tt_generation
+            }
 
     def __is_mate_score(self, value: float) -> bool:
         """Returns True for finite mate-distance scores and raw infinities from legacy evaluations."""
@@ -305,7 +330,7 @@ class Minimax(Player):
         original_alpha: float = alpha  # Store original alpha for TT flag and history update
         original_beta: float = beta  # Store original beta for history update
 
-        board_hash: int = self.hasher.hash_board(board)
+        board_hash: int = self.hasher(board)
         tt_entry = self.transposition_table.get(board_hash)
 
         # Transposition Table Lookup
