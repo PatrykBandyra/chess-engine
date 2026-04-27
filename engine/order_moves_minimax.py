@@ -9,11 +9,14 @@ from order_moves import OrderMoves
 
 class OrderMovesMinimax(OrderMoves):
 
+    # Must stay in sync with Minimax.MAX_CHECK_EXTENSIONS.
+    MAX_CHECK_EXTENSIONS: int = 3
+
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)
 
-        # Stores 2 moves per ply that caused beta cutoffs - indexed by ply (0 = root, 1 = depth-1, etc.)
-        self.killer_moves = [[None, None] for _ in range(self.depth + 1)]
+        # Stores 2 moves per actual ply (true distance from root). Sized to accommodate check extensions.
+        self.killer_moves = [[None, None] for _ in range(self.depth + self.MAX_CHECK_EXTENSIONS + 1)]
 
         # Stores scores for non-capture moves based on success - indexed by [from_square][to_square]
         self.history_heuristic_table = [[0] * 64 for _ in range(64)]
