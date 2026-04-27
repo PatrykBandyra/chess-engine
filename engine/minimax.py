@@ -191,8 +191,9 @@ class Minimax(Player):
         for move in ordered_moves:
             board.push(move)
             # Check extension at root level
-            extension = 1 if board.is_check() else 0
-            effective_extensions = self.MAX_CHECK_EXTENSIONS - extension
+            extensions_left = self.MAX_CHECK_EXTENSIONS
+            extension = 1 if extensions_left > 0 and board.is_check() else 0
+            effective_extensions = extensions_left - extension
             board_value = self.__minimax_alphabeta(board, depth - 1 + extension, alpha, beta,
                                                    not is_maximizing, effective_extensions,
                                                    actual_ply=1)
