@@ -11,6 +11,11 @@ from constants import STOCKFISH_PATH, LOGGER
 
 class BoardEvaluatorNN(BoardEvaluator):
 
+    # Keep these values in sync with Minimax.MATE_SCORE / Minimax.MATE_THRESHOLD.
+    # BoardEvaluatorNN does not import Minimax to avoid coupling the evaluator to the search layer.
+    MATE_SCORE: float = 1_000_000.0
+    MATE_THRESHOLD: float = 990_000.0
+
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)
 
@@ -28,16 +33,25 @@ class BoardEvaluatorNN(BoardEvaluator):
         self.__eval_count = 0
 
     def evaluate_board(self, board: chess.Board) -> float:
-        if self.debug:
-            start = time.perf_counter()
+        start = time.perf_counter() if self.debug else 0.0
 
-        self.stockfish.set_fen_position(board.fen())
-        evaluation = self.stockfish.get_evaluation()
-        if evaluation['type'] == 'mate':
-            mate_in = evaluation['value']
-            value = math.inf if mate_in > 0 else -math.inf if mate_in < 0 else 0.0
+        if board.is_checkmate():
+            value = -math.inf if board.turn == chess.WHITE else math.inf
+        elif board.is_stalemate() or board.is_insufficient_material() or \
+                board.is_seventyfive_moves() or board.is_fivefold_repetition():
+            value = 0.0
         else:
-            value = evaluation['value'] / 100.0  # Convert centipawns to pawns for consistency
+            self.stockfish.set_fen_position(board.fen())
+            evaluation = self.stockfish.get_evaluation()
+            if evaluation['type'] == 'mate':
+                mate_in: int = int(evaluation['value'])
+                max_mate_distance = int(self.MATE_SCORE - self.MATE_THRESHOLD)
+                mate_distance = min(max(abs(mate_in), 1), max_mate_distance)
+                value = (self.MATE_SCORE - mate_distance if mate_in > 0
+                         else -self.MATE_SCORE + mate_distance if mate_in < 0
+                         else 0.0)
+            else:
+                value = evaluation['value'] / 100.0  # Convert centipawns to pawns for consistency
 
         if self.debug:
             end = time.perf_counter()

@@ -22,6 +22,11 @@ class Minimax(Player):
     # Maximum total check extensions allowed per branch (prevents explosion from series of checks)
     MAX_CHECK_EXTENSIONS: int = 3
 
+    # Finite mate score used instead of raw +/-inf so the engine prefers faster mates
+    # and delays unavoidable mate. Mate scores are adjusted by actual ply from root.
+    MATE_SCORE: float = 1_000_000.0
+    MATE_THRESHOLD: float = 990_000.0
+
     # Maximum number of entries in the transposition table before cleanup is triggered
     TT_MAX_SIZE: int = 1_000_000
 
@@ -154,7 +159,7 @@ class Minimax(Player):
             )
 
             # Early termination: checkmate found
-            if abs(best_value) == math.inf:
+            if self.__is_mate_score(best_value):
                 break
 
         if best_move is not None:
@@ -209,6 +214,65 @@ class Minimax(Player):
 
         return iteration_best_move, iteration_best_value
 
+    def __is_mate_score(self, value: float) -> bool:
+        """Returns True for finite mate-distance scores and raw infinities from legacy evaluations."""
+        return abs(value) >= self.MATE_THRESHOLD or abs(value) == math.inf
+
+    def __is_regular_bound(self, value: float) -> bool:
+        """Returns True when a pruning bound is neither infinite nor in the mate-score range."""
+        return abs(value) < math.inf and not self.__is_mate_score(value)
+
+    def __mate_score(self, board: chess.Board, actual_ply: int) -> float:
+        """
+        Returns a finite checkmate score from White's perspective.
+        If White is mated, the score is negative and less bad when mate is delayed.
+        If Black is mated, the score is positive and better when mate is faster.
+        """
+        if board.turn == chess.WHITE:
+            return -self.MATE_SCORE + actual_ply
+        return self.MATE_SCORE - actual_ply
+
+    def __normalize_evaluation_score(self, value: float, actual_ply: int) -> float:
+        """Converts raw +/-inf evaluation values to finite mate-distance scores."""
+        if value == math.inf:
+            return self.MATE_SCORE - actual_ply
+        if value == -math.inf:
+            return -self.MATE_SCORE + actual_ply
+        return value
+
+    def __evaluate_board_score(self, board: chess.Board, actual_ply: int) -> float:
+        """Evaluates a board and normalizes any raw mate infinities to mate-distance scores."""
+        return self.__normalize_evaluation_score(self.evaluate_board(board), actual_ply)
+
+    def __terminal_or_evaluation_score(self, board: chess.Board, actual_ply: int) -> float:
+        """Returns a normalized terminal/evaluation score, using exact ply-aware mate scores."""
+        if board.is_checkmate():
+            return self.__mate_score(board, actual_ply)
+        if (board.is_stalemate()
+                or board.is_insufficient_material()
+                or board.is_seventyfive_moves()
+                or board.is_fivefold_repetition()):
+            return 0.0
+        return self.__evaluate_board_score(board, actual_ply)
+
+    def __score_to_tt(self, value: float, actual_ply: int) -> float:
+        """Stores mate scores relative to the TT node so retrieval at a different ply remains correct."""
+        value = self.__normalize_evaluation_score(value, actual_ply)
+        if value >= self.MATE_THRESHOLD:
+            return value + actual_ply
+        if value <= -self.MATE_THRESHOLD:
+            return value - actual_ply
+        return value
+
+    def __score_from_tt(self, value: float, actual_ply: int) -> float:
+        """Converts TT mate scores back to the current root-relative ply."""
+        value = self.__normalize_evaluation_score(value, actual_ply)
+        if value >= self.MATE_THRESHOLD:
+            return value - actual_ply
+        if value <= -self.MATE_THRESHOLD:
+            return value + actual_ply
+        return value
+
     def __minimax_alphabeta(self, board: chess.Board, depth: int, alpha: float, beta: float,
                             maximizing_player: bool, extensions_left: int,
                             actual_ply: int, can_null: bool = True) -> float:
@@ -232,6 +296,11 @@ class Minimax(Player):
         - Updates killer and history heuristics for quiet moves that cause cutoffs or improve bounds.
         - Returns the best evaluation found for the current player at this node.
         """
+        # These automatic draws depend on halfmove clock / repetition history, which are not part
+        # of the Polyglot hash used as the TT key. They must be handled before any TT lookup.
+        if board.is_seventyfive_moves() or board.is_fivefold_repetition():
+            return 0.0
+
         current_ply: int = actual_ply  # True ply from root (correct even with check extensions)
         original_alpha: float = alpha  # Store original alpha for TT flag and history update
         original_beta: float = beta  # Store original beta for history update
@@ -241,19 +310,21 @@ class Minimax(Player):
 
         # Transposition Table Lookup
         if tt_entry and tt_entry['d'] >= depth:
+            tt_value = self.__score_from_tt(tt_entry['v'], actual_ply)
             if tt_entry['f'] == 'E':  # Flag: Exact
-                return tt_entry['v']
+                return tt_value
             elif tt_entry['f'] == 'L':  # Flag: Lower bound
-                alpha = max(alpha, tt_entry['v'])
+                alpha = max(alpha, tt_value)
             elif tt_entry['f'] == 'U':  # Flag: Upper bound
-                beta = min(beta, tt_entry['v'])
+                beta = min(beta, tt_value)
             if beta <= alpha:
-                return tt_entry['v']
+                return tt_value
 
-        if depth == 0:
-            return self.__quiescence_search(board, alpha, beta, maximizing_player, qs_depth=0)
         if board.is_game_over():
-            return self.evaluate_board(board)
+            return self.__terminal_or_evaluation_score(board, actual_ply)
+        if depth == 0:
+            return self.__quiescence_search(board, alpha, beta, maximizing_player, qs_depth=0,
+                                            actual_ply=actual_ply)
 
         # Static evaluation — computed lazily, reused by RFP and forward futility pruning.
         static_eval: float | None = None
@@ -265,8 +336,8 @@ class Minimax(Player):
         if (depth <= self.RFP_MAX_DEPTH
                 and not board.is_check()
                 and not self.__is_zugzwang_risk(board)
-                and abs(beta) < math.inf and abs(alpha) < math.inf):
-            static_eval = self.evaluate_board(board)
+                and self.__is_regular_bound(beta) and self.__is_regular_bound(alpha)):
+            static_eval = self.__evaluate_board_score(board, actual_ply)
             rfp_margin = depth * self.RFP_MARGIN_PER_DEPTH
             if maximizing_player and static_eval - rfp_margin >= beta:
                 return beta
@@ -318,9 +389,9 @@ class Minimax(Player):
                         and not board.is_check()
                         and not board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)
-                        and abs(alpha) < math.inf):
+                        and self.__is_regular_bound(alpha)):
                     if static_eval is None:
-                        static_eval = self.evaluate_board(board)
+                        static_eval = self.__evaluate_board_score(board, actual_ply)
                     if static_eval + depth * self.FUTILITY_MARGIN_PER_DEPTH <= alpha:
                         continue
 
@@ -359,7 +430,7 @@ class Minimax(Player):
             if not searched_any:
                 fallback_move = ordered_moves[0] if ordered_moves else None
                 if fallback_move is None:
-                    return self.evaluate_board(board)
+                    return self.__terminal_or_evaluation_score(board, actual_ply)
                 board.push(fallback_move)
                 extension = 1 if extensions_left > 0 and board.is_check() else 0
                 fallback_evaluation = self.__minimax_alphabeta(
@@ -383,7 +454,7 @@ class Minimax(Player):
                 flag = 'L'  # Lower bound
             # Store in Transposition Table
             if not tt_entry or depth >= tt_entry['d'] or self._tt_generation - tt_entry['g'] >= self.TT_MAX_AGE:
-                self.transposition_table[board_hash] = {'v': max_evaluation, 'd': depth, 'f': flag, 'm': best_move, 'g': self._tt_generation}
+                self.transposition_table[board_hash] = {'v': self.__score_to_tt(max_evaluation, actual_ply), 'd': depth, 'f': flag, 'm': best_move, 'g': self._tt_generation}
 
             return max_evaluation
 
@@ -405,9 +476,9 @@ class Minimax(Player):
                         and not board.is_check()
                         and not board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)
-                        and abs(beta) < math.inf):
+                        and self.__is_regular_bound(beta)):
                     if static_eval is None:
-                        static_eval = self.evaluate_board(board)
+                        static_eval = self.__evaluate_board_score(board, actual_ply)
                     if static_eval - depth * self.FUTILITY_MARGIN_PER_DEPTH >= beta:
                         continue
 
@@ -446,7 +517,7 @@ class Minimax(Player):
             if not searched_any:
                 fallback_move = ordered_moves[0] if ordered_moves else None
                 if fallback_move is None:
-                    return self.evaluate_board(board)
+                    return self.__terminal_or_evaluation_score(board, actual_ply)
                 board.push(fallback_move)
                 extension = 1 if extensions_left > 0 and board.is_check() else 0
                 fallback_evaluation = self.__minimax_alphabeta(
@@ -470,7 +541,7 @@ class Minimax(Player):
                 flag = 'U'  # Upper bound
             # Store in Transposition Table
             if not tt_entry or depth >= tt_entry['d'] or self._tt_generation - tt_entry['g'] >= self.TT_MAX_AGE:
-                self.transposition_table[board_hash] = {'v': min_eval, 'd': depth, 'f': flag, 'm': best_move, 'g': self._tt_generation}
+                self.transposition_table[board_hash] = {'v': self.__score_to_tt(min_eval, actual_ply), 'd': depth, 'f': flag, 'm': best_move, 'g': self._tt_generation}
 
             return min_eval
 
@@ -487,7 +558,7 @@ class Minimax(Player):
         )
 
     def __quiescence_search(self, board: chess.Board, alpha: float, beta: float,
-                            maximizing_player: bool, qs_depth: int) -> float:
+                            maximizing_player: bool, qs_depth: int, actual_ply: int) -> float:
         """
         Quiescence Search (QS): after the main search reaches depth == 0, continues exploring
         only "noisy" moves (captures and promotions) until the position becomes quiet.
@@ -511,9 +582,12 @@ class Minimax(Player):
         """
         in_check: bool = board.is_check()
 
+        if board.is_game_over():
+            return self.__terminal_or_evaluation_score(board, actual_ply)
+
         # Stand-pat is illegal when in check (cannot pass). Skip the stand-pat bound update.
         if not in_check:
-            stand_pat: float = self.evaluate_board(board)
+            stand_pat: float = self.__evaluate_board_score(board, actual_ply)
 
             if maximizing_player:
                 if stand_pat >= beta:
@@ -532,7 +606,7 @@ class Minimax(Player):
         else:
             # In check: cannot stand pat. Hard depth cap returns static eval as fallback.
             if qs_depth >= self.QS_MAX_DEPTH:
-                return self.evaluate_board(board)
+                return self.__terminal_or_evaluation_score(board, actual_ply)
 
         # Move generation:
         # - In check: search ALL legal moves (check evasions, including quiet replies).
@@ -542,7 +616,7 @@ class Minimax(Player):
             candidate_moves = list(board.legal_moves)
             if not candidate_moves:
                 # Checkmate: side to move is mated.
-                return -math.inf if maximizing_player else math.inf
+                return self.__mate_score(board, actual_ply)
         else:
             for move in board.legal_moves:
                 is_promotion: bool = move.promotion is not None
@@ -561,7 +635,8 @@ class Minimax(Player):
 
         for move in candidate_moves:
             board.push(move)
-            evaluation = self.__quiescence_search(board, alpha, beta, not maximizing_player, qs_depth + 1)
+            evaluation = self.__quiescence_search(board, alpha, beta, not maximizing_player, qs_depth + 1,
+                                                  actual_ply + 1)
             board.pop()
 
             if maximizing_player:
