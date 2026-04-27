@@ -28,6 +28,9 @@ class Minimax(Player):
     # Entries older than this many generations can be replaced regardless of depth
     TT_MAX_AGE: int = 2
 
+    # Aspiration window half-width (in evaluation units, e.g. 0.50 = half a pawn)
+    ASPIRATION_DELTA: float = 0.50
+
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)
 
@@ -96,8 +99,14 @@ class Minimax(Player):
         # Iterative Deepening: search from depth 1 to self.depth
         for current_depth in range(1, self.depth + 1):
             self._current_max_depth = current_depth
-            alpha: float = -math.inf
-            beta: float = math.inf
+
+            # Aspiration Windows: use a narrow window around the previous iteration's score
+            if current_depth == 1:
+                alpha = -math.inf
+                beta = math.inf
+            else:
+                alpha = best_value - self.ASPIRATION_DELTA
+                beta = best_value + self.ASPIRATION_DELTA
 
             # Get TT move from previous iteration for root position
             tt_entry = self.transposition_table.get(board_hash)
@@ -105,34 +114,15 @@ class Minimax(Player):
             ordered_moves: List[chess.Move] = self.order_moves_minimax.order_moves(
                 internal_board, legal_moves, ply=0, tt_move=tt_move)
 
-            iteration_best_move: chess.Move | None = None
-            iteration_best_value: float = -math.inf if is_maximizing else math.inf
+            iteration_best_move, iteration_best_value = self.__search_root(
+                internal_board, ordered_moves, current_depth, alpha, beta, is_maximizing)
 
-            for move in ordered_moves:
-                internal_board.push(move)
-                # Check extension at root level
-                extension = 1 if internal_board.is_check() else 0
-                effective_extensions = self.MAX_CHECK_EXTENSIONS - extension
-                board_value = self.__minimax_alphabeta(internal_board, current_depth - 1 + extension, alpha, beta,
-                                                       not is_maximizing, effective_extensions)
-                internal_board.pop()
-
-                if is_maximizing:
-                    if (board_value > iteration_best_value) or (
-                            iteration_best_move is None and board_value == iteration_best_value):
-                        iteration_best_value = board_value
-                        iteration_best_move = move
-                    alpha = max(alpha, board_value)
-                    if beta <= alpha:
-                        break
-                else:
-                    if (board_value < iteration_best_value) or (
-                            iteration_best_move is None and board_value == iteration_best_value):
-                        iteration_best_value = board_value
-                        iteration_best_move = move
-                    beta = min(beta, board_value)
-                    if beta <= alpha:
-                        break
+            # Aspiration window fail-high or fail-low: re-search with full window
+            if current_depth > 1 and (iteration_best_value <= alpha or iteration_best_value >= beta):
+                alpha = -math.inf
+                beta = math.inf
+                iteration_best_move, iteration_best_value = self.__search_root(
+                    internal_board, ordered_moves, current_depth, alpha, beta, is_maximizing)
 
             best_move = iteration_best_move
             best_value = iteration_best_value
@@ -157,6 +147,45 @@ class Minimax(Player):
             f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; depth: {self.depth}; time: {duration:.6f}s; move: {best_move.uci() if best_move else "None"}; ' +
             f'value: {best_value:.2f}'
         )
+
+    def __search_root(self, board: chess.Board, ordered_moves: List[chess.Move],
+                      depth: int, alpha: float, beta: float,
+                      is_maximizing: bool) -> tuple:
+        """
+        Performs the root-level search loop for a single ID iteration.
+        Returns (best_move, best_value) for this iteration.
+        Extracted to allow re-use by aspiration window re-search.
+        """
+        iteration_best_move: chess.Move | None = None
+        iteration_best_value: float = -math.inf if is_maximizing else math.inf
+
+        for move in ordered_moves:
+            board.push(move)
+            # Check extension at root level
+            extension = 1 if board.is_check() else 0
+            effective_extensions = self.MAX_CHECK_EXTENSIONS - extension
+            board_value = self.__minimax_alphabeta(board, depth - 1 + extension, alpha, beta,
+                                                   not is_maximizing, effective_extensions)
+            board.pop()
+
+            if is_maximizing:
+                if (board_value > iteration_best_value) or (
+                        iteration_best_move is None and board_value == iteration_best_value):
+                    iteration_best_value = board_value
+                    iteration_best_move = move
+                alpha = max(alpha, board_value)
+                if beta <= alpha:
+                    break
+            else:
+                if (board_value < iteration_best_value) or (
+                        iteration_best_move is None and board_value == iteration_best_value):
+                    iteration_best_value = board_value
+                    iteration_best_move = move
+                beta = min(beta, board_value)
+                if beta <= alpha:
+                    break
+
+        return iteration_best_move, iteration_best_value
 
     def __minimax_alphabeta(self, board: chess.Board, depth: int, alpha: float, beta: float,
                             maximizing_player: bool, extensions_left: int) -> float:
