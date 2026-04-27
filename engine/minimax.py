@@ -265,9 +265,21 @@ class Minimax(Player):
             return -self.MATE_SCORE + actual_ply
         return value
 
+    def __normalize_evaluator_score(self, value: float, actual_ply: int) -> float:
+        """Converts evaluator scores to root-relative values, including finite leaf mate scores."""
+        if value == math.inf:
+            return self.MATE_SCORE - actual_ply
+        if value == -math.inf:
+            return -self.MATE_SCORE + actual_ply
+        if value >= self.MATE_THRESHOLD:
+            return max(self.MATE_THRESHOLD, value - actual_ply)
+        if value <= -self.MATE_THRESHOLD:
+            return min(-self.MATE_THRESHOLD, value + actual_ply)
+        return value
+
     def __evaluate_board_score(self, board: chess.Board, actual_ply: int) -> float:
         """Evaluates a board and normalizes any raw mate infinities to mate-distance scores."""
-        return self.__normalize_evaluation_score(self.evaluate_board(board), actual_ply)
+        return self.__normalize_evaluator_score(self.evaluate_board(board), actual_ply)
 
     def __terminal_or_evaluation_score(self, board: chess.Board, actual_ply: int) -> float:
         """Returns a normalized terminal/evaluation score, using exact ply-aware mate scores."""
