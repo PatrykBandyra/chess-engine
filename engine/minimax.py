@@ -147,6 +147,10 @@ class Minimax(Player):
             if current_depth > 1 and (iteration_best_value <= alpha or iteration_best_value >= beta):
                 alpha = -math.inf
                 beta = math.inf
+                tt_entry = self.transposition_table.get(board_hash)
+                tt_move = tt_entry.get('m') if tt_entry else iteration_best_move
+                ordered_moves = self.order_moves_minimax.order_moves(
+                    internal_board, legal_moves, ply=0, tt_move=tt_move)
                 iteration_best_move, iteration_best_value = self.__search_root(
                     internal_board, ordered_moves, current_depth, alpha, beta, is_maximizing)
 
