@@ -175,6 +175,46 @@ $RunTag = (Get-Date -Format 'yyyyMMdd_HHmmss')
 #     '-l',  "log_human_vs_trad_$RunTag.txt"
 # )
 
+# ----------------------------------------------------------------------------
+# Variant 9: Minimax (NN) vs Minimax (NN), background mode, depth 3 vs 3
+# Neural network evaluator self-play.
+# ----------------------------------------------------------------------------
+# $runArgs = @(
+#     '-w',  'MINIMAX_NN',
+#     '-b',  'MINIMAX_NN',
+#     '-m',  'B',
+#     '-dw', '3',
+#     '-db', '3',
+#     '-g',  "game_nn_vs_nn_d3_$RunTag.txt",
+#     '-l',  "log_nn_vs_nn_d3_$RunTag.txt"
+# )
+
+# ----------------------------------------------------------------------------
+# Variant 10: Minimax (NN) vs Minimax (Trad), background mode, depth 3 vs 4
+# ----------------------------------------------------------------------------
+# $runArgs = @(
+#     '-w',  'MINIMAX_NN',
+#     '-b',  'MINIMAX_TRAD',
+#     '-m',  'B',
+#     '-dw', '3',
+#     '-db', '4',
+#     '-g',  "game_nn_vs_trad_$RunTag.txt",
+#     '-l',  "log_nn_vs_trad_$RunTag.txt"
+# )
+
+# ----------------------------------------------------------------------------
+# Variant 11: Minimax (Trad) vs Minimax (NN), background mode, depth 4 vs 3
+# ----------------------------------------------------------------------------
+# $runArgs = @(
+#     '-w',  'MINIMAX_TRAD',
+#     '-b',  'MINIMAX_NN',
+#     '-m',  'B',
+#     '-dw', '4',
+#     '-db', '3',
+#     '-g',  "game_trad_vs_nn_$RunTag.txt",
+#     '-l',  "log_trad_vs_nn_$RunTag.txt"
+# )
+
 # ============================================================================
 # EXECUTION — do not edit below unless you know what you're doing.
 # ============================================================================
