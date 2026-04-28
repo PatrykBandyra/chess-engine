@@ -166,6 +166,21 @@ class BoardEvaluatorTrad(BoardEvaluator):
         else:
             return (non_pawn_material - endgame_threshold) / (middlegame_threshold - endgame_threshold)
 
+    def __pst_value(self, piece_type: chess.PieceType, square: chess.Square, color: chess.Color,
+                    phase: float) -> float:
+        """
+        Returns the phase-interpolated piece-square table value in pawn units.
+
+        The PST arrays are stored in the usual chess-engine order from rank 8 to rank 1.
+        python-chess squares are indexed from a1 to h8, so White pieces must be mirrored
+        before indexing. Black pieces can use the square index directly, giving symmetric
+        values for equivalent White/Black placements.
+        """
+        pst_index = chess.square_mirror(square) if color == chess.WHITE else square
+        pst_mid = self.PIECE_SQUARE_TABLE_MID[piece_type][pst_index]
+        pst_end = self.PIECE_SQUARE_TABLE_END[piece_type][pst_index]
+        return 0.01 * (phase * pst_mid + (1 - phase) * pst_end)
+
     def __evaluate_pawn_structure(self, board: chess.Board) -> float:
         """
         Evaluates pawn structure for both sides, considering doubled, isolated, and passed pawns.
@@ -378,11 +393,7 @@ class BoardEvaluatorTrad(BoardEvaluator):
                 for color in [chess.WHITE, chess.BLACK]:
                     squares = board.pieces(piece_type, color)
                     for sq in squares:
-                        pst_mid = self.PIECE_SQUARE_TABLE_MID[piece_type][
-                            sq if color == chess.WHITE else chess.square_mirror(sq)]
-                        pst_end = self.PIECE_SQUARE_TABLE_END[piece_type][
-                            sq if color == chess.WHITE else chess.square_mirror(sq)]
-                        value = PIECE_VALUES[piece_type] + 0.01 * (phase * pst_mid + (1 - phase) * pst_end)
+                        value = PIECE_VALUES[piece_type] + self.__pst_value(piece_type, sq, color, phase)
                         if color == chess.WHITE:
                             white_score += value
                         else:
