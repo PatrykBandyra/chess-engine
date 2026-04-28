@@ -393,7 +393,8 @@ class BoardEvaluatorTrad(BoardEvaluator):
                 for color in [chess.WHITE, chess.BLACK]:
                     squares = board.pieces(piece_type, color)
                     for sq in squares:
-                        value = PIECE_VALUES[piece_type] + self.__pst_value(piece_type, sq, color, phase)
+                        material_value = 0.0 if piece_type == chess.KING else PIECE_VALUES[piece_type]
+                        value = material_value + self.__pst_value(piece_type, sq, color, phase)
                         if color == chess.WHITE:
                             white_score += value
                         else:
