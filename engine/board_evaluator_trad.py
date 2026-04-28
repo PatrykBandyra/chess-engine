@@ -45,6 +45,9 @@ class BoardEvaluatorTrad(BoardEvaluator):
     KING_OPEN_FILE_PENALTY = 0.40
     KING_SEMI_OPEN_FILE_PENALTY = 0.20
     KING_ATTACK_WEIGHT = 0.10
+    KING_ATTACKED_ZONE_SQUARE_WEIGHT = 0.03
+    KING_ATTACKED_ZONE_SQUARE_PENALTY_LIMIT = 0.24
+    KING_ATTACK_PENALTY_LIMIT = 1.50
 
     BISHOP_PAIR_BASE_BONUS = 0.25
     BISHOP_PAIR_OPENNESS_BONUS = 0.15
@@ -239,6 +242,20 @@ class BoardEvaluatorTrad(BoardEvaluator):
         pst_end = self.PIECE_SQUARE_TABLE_END[piece_type][pst_index]
         return self.PST_SCALE * (phase * pst_mid + (1 - phase) * pst_end)
 
+    def __is_passed_pawn(self, board: chess.Board, square: chess.Square, color: chess.Color) -> bool:
+        file = chess.square_file(square)
+        rank = chess.square_rank(square)
+        for opp_sq in board.pieces(chess.PAWN, not color):
+            opp_file = chess.square_file(opp_sq)
+            opp_rank = chess.square_rank(opp_sq)
+            if abs(opp_file - file) <= 1:
+                if (color == chess.WHITE and opp_rank > rank) or (color == chess.BLACK and opp_rank < rank):
+                    return False
+        return True
+
+    def __passed_pawns(self, board: chess.Board, color: chess.Color) -> list[chess.Square]:
+        return [sq for sq in board.pieces(chess.PAWN, color) if self.__is_passed_pawn(board, sq, color)]
+
     def __evaluate_pawn_structure(self, board: chess.Board, phase: float) -> float:
         """
         Evaluates pawn structure for both sides, considering doubled, isolated, and passed pawns.
@@ -247,17 +264,6 @@ class BoardEvaluatorTrad(BoardEvaluator):
         start = time.perf_counter() if self.debug else 0.0
 
         endgame_weight = 1.0 - phase
-        def is_passed_pawn(square: chess.Square, color: chess.Color) -> bool:
-            file = chess.square_file(square)
-            rank = chess.square_rank(square)
-            for opp_sq in board.pieces(chess.PAWN, not color):
-                opp_file = chess.square_file(opp_sq)
-                opp_rank = chess.square_rank(opp_sq)
-                if abs(opp_file - file) <= 1:
-                    if (color == chess.WHITE and opp_rank > rank) or (color == chess.BLACK and opp_rank < rank):
-                        return False
-            return True
-
         def evaluate_passed_pawn(square: chess.Square, color: chess.Color,
                                  pawns: chess.SquareSet, passed_pawns: list[chess.Square]) -> float:
             file = chess.square_file(square)
@@ -310,7 +316,7 @@ class BoardEvaluatorTrad(BoardEvaluator):
                 if not has_left and not has_right:
                     isolated_penalty += 1
             # Passed pawns
-            passed_pawns = [sq for sq in pawns if is_passed_pawn(sq, color)]
+            passed_pawns = self.__passed_pawns(board, color)
             passed_bonus = sum(evaluate_passed_pawn(sq, color, pawns, passed_pawns) for sq in passed_pawns)
             # Penalties and bonuses
             penalty = -self.DOUBLED_PAWN_PENALTY * doubled_penalty - self.ISOLATED_PAWN_PENALTY * isolated_penalty
@@ -379,31 +385,32 @@ class BoardEvaluatorTrad(BoardEvaluator):
                         shield += 1
             # Open files near king: penalty for open/semi-open files
             open_file_penalty = 0.0
+            own_pawn_files = {chess.square_file(sq) for sq in board.pieces(chess.PAWN, color)}
+            opp_pawn_files = {chess.square_file(sq) for sq in board.pieces(chess.PAWN, not color)}
             for df in [-1, 0, 1]:
                 f = file + df
                 if 0 <= f < 8:
-                    pawns_on_file = any(
-                        chess.square_file(sq) == f and board.piece_at(sq) and board.piece_at(
-                            sq).piece_type == chess.PAWN and board.piece_at(sq).color == color
-                        for sq in chess.SQUARES
-                    )
-                    opp_pawns_on_file = any(
-                        chess.square_file(sq) == f and board.piece_at(sq) and board.piece_at(
-                            sq).piece_type == chess.PAWN and board.piece_at(sq).color != color
-                        for sq in chess.SQUARES
-                    )
-                    if not pawns_on_file:
-                        if not opp_pawns_on_file:
+                    if f not in own_pawn_files:
+                        if f not in opp_pawn_files:
                             open_file_penalty += self.KING_OPEN_FILE_PENALTY
                         else:
                             open_file_penalty += self.KING_SEMI_OPEN_FILE_PENALTY
             # King in zone attacked by enemy pieces
-            attack_penalty = 0.0
+            unique_attackers = set()
+            attacked_zone_squares = set()
             for sq in zone:
-                for attacker in board.attackers(not color, sq):
-                    piece = board.piece_at(attacker)
-                    if piece:
-                        attack_penalty += get_piece_value(piece) * self.KING_ATTACK_WEIGHT
+                attackers = board.attackers(not color, sq)
+                if attackers:
+                    attacked_zone_squares.add(sq)
+                    unique_attackers.update(attackers)
+            unique_attacker_penalty = 0.0
+            for attacker in unique_attackers:
+                piece = board.piece_at(attacker)
+                if piece:
+                    unique_attacker_penalty += get_piece_value(piece) * self.KING_ATTACK_WEIGHT
+            coverage_penalty = min(self.KING_ATTACKED_ZONE_SQUARE_PENALTY_LIMIT,
+                                   len(attacked_zone_squares) * self.KING_ATTACKED_ZONE_SQUARE_WEIGHT)
+            attack_penalty = min(self.KING_ATTACK_PENALTY_LIMIT, unique_attacker_penalty + coverage_penalty)
             # Combine: reward pawn shield, penalize open files and attacks
             king_safety = self.KING_SHIELD_BONUS * shield - open_file_penalty - attack_penalty
             if color == chess.WHITE:
@@ -520,7 +527,7 @@ class BoardEvaluatorTrad(BoardEvaluator):
 
                     weakest_attacker_value = min(
                         get_piece_value(board.piece_at(attacker_sq)) for attacker_sq in attackers)
-                    if weakest_attacker_value < piece_value:
+                    if not pawn_attackers and weakest_attacker_value < piece_value:
                         penalty += min(self.LOWER_VALUE_ATTACK_PENALTY_LIMIT,
                                        self.LOWER_VALUE_ATTACK_WEIGHT * (piece_value - weakest_attacker_value))
 
@@ -537,17 +544,6 @@ class BoardEvaluatorTrad(BoardEvaluator):
             return 0.0
 
         center_squares = self.CENTER_SQUARES
-
-        def is_passed_pawn(square: chess.Square, color: chess.Color) -> bool:
-            file = chess.square_file(square)
-            rank = chess.square_rank(square)
-            for opp_sq in board.pieces(chess.PAWN, not color):
-                opp_file = chess.square_file(opp_sq)
-                opp_rank = chess.square_rank(opp_sq)
-                if abs(opp_file - file) <= 1:
-                    if (color == chess.WHITE and opp_rank > rank) or (color == chess.BLACK and opp_rank < rank):
-                        return False
-            return True
 
         score = 0.0
         for color in [chess.WHITE, chess.BLACK]:
@@ -567,12 +563,12 @@ class BoardEvaluatorTrad(BoardEvaluator):
                 enemy_pawn_pressure += self.ENDGAME_KING_ENEMY_PAWN_PRESSURE_BONUS * max(0, 4 - distance)
             activity += min(self.ENDGAME_KING_ENEMY_PAWN_PRESSURE_LIMIT, enemy_pawn_pressure)
 
-            own_passed_pawns = [sq for sq in board.pieces(chess.PAWN, color) if is_passed_pawn(sq, color)]
+            own_passed_pawns = self.__passed_pawns(board, color)
             for pawn_sq in own_passed_pawns:
                 distance = chess.square_distance(king_sq, pawn_sq)
                 activity += self.ENDGAME_KING_OWN_PASSER_SUPPORT_BONUS * max(0, 4 - distance)
 
-            enemy_passed_pawns = [sq for sq in board.pieces(chess.PAWN, not color) if is_passed_pawn(sq, not color)]
+            enemy_passed_pawns = self.__passed_pawns(board, not color)
             for pawn_sq in enemy_passed_pawns:
                 distance_to_pawn = chess.square_distance(king_sq, pawn_sq)
                 promotion_sq = chess.square(chess.square_file(pawn_sq), 0 if color == chess.WHITE else 7)
