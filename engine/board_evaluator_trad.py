@@ -181,13 +181,60 @@ class BoardEvaluatorTrad(BoardEvaluator):
         pst_end = self.PIECE_SQUARE_TABLE_END[piece_type][pst_index]
         return 0.01 * (phase * pst_mid + (1 - phase) * pst_end)
 
-    def __evaluate_pawn_structure(self, board: chess.Board) -> float:
+    def __evaluate_pawn_structure(self, board: chess.Board, phase: float) -> float:
         """
         Evaluates pawn structure for both sides, considering doubled, isolated, and passed pawns.
         Returns a score (positive for White, negative for Black).
         """
         if self.debug:
             start = time.perf_counter()
+
+        endgame_weight = 1.0 - phase
+        passed_pawn_bonus_by_advancement = [0.0, 0.05, 0.10, 0.20, 0.35, 0.60, 1.00, 0.0]
+
+        def is_passed_pawn(square: chess.Square, color: chess.Color) -> bool:
+            file = chess.square_file(square)
+            rank = chess.square_rank(square)
+            for opp_sq in board.pieces(chess.PAWN, not color):
+                opp_file = chess.square_file(opp_sq)
+                opp_rank = chess.square_rank(opp_sq)
+                if abs(opp_file - file) <= 1:
+                    if (color == chess.WHITE and opp_rank > rank) or (color == chess.BLACK and opp_rank < rank):
+                        return False
+            return True
+
+        def evaluate_passed_pawn(square: chess.Square, color: chess.Color,
+                                 pawns: chess.SquareSet, passed_pawns: list[chess.Square]) -> float:
+            file = chess.square_file(square)
+            rank = chess.square_rank(square)
+            advancement = rank if color == chess.WHITE else 7 - rank
+            bonus = passed_pawn_bonus_by_advancement[advancement] * (1.0 + 0.5 * endgame_weight)
+
+            forward_rank = rank + (1 if color == chess.WHITE else -1)
+            if 0 <= forward_rank < 8:
+                blocker_sq = chess.square(file, forward_rank)
+                if board.piece_at(blocker_sq) is not None:
+                    bonus *= 0.55
+
+            friendly_pawn_attackers = board.attackers(color, square) & pawns
+            if friendly_pawn_attackers:
+                bonus += 0.15 + 0.10 * endgame_weight
+            elif board.attackers(color, square):
+                bonus += 0.05
+
+            if any(other_sq != square and abs(chess.square_file(other_sq) - file) == 1 for other_sq in passed_pawns):
+                bonus += 0.15 + 0.10 * endgame_weight
+
+            own_king_sq = board.king(color)
+            enemy_king_sq = board.king(not color)
+            if advancement >= 4 and own_king_sq is not None and enemy_king_sq is not None:
+                promotion_sq = chess.square(file, 7 if color == chess.WHITE else 0)
+                own_king_distance = chess.square_distance(own_king_sq, promotion_sq)
+                enemy_king_distance = chess.square_distance(enemy_king_sq, promotion_sq)
+                king_race_bonus = 0.04 * (enemy_king_distance - own_king_distance) * endgame_weight
+                bonus += max(-0.15, min(0.15, king_race_bonus))
+
+            return max(0.0, bonus)
 
         score = 0.0
         for color in [chess.WHITE, chess.BLACK]:
@@ -204,23 +251,11 @@ class BoardEvaluatorTrad(BoardEvaluator):
                 if not has_left and not has_right:
                     isolated_penalty += 1
             # Passed pawns
-            passed_bonus = 0
-            for sq in pawns:
-                file = chess.square_file(sq)
-                rank = chess.square_rank(sq)
-                is_passed = True
-                for opp_sq in board.pieces(chess.PAWN, not color):
-                    opp_file = chess.square_file(opp_sq)
-                    opp_rank = chess.square_rank(opp_sq)
-                    if abs(opp_file - file) <= 1:
-                        if (color == chess.WHITE and opp_rank > rank) or (color == chess.BLACK and opp_rank < rank):
-                            is_passed = False
-                            break
-                if is_passed:
-                    passed_bonus += 1
+            passed_pawns = [sq for sq in pawns if is_passed_pawn(sq, color)]
+            passed_bonus = sum(evaluate_passed_pawn(sq, color, pawns, passed_pawns) for sq in passed_pawns)
             # Penalties and bonuses
             penalty = -0.25 * doubled_penalty - 0.25 * isolated_penalty
-            bonus = 0.3 * passed_bonus
+            bonus = passed_bonus
             if color == chess.WHITE:
                 score += penalty + bonus
             else:
@@ -399,8 +434,8 @@ class BoardEvaluatorTrad(BoardEvaluator):
                             white_score += value
                         else:
                             black_score += value
-            pawn_structure_score = self.__evaluate_pawn_structure(board)
-            king_safety_score = self.__evaluate_king_safety(board)
+            pawn_structure_score = self.__evaluate_pawn_structure(board, phase)
+            king_safety_score = phase * self.__evaluate_king_safety(board)
             mobility_activity_score = self.__evaluate_mobility_and_activity(board)
             result = (white_score - black_score) + pawn_structure_score + king_safety_score + mobility_activity_score
         if self.debug:
