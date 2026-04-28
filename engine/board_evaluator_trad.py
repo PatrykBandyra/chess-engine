@@ -427,6 +427,44 @@ class BoardEvaluatorTrad(BoardEvaluator):
 
         return score
 
+    def __evaluate_threats_and_hanging_pieces(self, board: chess.Board) -> float:
+        """
+        Evaluates lightweight tactical static features: hanging pieces, pieces attacked by pawns,
+        and higher-value pieces attacked by lower-value pieces. Returns a score from White's
+        perspective (positive for White, negative for Black).
+        """
+        score = 0.0
+        for color in [chess.WHITE, chess.BLACK]:
+            color_sign = 1 if color == chess.WHITE else -1
+            for piece_type in [chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]:
+                for sq in board.pieces(piece_type, color):
+                    attackers = board.attackers(not color, sq)
+                    if not attackers:
+                        continue
+
+                    defenders = board.attackers(color, sq)
+                    piece_value = PIECE_VALUES[piece_type]
+                    penalty = 0.0
+
+                    if not defenders:
+                        penalty += min(0.75, 0.15 * piece_value)
+                        if piece_type in [chess.ROOK, chess.QUEEN]:
+                            penalty += 0.10
+
+                    pawn_attackers = [attacker_sq for attacker_sq in attackers
+                                      if board.piece_at(attacker_sq)
+                                      and board.piece_at(attacker_sq).piece_type == chess.PAWN]
+                    if pawn_attackers:
+                        penalty += min(0.75, 0.10 * piece_value)
+
+                    weakest_attacker_value = min(
+                        get_piece_value(board.piece_at(attacker_sq)) for attacker_sq in attackers)
+                    if weakest_attacker_value < piece_value:
+                        penalty += min(0.60, 0.08 * (piece_value - weakest_attacker_value))
+
+                    score -= color_sign * penalty
+        return score
+
     def __evaluate_mobility_and_activity(self, board: chess.Board) -> float:
         """
         Evaluates piece mobility and activity for both sides.
@@ -505,9 +543,10 @@ class BoardEvaluatorTrad(BoardEvaluator):
             king_safety_score = phase * self.__evaluate_king_safety(board)
             minor_piece_score = self.__evaluate_minor_piece_features(board, phase)
             rook_activity_score = self.__evaluate_rook_activity(board, phase)
+            threats_score = self.__evaluate_threats_and_hanging_pieces(board)
             mobility_activity_score = self.__evaluate_mobility_and_activity(board)
             result = ((white_score - black_score) + pawn_structure_score + king_safety_score +
-                      minor_piece_score + rook_activity_score + mobility_activity_score)
+                      minor_piece_score + rook_activity_score + threats_score + mobility_activity_score)
         if self.debug:
             end = time.perf_counter()
             elapsed = end - start
