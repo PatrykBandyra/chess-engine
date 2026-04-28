@@ -44,9 +44,6 @@
 # $Python = 'C:\Users\me\.venvs\chess\Scripts\python.exe'
 $Python = 'python'
 
-# Directory from which main.py is launched. Defaults to 'engine' next to this script.
-$EngineDir = Join-Path -Path $PSScriptRoot -ChildPath 'engine'
-
 # Entry-point script
 $MainScript = 'main.py'
 
@@ -62,30 +59,30 @@ $RunTag = (Get-Date -Format 'yyyyMMdd_HHmmss')
 # Variant 1: Minimax (trad) vs Minimax (trad), background mode, depth 4 vs 4
 # Simplest self-play test with the traditional evaluator.
 # ----------------------------------------------------------------------------
-$runArgs = @(
-    '-w',  'MINIMAX_TRAD',
-    '-b',  'MINIMAX_TRAD',
-    '-m',  'B',
-    '-dw', '4',
-    '-db', '4',
-    '-g',  "game_trad_vs_trad_d4_$RunTag.txt",
-    '-l',  "log_trad_vs_trad_d4_$RunTag.txt"
-)
+#$runArgs = @(
+#    '-w',  'MINIMAX_TRAD',
+#    '-b',  'MINIMAX_TRAD',
+#    '-m',  'B',
+#    '-dw', '4',
+#    '-db', '4',
+#    '-g',  "game_trad_vs_trad_d4_$RunTag.txt",
+#    '-l',  "log_trad_vs_trad_d4_$RunTag.txt"
+#)
 
 # ----------------------------------------------------------------------------
 # Variant 2: Minimax (trad) vs Minimax (trad), GUI, depth 4 vs 4, opening book
 # For visually observing the game.
 # ----------------------------------------------------------------------------
-# $runArgs = @(
-#     '-w',  'MINIMAX_TRAD',
-#     '-b',  'MINIMAX_TRAD',
-#     '-m',  'G',
-#     '-dw', '4',
-#     '-db', '4',
-#     '-ob',
-#     '-g',  "game_trad_vs_trad_gui_$RunTag.txt",
-#     '-l',  "log_trad_vs_trad_gui_$RunTag.txt"
-# )
+ $runArgs = @(
+     '-w',  'MINIMAX_TRAD',
+     '-b',  'MINIMAX_TRAD',
+     '-m',  'G',
+     '-dw', '4',
+     '-db', '4',
+     '-ob',
+     '-g',  "game_trad_vs_trad_gui_$RunTag.txt",
+     '-l',  "log_trad_vs_trad_gui_$RunTag.txt"
+ )
 
 # ----------------------------------------------------------------------------
 # Variant 3: Asymmetric depth — d=5 vs d=3
@@ -188,14 +185,14 @@ if (-not $runArgs) {
 }
 
 # Validate that main.py exists
-$mainPath = Join-Path -Path $EngineDir -ChildPath $MainScript
+$mainPath = Join-Path -Path "." -ChildPath $MainScript
 if (-not (Test-Path -LiteralPath $mainPath)) {
-    Write-Error "File not found: $mainPath. Are you running this script from a directory containing the 'engine' folder?"
+    Write-Error "File not found: $mainPath. Are you running this script from the 'engine' folder?"
     exit 1
 }
 
-# Ensure engine/out/ exists (main.py writes logs and results there).
-$outDir = Join-Path -Path $EngineDir -ChildPath 'out'
+# Ensure out/ exists (main.py writes logs and results there).
+$outDir = Join-Path -Path "." -ChildPath 'out'
 if (-not (Test-Path -LiteralPath $outDir)) {
     New-Item -ItemType Directory -Path $outDir | Out-Null
     Write-Host "Created directory: $outDir"
@@ -203,17 +200,11 @@ if (-not (Test-Path -LiteralPath $outDir)) {
 
 Write-Host '------------------------------------------------------------'
 Write-Host "Running: $Python $MainScript $($runArgs -join ' ')"
-Write-Host "Cwd: $EngineDir"
+Write-Host "Cwd: $(Get-Location)"
 Write-Host '------------------------------------------------------------'
 
-Push-Location -LiteralPath $EngineDir
-try {
-    & $Python $MainScript @runArgs
-    $exitCode = $LASTEXITCODE
-}
-finally {
-    Pop-Location
-}
+& $Python $MainScript @runArgs
+$exitCode = $LASTEXITCODE
 
 Write-Host '------------------------------------------------------------'
 Write-Host "Finished with exit code: $exitCode"
