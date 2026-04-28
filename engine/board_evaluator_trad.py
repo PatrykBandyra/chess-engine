@@ -71,6 +71,7 @@ class BoardEvaluatorTrad(BoardEvaluator):
     LOWER_VALUE_ATTACK_PENALTY_LIMIT = 0.60
 
     ENDGAME_KING_CENTER_BONUS = 0.05
+    ENDGAME_KING_CENTER_QUEENS_ON_BOARD_MULTIPLIER = 0.35
     ENDGAME_KING_ENEMY_PAWN_PRESSURE_BONUS = 0.015
     ENDGAME_KING_ENEMY_PAWN_PRESSURE_LIMIT = 0.18
     ENDGAME_KING_OWN_PASSER_SUPPORT_BONUS = 0.025
@@ -551,6 +552,8 @@ class BoardEvaluatorTrad(BoardEvaluator):
             return 0.0
 
         center_squares = self.CENTER_SQUARES
+        queens_on_board = bool(board.pieces(chess.QUEEN, chess.WHITE) or board.pieces(chess.QUEEN, chess.BLACK))
+        center_multiplier = self.ENDGAME_KING_CENTER_QUEENS_ON_BOARD_MULTIPLIER if queens_on_board else 1.0
 
         score = 0.0
         for color in [chess.WHITE, chess.BLACK]:
@@ -562,7 +565,7 @@ class BoardEvaluatorTrad(BoardEvaluator):
             color_sign = 1 if color == chess.WHITE else -1
 
             center_distance = min(chess.square_distance(king_sq, center_sq) for center_sq in center_squares)
-            activity += self.ENDGAME_KING_CENTER_BONUS * max(0, 4 - center_distance)
+            activity += center_multiplier * self.ENDGAME_KING_CENTER_BONUS * max(0, 4 - center_distance)
 
             enemy_pawn_pressure = 0.0
             for enemy_pawn_sq in board.pieces(chess.PAWN, not color):
