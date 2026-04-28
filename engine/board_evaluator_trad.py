@@ -385,6 +385,48 @@ class BoardEvaluatorTrad(BoardEvaluator):
                     score -= bishop_pair_bonus
         return score
 
+    def __evaluate_rook_activity(self, board: chess.Board, phase: float) -> float:
+        """
+        Evaluates rook activity: open/semi-open files, rooks on the 7th/2nd rank,
+        and doubled rooks on useful files. Returns a score (positive for White, negative for Black).
+        """
+        endgame_weight = 1.0 - phase
+        activity_scale = 0.90 + 0.20 * endgame_weight
+
+        open_file_bonus = 0.25 * activity_scale
+        semi_open_file_bonus = 0.15 * activity_scale
+        seventh_rank_bonus = 0.25 * activity_scale
+        doubled_rooks_bonus = 0.10 * activity_scale
+
+        score = 0.0
+        for color in [chess.WHITE, chess.BLACK]:
+            color_sign = 1 if color == chess.WHITE else -1
+            rooks = board.pieces(chess.ROOK, color)
+            useful_rook_files = set()
+
+            for sq in rooks:
+                file = chess.square_file(sq)
+                rank = chess.square_rank(sq)
+                own_pawns_on_file = any(chess.square_file(pawn_sq) == file for pawn_sq in board.pieces(chess.PAWN, color))
+                enemy_pawns_on_file = any(chess.square_file(pawn_sq) == file for pawn_sq in board.pieces(chess.PAWN, not color))
+
+                if not own_pawns_on_file and not enemy_pawns_on_file:
+                    score += color_sign * open_file_bonus
+                    useful_rook_files.add(file)
+                elif not own_pawns_on_file and enemy_pawns_on_file:
+                    score += color_sign * semi_open_file_bonus
+                    useful_rook_files.add(file)
+
+                if (color == chess.WHITE and rank == 6) or (color == chess.BLACK and rank == 1):
+                    score += color_sign * seventh_rank_bonus
+
+            for file in useful_rook_files:
+                rooks_on_file = sum(1 for rook_sq in rooks if chess.square_file(rook_sq) == file)
+                if rooks_on_file >= 2:
+                    score += color_sign * doubled_rooks_bonus
+
+        return score
+
     def __evaluate_mobility_and_activity(self, board: chess.Board) -> float:
         """
         Evaluates piece mobility and activity for both sides.
@@ -458,8 +500,10 @@ class BoardEvaluatorTrad(BoardEvaluator):
             pawn_structure_score = self.__evaluate_pawn_structure(board, phase)
             king_safety_score = phase * self.__evaluate_king_safety(board)
             minor_piece_score = self.__evaluate_minor_piece_features(board, phase)
+            rook_activity_score = self.__evaluate_rook_activity(board, phase)
             mobility_activity_score = self.__evaluate_mobility_and_activity(board)
-            result = (white_score - black_score) + pawn_structure_score + king_safety_score + minor_piece_score + mobility_activity_score
+            result = ((white_score - black_score) + pawn_structure_score + king_safety_score +
+                      minor_piece_score + rook_activity_score + mobility_activity_score)
         if self.debug:
             end = time.perf_counter()
             elapsed = end - start
