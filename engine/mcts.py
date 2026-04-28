@@ -57,6 +57,11 @@ class MCTSNode:
 
 class MCTS(Player):
     EVAL_CACHE_MAX_SIZE = 500_000
+    # Threshold for sigmoid input: math.exp overflows for arguments > ~709.78.
+    # Beyond this raw value the sigmoid saturates to 0/1 anyway, so we short-circuit
+    # to avoid OverflowError. With finite mate scores from BoardEvaluatorNN
+    # (~±1_000_000), the unguarded sigmoid would crash on mates for Black (raw ~ -1e6).
+    SIGMOID_RAW_LIMIT = 2800.0  # ~ 4.0 * 700, leaves margin below math.exp overflow
 
     def __init__(self, args: argparse.Namespace, color: chess.Color):
         super().__init__(args, color)
@@ -91,7 +96,12 @@ class MCTS(Player):
                 break
             node = self.__select(root)
             if node.is_terminal and node.visits > 0:
-                continue  # already evaluated terminal node, skip
+                # Already evaluated terminal node, skip simulate/backpropagate.
+                # Increment iterations anyway so the periodic time check (every 128
+                # iterations) still fires; otherwise UCT can keep selecting the same
+                # winning terminal forever without iterations ever advancing.
+                iterations += 1
+                continue
             if node.untried_moves:
                 node = self.__expand(node)
             value = self.__simulate(node)
@@ -151,7 +161,15 @@ class MCTS(Player):
             v = self.__eval_cache[board_hash]
         else:
             raw = self.evaluate_board(node.board)
-            v = 1.0 / (1.0 + math.exp(-raw / 4.0))  # sigmoid normalization to [0, 1], white perspective
+            # Sigmoid normalization to [0, 1] (white perspective). Saturate explicitly
+            # outside the safe range for math.exp to avoid OverflowError on finite
+            # mate scores returned by BoardEvaluatorNN (raw ~ ±1_000_000).
+            if raw >= self.SIGMOID_RAW_LIMIT:
+                v = 1.0
+            elif raw <= -self.SIGMOID_RAW_LIMIT:
+                v = 0.0
+            else:
+                v = 1.0 / (1.0 + math.exp(-raw / 4.0))
             self.__eval_cache[board_hash] = v
             if len(self.__eval_cache) > self.EVAL_CACHE_MAX_SIZE:
                 self.__eval_cache.popitem(last=False)  # evict least recently used
