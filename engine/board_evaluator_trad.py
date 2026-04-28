@@ -48,6 +48,7 @@ class BoardEvaluatorTrad(BoardEvaluator):
     KING_ATTACKED_ZONE_SQUARE_WEIGHT = 0.03
     KING_ATTACKED_ZONE_SQUARE_PENALTY_LIMIT = 0.24
     KING_ATTACK_PENALTY_LIMIT = 1.50
+    KING_SAFETY_QUEENS_ON_BOARD_PHASE_FLOOR = 0.35
 
     BISHOP_PAIR_BASE_BONUS = 0.25
     BISHOP_PAIR_OPENNESS_BONUS = 0.15
@@ -255,6 +256,12 @@ class BoardEvaluatorTrad(BoardEvaluator):
 
     def __passed_pawns(self, board: chess.Board, color: chess.Color) -> list[chess.Square]:
         return [sq for sq in board.pieces(chess.PAWN, color) if self.__is_passed_pawn(board, sq, color)]
+
+    def __effective_king_safety_phase(self, board: chess.Board, phase: float) -> float:
+        queens_on_board = bool(board.pieces(chess.QUEEN, chess.WHITE) or board.pieces(chess.QUEEN, chess.BLACK))
+        if queens_on_board:
+            return max(phase, self.KING_SAFETY_QUEENS_ON_BOARD_PHASE_FLOOR)
+        return phase
 
     def __evaluate_pawn_structure(self, board: chess.Board, phase: float) -> float:
         """
@@ -647,7 +654,7 @@ class BoardEvaluatorTrad(BoardEvaluator):
                         else:
                             black_score += value
             pawn_structure_score = self.__evaluate_pawn_structure(board, phase)
-            king_safety_score = phase * self.__evaluate_king_safety(board)
+            king_safety_score = self.__effective_king_safety_phase(board, phase) * self.__evaluate_king_safety(board)
             minor_piece_score = self.__evaluate_minor_piece_features(board, phase)
             rook_activity_score = self.__evaluate_rook_activity(board, phase)
             threats_score = self.__evaluate_threats_and_hanging_pieces(board)
