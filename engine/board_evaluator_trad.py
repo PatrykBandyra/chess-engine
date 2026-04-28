@@ -445,23 +445,27 @@ class BoardEvaluatorTrad(BoardEvaluator):
             chess.QUEEN: 0.04
         }
         activity_bonus = 0.05  # Bonus for a piece on advanced rank or central square
+        central_control_bonus = 0.03
         central_squares = {chess.D4, chess.D5, chess.E4, chess.E5}
         score = 0.0
         for color in [chess.WHITE, chess.BLACK]:
             color_sign = 1 if color == chess.WHITE else -1
             for piece_type in [chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]:
                 for sq in board.pieces(piece_type, color):
-                    # Mobility: count squares attacked by this piece (pseudo-legal, works for both sides
-                    # independently of whose turn it is). Do not mutate board.turn here: minimax relies
-                    # on evaluate_board() preserving the exact board state it receives.
-                    mobility = len(board.attacks(sq))
+                    # Mobility: count attacked squares not occupied by friendly pieces. This remains
+                    # symmetric and independent of whose turn it is. Do not mutate board.turn here:
+                    # minimax relies on evaluate_board() preserving the exact board state it receives.
+                    attacks = board.attacks(sq)
+                    mobility = len(attacks & ~board.occupied_co[color])
                     score += color_sign * mobility_weights[piece_type] * mobility
-                    # Activity: advanced rank or central control
+                    # Activity: advanced rank, central placement and actual central control
                     rank = chess.square_rank(sq)
                     if (color == chess.WHITE and rank >= 4) or (color == chess.BLACK and rank <= 3):
                         score += color_sign * activity_bonus
                     if sq in central_squares:
                         score += color_sign * activity_bonus
+                    central_control = sum(1 for central_sq in central_squares if central_sq in attacks)
+                    score += color_sign * central_control_bonus * central_control
         if self.debug:
             end = time.perf_counter()
             elapsed = end - start
