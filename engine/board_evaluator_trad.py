@@ -465,6 +465,61 @@ class BoardEvaluatorTrad(BoardEvaluator):
                     score -= color_sign * penalty
         return score
 
+    def __evaluate_endgame_king_activity(self, board: chess.Board, phase: float) -> float:
+        """
+        Rewards active kings in endgames: centralization, attacking enemy pawns, supporting own
+        passed pawns, and stopping enemy passed pawns. Returns a score from White's perspective.
+        """
+        endgame_weight = 1.0 - phase
+        if endgame_weight <= 0.0:
+            return 0.0
+
+        center_squares = [chess.D4, chess.E4, chess.D5, chess.E5]
+
+        def is_passed_pawn(square: chess.Square, color: chess.Color) -> bool:
+            file = chess.square_file(square)
+            rank = chess.square_rank(square)
+            for opp_sq in board.pieces(chess.PAWN, not color):
+                opp_file = chess.square_file(opp_sq)
+                opp_rank = chess.square_rank(opp_sq)
+                if abs(opp_file - file) <= 1:
+                    if (color == chess.WHITE and opp_rank > rank) or (color == chess.BLACK and opp_rank < rank):
+                        return False
+            return True
+
+        score = 0.0
+        for color in [chess.WHITE, chess.BLACK]:
+            king_sq = board.king(color)
+            if king_sq is None:
+                continue
+
+            activity = 0.0
+            color_sign = 1 if color == chess.WHITE else -1
+
+            center_distance = min(chess.square_distance(king_sq, center_sq) for center_sq in center_squares)
+            activity += 0.05 * max(0, 4 - center_distance)
+
+            enemy_pawn_pressure = 0.0
+            for enemy_pawn_sq in board.pieces(chess.PAWN, not color):
+                distance = chess.square_distance(king_sq, enemy_pawn_sq)
+                enemy_pawn_pressure += 0.015 * max(0, 4 - distance)
+            activity += min(0.18, enemy_pawn_pressure)
+
+            own_passed_pawns = [sq for sq in board.pieces(chess.PAWN, color) if is_passed_pawn(sq, color)]
+            for pawn_sq in own_passed_pawns:
+                distance = chess.square_distance(king_sq, pawn_sq)
+                activity += 0.025 * max(0, 4 - distance)
+
+            enemy_passed_pawns = [sq for sq in board.pieces(chess.PAWN, not color) if is_passed_pawn(sq, not color)]
+            for pawn_sq in enemy_passed_pawns:
+                distance_to_pawn = chess.square_distance(king_sq, pawn_sq)
+                promotion_sq = chess.square(chess.square_file(pawn_sq), 0 if color == chess.WHITE else 7)
+                distance_to_promotion = chess.square_distance(king_sq, promotion_sq)
+                activity += 0.02 * max(0, 4 - min(distance_to_pawn, distance_to_promotion))
+
+            score += color_sign * activity * endgame_weight
+        return score
+
     def __evaluate_mobility_and_activity(self, board: chess.Board) -> float:
         """
         Evaluates piece mobility and activity for both sides.
@@ -544,9 +599,11 @@ class BoardEvaluatorTrad(BoardEvaluator):
             minor_piece_score = self.__evaluate_minor_piece_features(board, phase)
             rook_activity_score = self.__evaluate_rook_activity(board, phase)
             threats_score = self.__evaluate_threats_and_hanging_pieces(board)
+            endgame_king_activity_score = self.__evaluate_endgame_king_activity(board, phase)
             mobility_activity_score = self.__evaluate_mobility_and_activity(board)
             result = ((white_score - black_score) + pawn_structure_score + king_safety_score +
-                      minor_piece_score + rook_activity_score + threats_score + mobility_activity_score)
+                      minor_piece_score + rook_activity_score + threats_score + endgame_king_activity_score +
+                      mobility_activity_score)
         if self.debug:
             end = time.perf_counter()
             elapsed = end - start
