@@ -364,6 +364,27 @@ class BoardEvaluatorTrad(BoardEvaluator):
                     f'{"WHITE" if self.color else "BLACK"} BoardEvaluatorTrad.__evaluate_king_safety() average time after {self.__eval_count_evaluate_king_safety} calls: {avg:.6f}s')
         return score
 
+    def __evaluate_minor_piece_features(self, board: chess.Board, phase: float) -> float:
+        """
+        Evaluates lightweight minor-piece positional features.
+        Currently rewards the bishop pair, with a slightly larger bonus in open/endgame positions.
+        Returns a score (positive for White, negative for Black).
+        """
+        total_pawns = len(board.pieces(chess.PAWN, chess.WHITE)) + len(board.pieces(chess.PAWN, chess.BLACK))
+        openness = (16 - total_pawns) / 16.0
+        endgame_weight = 1.0 - phase
+
+        bishop_pair_bonus = (0.25 + 0.15 * openness) * (0.90 + 0.10 * endgame_weight)
+
+        score = 0.0
+        for color in [chess.WHITE, chess.BLACK]:
+            if len(board.pieces(chess.BISHOP, color)) >= 2:
+                if color == chess.WHITE:
+                    score += bishop_pair_bonus
+                else:
+                    score -= bishop_pair_bonus
+        return score
+
     def __evaluate_mobility_and_activity(self, board: chess.Board) -> float:
         """
         Evaluates piece mobility and activity for both sides.
@@ -436,8 +457,9 @@ class BoardEvaluatorTrad(BoardEvaluator):
                             black_score += value
             pawn_structure_score = self.__evaluate_pawn_structure(board, phase)
             king_safety_score = phase * self.__evaluate_king_safety(board)
+            minor_piece_score = self.__evaluate_minor_piece_features(board, phase)
             mobility_activity_score = self.__evaluate_mobility_and_activity(board)
-            result = (white_score - black_score) + pawn_structure_score + king_safety_score + mobility_activity_score
+            result = (white_score - black_score) + pawn_structure_score + king_safety_score + minor_piece_score + mobility_activity_score
         if self.debug:
             end = time.perf_counter()
             elapsed = end - start
