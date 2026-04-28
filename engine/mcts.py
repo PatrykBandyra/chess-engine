@@ -91,6 +91,7 @@ class MCTS(Player):
                 break
             node = self.__select(root)
             if node.is_terminal and node.visits > 0:
+                iterations += 1
                 continue  # already evaluated terminal node, skip
             if node.untried_moves:
                 node = self.__expand(node)
