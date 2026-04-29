@@ -75,7 +75,7 @@ class Minimax(Player):
         - After the opening phase, uses iterative deepening with minimax alpha-beta pruning:
             * Searches from depth 1 up to self.depth, reusing the transposition table (TT) across iterations.
             * Each iteration seeds the next with TT entries, enabling PV move prioritization for better ordering.
-            * Early termination if checkmate is found.
+            * Mate scores are searched through the requested depth to avoid trusting shallow selective-search mates.
         - Move ordering heuristics used:
             * TT move (PV move from previous iteration): always searched first.
             * Promotions are prioritized highest after TT move.
@@ -173,8 +173,8 @@ class Minimax(Player):
                 f'move: {best_move.uci() if best_move else "None"}; value: {best_value:.2f}'
             )
 
-            # Early termination: checkmate found
-            if self.__is_mate_score(best_value):
+            # Early termination: only after the requested depth confirms the mate score.
+            if self.__is_mate_score(best_value) and current_depth == self.depth:
                 break
 
         if best_move is not None:
@@ -447,6 +447,7 @@ class Minimax(Player):
                                                                                tt_move=tt_move)
         best_move: chess.Move | None = None
         opponent_has_mate_threat: bool = self.__opponent_has_mate_in_one_threat(board)
+        pruned_any_move: bool = False
 
         if maximizing_player:
             max_evaluation = -math.inf
@@ -461,6 +462,7 @@ class Minimax(Player):
                         and not opponent_has_mate_threat
                         and not board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)):
+                    pruned_any_move = True
                     continue
 
                 # Forward Futility Pruning: at low depth, skip quiet non-checking moves
@@ -473,6 +475,7 @@ class Minimax(Player):
                     if static_eval is None:
                         static_eval = self.__evaluate_board_score(board, actual_ply)
                     if static_eval + depth * self.FUTILITY_MARGIN_PER_DEPTH <= alpha:
+                        pruned_any_move = True
                         continue
 
                 # SEE Pruning: at low depth, skip captures that lose material on the swap-off.
@@ -482,6 +485,7 @@ class Minimax(Player):
                         and board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)
                         and self.__static_exchange_evaluation(board, move) < 0):
+                    pruned_any_move = True
                     continue
 
                 searched_any = True
@@ -535,9 +539,10 @@ class Minimax(Player):
             # Store in Transposition Table. Re-fetch the current entry because recursive calls may have
             # written a fresher/deeper entry for the same position via transposition.
             current_tt_entry = self.transposition_table.get(board_hash)
-            if (not current_tt_entry
+            if (not pruned_any_move
+                    and (not current_tt_entry
                     or depth >= current_tt_entry['d']
-                    or self._tt_generation - current_tt_entry['g'] >= self.TT_MAX_AGE):
+                    or self._tt_generation - current_tt_entry['g'] >= self.TT_MAX_AGE)):
                 self.transposition_table[board_hash] = {'v': self.__score_to_tt(max_evaluation, actual_ply), 'd': depth, 'f': flag, 'm': best_move, 'g': self._tt_generation}
 
             return max_evaluation
@@ -554,6 +559,7 @@ class Minimax(Player):
                         and not opponent_has_mate_threat
                         and not board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)):
+                    pruned_any_move = True
                     continue
 
                 # Forward Futility Pruning: at low depth, skip quiet non-checking moves
@@ -566,6 +572,7 @@ class Minimax(Player):
                     if static_eval is None:
                         static_eval = self.__evaluate_board_score(board, actual_ply)
                     if static_eval - depth * self.FUTILITY_MARGIN_PER_DEPTH >= beta:
+                        pruned_any_move = True
                         continue
 
                 # SEE Pruning: at low depth, skip captures that lose material on the swap-off.
@@ -575,6 +582,7 @@ class Minimax(Player):
                         and board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)
                         and self.__static_exchange_evaluation(board, move) < 0):
+                    pruned_any_move = True
                     continue
 
                 searched_any = True
@@ -628,9 +636,10 @@ class Minimax(Player):
             # Store in Transposition Table. Re-fetch the current entry because recursive calls may have
             # written a fresher/deeper entry for the same position via transposition.
             current_tt_entry = self.transposition_table.get(board_hash)
-            if (not current_tt_entry
+            if (not pruned_any_move
+                    and (not current_tt_entry
                     or depth >= current_tt_entry['d']
-                    or self._tt_generation - current_tt_entry['g'] >= self.TT_MAX_AGE):
+                    or self._tt_generation - current_tt_entry['g'] >= self.TT_MAX_AGE)):
                 self.transposition_table[board_hash] = {'v': self.__score_to_tt(min_eval, actual_ply), 'd': depth, 'f': flag, 'm': best_move, 'g': self._tt_generation}
 
             return min_eval
