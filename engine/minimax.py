@@ -260,6 +260,27 @@ class Minimax(Player):
         """Returns True when a pruning bound is neither infinite nor in the mate-score range."""
         return abs(value) < math.inf and not self.__is_mate_score(value)
 
+    def __opponent_has_mate_in_one_threat(self, board: chess.Board) -> bool:
+        """
+        Returns True if the side not currently to move would have a mate in one after a pass.
+        In such positions, the side to move may need a quiet defensive move, so LMP is unsafe.
+        """
+        if board.is_check():
+            return False
+
+        board.push(chess.Move.null())
+        try:
+            for move in board.legal_moves:
+                board.push(move)
+                is_mate = board.is_checkmate()
+                board.pop()
+                if is_mate:
+                    return True
+        finally:
+            board.pop()
+
+        return False
+
     def __mate_score(self, board: chess.Board, actual_ply: int) -> float:
         """
         Returns a finite checkmate score from White's perspective.
@@ -425,6 +446,7 @@ class Minimax(Player):
         ordered_moves: List[chess.Move] = self.order_moves_minimax.order_moves(board, legal_moves, ply=current_ply,
                                                                                tt_move=tt_move)
         best_move: chess.Move | None = None
+        opponent_has_mate_threat: bool = self.__opponent_has_mate_in_one_threat(board)
 
         if maximizing_player:
             max_evaluation = -math.inf
@@ -436,6 +458,7 @@ class Minimax(Player):
                         and move_count >= 4 + depth * depth
                         and not board.is_check()
                         and not self.__is_endgame_position(board)
+                        and not opponent_has_mate_threat
                         and not board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)):
                     continue
@@ -528,6 +551,7 @@ class Minimax(Player):
                         and move_count >= 4 + depth * depth
                         and not board.is_check()
                         and not self.__is_endgame_position(board)
+                        and not opponent_has_mate_threat
                         and not board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)):
                     continue
