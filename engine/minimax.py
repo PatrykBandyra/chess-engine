@@ -539,7 +539,7 @@ class Minimax(Player):
             # Store in Transposition Table. Re-fetch the current entry because recursive calls may have
             # written a fresher/deeper entry for the same position via transposition.
             current_tt_entry = self.transposition_table.get(board_hash)
-            if (not pruned_any_move
+            if ((not pruned_any_move or flag != 'E')
                     and (not current_tt_entry
                     or depth >= current_tt_entry['d']
                     or self._tt_generation - current_tt_entry['g'] >= self.TT_MAX_AGE)):
@@ -636,7 +636,7 @@ class Minimax(Player):
             # Store in Transposition Table. Re-fetch the current entry because recursive calls may have
             # written a fresher/deeper entry for the same position via transposition.
             current_tt_entry = self.transposition_table.get(board_hash)
-            if (not pruned_any_move
+            if ((not pruned_any_move or flag != 'E')
                     and (not current_tt_entry
                     or depth >= current_tt_entry['d']
                     or self._tt_generation - current_tt_entry['g'] >= self.TT_MAX_AGE)):
