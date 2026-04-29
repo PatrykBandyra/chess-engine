@@ -44,8 +44,10 @@ class Minimax(Player):
     FUTILITY_MAX_DEPTH: int = 2
     FUTILITY_MARGIN_PER_DEPTH: float = 1.5
 
-    # Late Move Pruning: at low depth, skip late quiet moves (after `4 + depth*depth` moves).
-    LMP_MAX_DEPTH: int = 4
+    # Late Move Pruning: at very low depth, skip late quiet moves (after `4 + depth*depth` moves).
+    # Keep this conservative: quiet endgame moves can create unavoidable mate threats.
+    LMP_MAX_DEPTH: int = 2
+    ENDGAME_LMP_MATERIAL_THRESHOLD: float = 14.0
 
     # SEE Pruning in main search: at low depth, skip captures with negative SEE (losing trades).
     SEE_PRUNE_MAX_DEPTH: int = 3
@@ -296,12 +298,18 @@ class Minimax(Player):
         """Returns a normalized terminal/evaluation score, using exact ply-aware mate scores."""
         if board.is_checkmate():
             return self.__mate_score(board, actual_ply)
-        if (board.is_stalemate()
-                or board.is_insufficient_material()
-                or board.is_seventyfive_moves()
-                or board.is_fivefold_repetition()):
+        if self.__is_drawn_position(board):
             return 0.0
         return self.__evaluate_board_score(board, actual_ply)
+
+    def __is_drawn_position(self, board: chess.Board) -> bool:
+        """Returns True for automatic draws and draws that either side can immediately claim."""
+        return (board.is_stalemate()
+                or board.is_insufficient_material()
+                or board.is_seventyfive_moves()
+                or board.is_fivefold_repetition()
+                or board.can_claim_fifty_moves()
+                or board.can_claim_threefold_repetition())
 
     def __score_to_tt(self, value: float, actual_ply: int) -> float:
         """Stores mate scores relative to the TT node so retrieval at a different ply remains correct."""
@@ -344,9 +352,9 @@ class Minimax(Player):
         - Updates killer and history heuristics for quiet moves that cause cutoffs or improve bounds.
         - Returns the best evaluation found for the current player at this node.
         """
-        # These automatic draws depend on halfmove clock / repetition history, which are not part
+        # Draw rules depend on halfmove clock / repetition history, which are not part
         # of the Polyglot hash used as the TT key. They must be handled before any TT lookup.
-        if board.is_seventyfive_moves() or board.is_fivefold_repetition():
+        if self.__is_drawn_position(board):
             return 0.0
 
         current_ply: int = actual_ply  # True ply from root (correct even with check extensions)
@@ -427,6 +435,7 @@ class Minimax(Player):
                 if (depth <= self.LMP_MAX_DEPTH
                         and move_count >= 4 + depth * depth
                         and not board.is_check()
+                        and not self.__is_endgame_position(board)
                         and not board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)):
                     continue
@@ -518,6 +527,7 @@ class Minimax(Player):
                 if (depth <= self.LMP_MAX_DEPTH
                         and move_count >= 4 + depth * depth
                         and not board.is_check()
+                        and not self.__is_endgame_position(board)
                         and not board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)):
                     continue
@@ -613,6 +623,14 @@ class Minimax(Player):
             board.pieces(chess.ROOK, side) | board.pieces(chess.QUEEN, side)
         )
 
+    def __is_endgame_position(self, board: chess.Board) -> bool:
+        """Returns True when non-pawn material is low enough that quiet endgame moves are tactically critical."""
+        non_pawn_material: float = 0.0
+        for piece_type in (chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN):
+            non_pawn_material += len(board.pieces(piece_type, chess.WHITE)) * PIECE_VALUES[piece_type]
+            non_pawn_material += len(board.pieces(piece_type, chess.BLACK)) * PIECE_VALUES[piece_type]
+        return non_pawn_material <= self.ENDGAME_LMP_MATERIAL_THRESHOLD
+
     def __quiescence_search(self, board: chess.Board, alpha: float, beta: float,
                             maximizing_player: bool, qs_depth: int, actual_ply: int) -> float:
         """
@@ -638,6 +656,8 @@ class Minimax(Player):
         """
         in_check: bool = board.is_check()
 
+        if self.__is_drawn_position(board):
+            return 0.0
         if board.is_game_over():
             return self.__terminal_or_evaluation_score(board, actual_ply)
 

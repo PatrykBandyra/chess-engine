@@ -81,17 +81,22 @@ class Engine:
         if self.is_graphic_mode:
             self.screen_ready_event.wait()
 
-        while not self.board.is_game_over():
+        while not self.__is_game_over_or_draw_claim_available():
             white_move_number = self.board.fullmove_number
             self.white_player.make_move(self.board, self.screen)
             LOGGER.info(f'move_number: {white_move_number}; White move: {self.board.move_stack[-1].uci() if len(self.board.move_stack) > 0 else "None"}')
-            if self.board.is_game_over():
+            if self.__is_game_over_or_draw_claim_available():
                 break
             black_move_number = self.board.fullmove_number
             self.black_player.make_move(self.board, self.screen)
             LOGGER.info(f'move_number: {black_move_number}; Black move: {self.board.move_stack[-1].uci() if len(self.board.move_stack) > 0 else "None"}')
 
         self.__handle_game_over()
+
+    def __is_game_over_or_draw_claim_available(self) -> bool:
+        return (self.board.is_game_over()
+                or self.board.can_claim_threefold_repetition()
+                or self.board.can_claim_fifty_moves())
 
     def __handle_game_over(self) -> None:
         LOGGER.info(f'GAME OVER - {self.__get_game_status()}')
@@ -109,14 +114,14 @@ class Engine:
             return 'Draw by stalemate'
         elif self.board.is_insufficient_material():
             return 'Draw by insufficient material'
-        elif self.board.can_claim_fifty_moves():
-            return 'Draw by the fifty-move rule'
-        elif self.board.can_claim_threefold_repetition():
-            return 'Draw by threefold repetition'
         elif self.board.is_fivefold_repetition():
             return 'Draw by the fivefold repetition'
         elif self.board.is_seventyfive_moves():
             return 'Draw by the seventy-five-move rule'
+        elif self.board.can_claim_fifty_moves():
+            return 'Draw by the fifty-move rule'
+        elif self.board.can_claim_threefold_repetition():
+            return 'Draw by threefold repetition'
         return None
 
     def __save_moves_to_file(self) -> None:
