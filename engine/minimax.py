@@ -90,11 +90,17 @@ class Minimax(Player):
                 f'board.turn={"WHITE" if board.turn else "BLACK"}'
             )
 
+        move_number: int = board.fullmove_number
         start_time: float = time.perf_counter()
 
         if self.opening_book.use_opening_book and self.opening_book.is_opening:
             if self.opening_book.make_move(board, start_time):
                 return  # Move already made from an opening book
+
+        LOGGER.info(
+            f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; move_number: {move_number}; '
+            f'starting search; depth: {self.depth}'
+        )
 
         # Clearing killer moves and history heuristic (TT is preserved across moves for ID)
         # Killer moves array sized to accommodate check extensions (extra slots for extended branches).
@@ -161,7 +167,7 @@ class Minimax(Player):
             best_value = iteration_best_value
 
             LOGGER.debug(
-                f'{type(self).__name__}; ID iteration depth={current_depth}; '
+                f'{type(self).__name__}; move_number: {move_number}; ID iteration depth={current_depth}; '
                 f'move: {best_move.uci() if best_move else "None"}; value: {best_value:.2f}'
             )
 
@@ -172,12 +178,12 @@ class Minimax(Player):
         if best_move is not None:
             board.push(best_move)
         else:
-            LOGGER.warning(f'{type(self).__name__}: No valid move found. Skipping push.')
+            LOGGER.warning(f'{type(self).__name__}; move_number: {move_number}; No valid move found. Skipping push.')
 
         end_time: float = time.perf_counter()
         duration: float = end_time - start_time
         LOGGER.info(
-            f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; depth: {self.depth}; time: {duration:.6f}s; move: {best_move.uci() if best_move else "None"}; ' +
+            f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; move_number: {move_number}; depth: {self.depth}; time: {duration:.6f}s; move: {best_move.uci() if best_move else "None"}; ' +
             f'value: {best_value:.2f}'
         )
 

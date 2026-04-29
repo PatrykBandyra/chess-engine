@@ -82,12 +82,14 @@ class Engine:
             self.screen_ready_event.wait()
 
         while not self.board.is_game_over():
+            white_move_number = self.board.fullmove_number
             self.white_player.make_move(self.board, self.screen)
-            LOGGER.info(f'White move: {self.board.move_stack[-1].uci() if len(self.board.move_stack) > 0 else "None"}')
+            LOGGER.info(f'move_number: {white_move_number}; White move: {self.board.move_stack[-1].uci() if len(self.board.move_stack) > 0 else "None"}')
             if self.board.is_game_over():
                 break
+            black_move_number = self.board.fullmove_number
             self.black_player.make_move(self.board, self.screen)
-            LOGGER.info(f'Black move: {self.board.move_stack[-1].uci() if len(self.board.move_stack) > 0 else "None"}')
+            LOGGER.info(f'move_number: {black_move_number}; Black move: {self.board.move_stack[-1].uci() if len(self.board.move_stack) > 0 else "None"}')
 
         self.__handle_game_over()
 

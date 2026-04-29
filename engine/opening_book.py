@@ -19,6 +19,7 @@ class OpeningBook:
         self.opening_book = open_reader('codekiddy.bin')
 
     def make_move(self, board: chess.Board, start_time: float) -> bool:
+        move_number: int = board.fullmove_number
         entries: List[Entry] = list(self.opening_book.find_all(board))
         if entries:
             weights = [entry.weight for entry in entries]
@@ -44,13 +45,13 @@ class OpeningBook:
             max_weight = max(weights)
             max_weight_move = next((e for e in entries if e.weight == max_weight), None).move.uci()
             LOGGER.info(
-                f'OPENING BOOK; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; ' +
+                f'OPENING BOOK; {"WHITE" if self.color else "BLACK"}; move_number: {move_number}; time: {duration:.6f}s; ' +
                 f'move: {opening_book_best_move.uci()}; weight: {entry.weight}; ' +
                 f'max weight move: {max_weight_move}; max weight: {max_weight}')
             return self.is_opening
         else:
             self.is_opening = False
-            LOGGER.info(f'OPENING BOOK; {"WHITE" if self.color else "BLACK"}; opening phase ended')
+            LOGGER.info(f'OPENING BOOK; {"WHITE" if self.color else "BLACK"}; move_number: {move_number}; opening phase ended')
             return self.is_opening
 
     def __del__(self):

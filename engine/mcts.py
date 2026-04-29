@@ -79,15 +79,20 @@ class MCTS(Player):
         pass
 
     def make_move(self, board: chess.Board, screen: ChessBoardScreen) -> None:
+        move_number: int = board.fullmove_number
         start_time: float = time.perf_counter()
         if self.opening_book.use_opening_book and self.opening_book.is_opening:
             if self.opening_book.make_move(board, start_time):
                 self.__root = None
                 self.__last_best_child = None
                 return  # Move already made from an opening book
-        self.__run_mcts(board, start_time)
+        LOGGER.info(
+            f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; move_number: {move_number}; '
+            f'starting search; time_budget: {self.mcts_time_budget:.6f}s'
+        )
+        self.__run_mcts(board, start_time, move_number)
 
-    def __run_mcts(self, board: chess.Board, start_time: float) -> None:
+    def __run_mcts(self, board: chess.Board, start_time: float, move_number: int) -> None:
         root = self.__get_or_create_root(board)
         end_time = time.perf_counter() + self.mcts_time_budget
         iterations = 0
@@ -114,12 +119,12 @@ class MCTS(Player):
             self.__last_best_child = best_child
             duration = time.perf_counter() - start_time
             LOGGER.info(
-                f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; time: {duration:.6f}s; move: {best_child.move.uci()}; visits: {best_child.visits}; iterations: {iterations}'
+                f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; move_number: {move_number}; time: {duration:.6f}s; move: {best_child.move.uci()}; visits: {best_child.visits}; iterations: {iterations}'
             )
         else:
             self.__root = None
             self.__last_best_child = None
-            LOGGER.warning(f'{type(self).__name__}: No valid move found. Skipping push.')
+            LOGGER.warning(f'{type(self).__name__}; move_number: {move_number}; No valid move found. Skipping push.')
 
     def __get_or_create_root(self, board: chess.Board) -> MCTSNode:
         if self.__last_best_child is not None:
