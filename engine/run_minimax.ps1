@@ -91,9 +91,10 @@ $RunTag = (Get-Date -Format 'yyyyMMdd_HHmmss')
 # $runArgs = @(
 #     '-w',  'MINIMAX_TRAD',
 #     '-b',  'MINIMAX_TRAD',
-#     '-m',  'B',
+#     '-m',  'G',
 #     '-dw', '5',
 #     '-db', '3',
+#     '-ob',
 #     '-g',  "game_d5_vs_d3_$RunTag.txt",
 #     '-l',  "log_d5_vs_d3_$RunTag.txt"
 # )
@@ -105,11 +106,11 @@ $RunTag = (Get-Date -Format 'yyyyMMdd_HHmmss')
 # $runArgs = @(
 #     '-w',  'MINIMAX_TRAD',
 #     '-b',  'STOCKFISH',
-#     '-m',  'B',
+#     '-m',  'G',
 #     '-dw', '4',
 #     '-dbs','5',
 #     '-sb', '3',
-#     '-sp', 'C:\stockfish\stockfish.exe',
+#     '-sp', '../stockfish_ai/stockfish-windows-x86-64-avx2/stockfish/stockfish-windows-x86-64-avx2.exe',
 #     '-g',  "game_trad_vs_sf_$RunTag.txt",
 #     '-l',  "log_trad_vs_sf_$RunTag.txt"
 # )
@@ -121,11 +122,12 @@ $RunTag = (Get-Date -Format 'yyyyMMdd_HHmmss')
 # $runArgs = @(
 #     '-w',  'STOCKFISH',
 #     '-b',  'MINIMAX_TRAD',
-#     '-m',  'B',
+#     '-m',  'G',
+#     '-ob',
 #     '-dws','5',
 #     '-sw', '3',
 #     '-db', '4',
-#     '-sp', 'C:\stockfish\stockfish.exe',
+#     '-sp', '../stockfish_ai/stockfish-windows-x86-64-avx2/stockfish/stockfish-windows-x86-64-avx2.exe',
 #     '-g',  "game_sf_vs_trad_$RunTag.txt",
 #     '-l',  "log_sf_vs_trad_$RunTag.txt"
 # )
@@ -208,7 +210,8 @@ $RunTag = (Get-Date -Format 'yyyyMMdd_HHmmss')
 # $runArgs = @(
 #     '-w',  'MINIMAX_TRAD',
 #     '-b',  'MINIMAX_NN',
-#     '-m',  'B',
+#     '-m',  'G',
+#     '-ob',
 #     '-dw', '4',
 #     '-db', '3',
 #     '-g',  "game_trad_vs_nn_$RunTag.txt",
