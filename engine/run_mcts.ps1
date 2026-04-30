@@ -24,7 +24,8 @@
         -sw / --skill_white            : white Stockfish skill level (0..20)
         -sb / --skill_black            : black Stockfish skill level (0..20)
         -sp / --stockfish_path         : path to Stockfish binary
-        -mt / --mcts_time              : MCTS time budget in seconds
+        -mtw / --mcts_time_white       : MCTS time budget in seconds for white
+        -mtb / --mcts_time_black       : MCTS time budget in seconds for black
         -d  / --debug                  : debug mode (flag)
 
 .NOTES
@@ -59,28 +60,28 @@ $RunTag = (Get-Date -Format 'yyyyMMdd_HHmmss')
 # Variant 1: MCTS (trad) vs MCTS (trad), background mode, 1s vs 1s
 # Simplest self-play test with the traditional MCTS evaluator.
 # ----------------------------------------------------------------------------
-$runArgs = @(
-    '-w',  'MCTS_TRAD',
-    '-b',  'MCTS_TRAD',
-    '-m',  'B',
-    '-mt', '1',
-    '-g',  "game_mcts_vs_mcts_1s_$RunTag.txt",
-    '-l',  "log_mcts_vs_mcts_1s_$RunTag.txt"
-)
+#$runArgs = @(
+#    '-w',  'MCTS_TRAD',
+#    '-b',  'MCTS_TRAD',
+#    '-m',  'B',
+#    '-mtw', '1', '-mtb', '1',
+#    '-g',  "game_mcts_vs_mcts_1s_$RunTag.txt",
+#    '-l',  "log_mcts_vs_mcts_1s_$RunTag.txt"
+#)
 
 # ----------------------------------------------------------------------------
 # Variant 2: MCTS (trad) vs MCTS (trad), GUI, 1s vs 1s, opening book
 # For visually observing the game.
 # ----------------------------------------------------------------------------
-# $runArgs = @(
-#     '-w',  'MCTS_TRAD',
-#     '-b',  'MCTS_TRAD',
-#     '-m',  'G',
-#     '-mt', '1',
-#     '-ob',
-#     '-g',  "game_mcts_vs_mcts_gui_$RunTag.txt",
-#     '-l',  "log_mcts_vs_mcts_gui_$RunTag.txt"
-# )
+ $runArgs = @(
+     '-w',  'MCTS_TRAD',
+     '-b',  'MCTS_TRAD',
+     '-m',  'G',
+     '-mtw', '20', '-mtb', '20',
+     '-ob',
+     '-g',  "game_mcts_vs_mcts_gui_$RunTag.txt",
+     '-l',  "log_mcts_vs_mcts_gui_$RunTag.txt"
+ )
 
 # ----------------------------------------------------------------------------
 # Variant 3: Asymmetric time — 2s vs 0.5s
@@ -90,7 +91,7 @@ $runArgs = @(
 #     '-w',  'MCTS_TRAD',
 #     '-b',  'MCTS_TRAD',
 #     '-m',  'B',
-#     '-mt', '2',
+#     '-mtw', '2', '-mtb', '0.5',
 #     '-g',  "game_mcts2s_vs_mcts05s_$RunTag.txt",
 #     '-l',  "log_mcts2s_vs_mcts05s_$RunTag.txt"
 # )
@@ -103,7 +104,7 @@ $runArgs = @(
 #     '-w',  'MCTS_TRAD',
 #     '-b',  'STOCKFISH',
 #     '-m',  'B',
-#     '-mt', '1',
+#     '-mtw', '1', '-mtb', '1',
 #     '-dbs','5',
 #     '-sb', '3',
 #     '-sp', 'C:\stockfish\stockfish.exe',
@@ -121,7 +122,7 @@ $runArgs = @(
 #     '-m',  'B',
 #     '-dws','5',
 #     '-sw', '3',
-#     '-mt', '1',
+#     '-mtw', '1', '-mtb', '1',
 #     '-sp', 'C:\stockfish\stockfish.exe',
 #     '-g',  "game_sf_vs_mcts_$RunTag.txt",
 #     '-l',  "log_sf_vs_mcts_$RunTag.txt"
@@ -135,7 +136,7 @@ $runArgs = @(
 #     '-w',  'MCTS_TRAD',
 #     '-b',  'MCTS_TRAD',
 #     '-m',  'B',
-#     '-mt', '1',
+#     '-mtw', '1', '-mtb', '1',
 #     '-i',  'startpos.fen',
 #     '-o',  "endpos_$RunTag.fen",
 #     '-g',  "game_fen_$RunTag.txt",
@@ -150,7 +151,7 @@ $runArgs = @(
 #     '-w',  'MCTS_TRAD',
 #     '-b',  'MCTS_TRAD',
 #     '-m',  'B',
-#     '-mt', '1',
+#     '-mtw', '1', '-mtb', '1',
 #     '-d',
 #     '-g',  "game_debug_$RunTag.txt",
 #     '-l',  "log_debug_$RunTag.txt"
@@ -164,7 +165,7 @@ $runArgs = @(
 #     '-w',  'H',
 #     '-b',  'MCTS_TRAD',
 #     '-m',  'G',
-#     '-mt', '1',
+#     '-mtw', '1', '-mtb', '1',
 #     '-ob',
 #     '-g',  "game_human_vs_mcts_$RunTag.txt",
 #     '-l',  "log_human_vs_mcts_$RunTag.txt"
@@ -178,7 +179,7 @@ $runArgs = @(
 #     '-w',  'MCTS_NN',
 #     '-b',  'MCTS_NN',
 #     '-m',  'B',
-#     '-mt', '1',
+#     '-mtw', '1', '-mtb', '1',
 #     '-g',  "game_mctsnn_vs_mctsnn_1s_$RunTag.txt",
 #     '-l',  "log_mctsnn_vs_mctsnn_1s_$RunTag.txt"
 # )
@@ -190,7 +191,7 @@ $runArgs = @(
 #     '-w',  'MCTS_NN',
 #     '-b',  'MCTS_TRAD',
 #     '-m',  'B',
-#     '-mt', '1',
+#     '-mtw', '1', '-mtb', '1',
 #     '-g',  "game_mctsnn_vs_mctstrad_1s_$RunTag.txt",
 #     '-l',  "log_mctsnn_vs_mctstrad_1s_$RunTag.txt"
 # )
@@ -202,7 +203,7 @@ $runArgs = @(
 #     '-w',  'MCTS_TRAD',
 #     '-b',  'MCTS_NN',
 #     '-m',  'B',
-#     '-mt', '1',
+#     '-mtw', '1', '-mtb', '1',
 #     '-g',  "game_mctstrad_vs_mctsnn_1s_$RunTag.txt",
 #     '-l',  "log_mctstrad_vs_mctsnn_1s_$RunTag.txt"
 # )

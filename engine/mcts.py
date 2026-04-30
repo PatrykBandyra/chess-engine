@@ -69,7 +69,7 @@ class MCTS(Player):
         self.opening_book = OpeningBook(args, color)
         self.order_moves_mcts = OrderMovesMCTS(args, color)
 
-        self.mcts_time_budget: float = args.mcts_time
+        self.mcts_time_budget: float = args.mcts_time_white if color == chess.WHITE else args.mcts_time_black
         self.__eval_cache: OrderedDict[int, float] = OrderedDict()
         self.__root: Optional[MCTSNode] = None
         self.__last_best_child: Optional[MCTSNode] = None

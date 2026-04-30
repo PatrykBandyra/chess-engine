@@ -24,7 +24,8 @@
         -sw / --skill_white            : white Stockfish skill level (0..20)
         -sb / --skill_black            : black Stockfish skill level (0..20)
         -sp / --stockfish_path         : path to Stockfish binary
-        -mt / --mcts_time              : MCTS time budget in seconds
+        -mtw / --mcts_time_white       : MCTS time budget in seconds for white
+        -mtb / --mcts_time_black       : MCTS time budget in seconds for black
         -d  / --debug                  : debug mode (flag)
 
 .NOTES
