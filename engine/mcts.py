@@ -118,13 +118,14 @@ class MCTS(Player):
             self.__root = root
             self.__last_best_child = best_child
             duration = time.perf_counter() - start_time
+            mean_value = best_child.value / best_child.visits if best_child.visits > 0 else 0.0
             LOGGER.info(
-                f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; move_number: {move_number}; time: {duration:.6f}s; move: {best_child.move.uci()}; visits: {best_child.visits}; iterations: {iterations}'
+                f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; move_number: {move_number}; time: {duration:.6f}s; move: {best_child.move.uci()}; value: {mean_value:.4f}; visits: {best_child.visits}; iterations: {iterations}'
             )
         else:
             self.__root = None
             self.__last_best_child = None
-            LOGGER.warning(f'{type(self).__name__}; move_number: {move_number}; No valid move found. Skipping push.')
+            LOGGER.warning(f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; move_number: {move_number}; No valid move found. Skipping push.')
 
     def __get_or_create_root(self, board: chess.Board) -> MCTSNode:
         if self.__last_best_child is not None:
