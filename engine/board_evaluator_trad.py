@@ -24,9 +24,35 @@ class BoardEvaluatorTrad(BoardEvaluator):
         self.__eval_count_evaluate_king_safety = 0
         self.__eval_count_evaluate_pawn_structure = 0
 
+    __ALL_PIECE_TYPES = (chess.PAWN, chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN, chess.KING)
+
+    def __snapshot_pieces(self, board: chess.Board) -> dict:
+        """
+        Build a per-evaluation snapshot of `board.pieces(piece_type, color)` for all 12
+        (piece_type, color) combinations. Returning the same `SquareSet` objects to all
+        helper functions eliminates ~30+ redundant `pieces_mask`/`SquareSet` rebuilds per
+        `evaluate_board` call. Iteration order over each `SquareSet` is preserved.
+        """
+        pieces = board.pieces
+        return {(pt, color): pieces(pt, color)
+                for pt in self.__ALL_PIECE_TYPES
+                for color in (chess.WHITE, chess.BLACK)}
+
     ENDGAME_MATERIAL_THRESHOLD = 20.0
     MIDDLEGAME_MATERIAL_THRESHOLD = 67.0
     PST_SCALE = 0.01
+
+    # Populated at end of module (after PIECE_SQUARE_TABLE_* are defined) by
+    # `_build_pst_flat`. Pre-mirrored for Black, pre-scaled by `PST_SCALE`.
+    PST_MID_FLAT: dict = {}
+    PST_END_FLAT: dict = {}
+
+    # Populated at end of module by `_build_passed_pawn_spans`. Tuple
+    # `(black_spans, white_spans)`, each a tuple of 64 `int` bitboards. The mask at
+    # `PASSED_PAWN_SPAN[color][sq]` covers the source pawn's file and both adjacent
+    # files, on every rank strictly in front of `sq` (towards the promotion rank for
+    # `color`). A pawn is passed iff that mask AND the enemy pawn bitboard is zero.
+    PASSED_PAWN_SPAN: tuple = ((), ())
 
     DOUBLED_PAWN_PENALTY = 0.25
     ISOLATED_PAWN_PENALTY = 0.25
@@ -213,14 +239,16 @@ class BoardEvaluatorTrad(BoardEvaluator):
         ]
     }
 
-    def __get_game_phase(self, board: chess.Board) -> float:
+    def __get_game_phase(self, board: chess.Board, pieces_by: dict | None = None) -> float:
         """
         Returns a phase value in [0, 1]: 1.0 = middlegame, 0.0 = endgame, interpolated by non-pawn material.
         """
+        if pieces_by is None:
+            pieces_by = self.__snapshot_pieces(board)
         non_pawn_material = 0.0
         for piece_type in [chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]:
-            non_pawn_material += len(board.pieces(piece_type, chess.WHITE)) * PIECE_VALUES[piece_type]
-            non_pawn_material += len(board.pieces(piece_type, chess.BLACK)) * PIECE_VALUES[piece_type]
+            non_pawn_material += len(pieces_by[(piece_type, chess.WHITE)]) * PIECE_VALUES[piece_type]
+            non_pawn_material += len(pieces_by[(piece_type, chess.BLACK)]) * PIECE_VALUES[piece_type]
         endgame_threshold = self.ENDGAME_MATERIAL_THRESHOLD
         middlegame_threshold = self.MIDDLEGAME_MATERIAL_THRESHOLD
         if non_pawn_material >= middlegame_threshold:
@@ -235,41 +263,65 @@ class BoardEvaluatorTrad(BoardEvaluator):
         """
         Returns the phase-interpolated piece-square table value in pawn units.
 
-        The PST arrays are stored in python-chess square order from a1 to h8, from White's
-        perspective. White pieces can use the square index directly. Black pieces are
-        mirrored vertically, giving symmetric values for equivalent White/Black placements.
+        Uses pre-mirrored, pre-scaled flat PST tables (`PST_MID_FLAT` / `PST_END_FLAT`)
+        built once at import time. Each entry is keyed first by `piece_type` and then
+        indexed by `int(color)` (Black=0, White=1) into a 2-tuple of 64-element tuples,
+        which avoids per-call allocation of a `(piece_type, color)` tuple key.
         """
-        pst_index = square if color == chess.WHITE else chess.square_mirror(square)
-        pst_mid = self.PIECE_SQUARE_TABLE_MID[piece_type][pst_index]
-        pst_end = self.PIECE_SQUARE_TABLE_END[piece_type][pst_index]
-        return self.PST_SCALE * (phase * pst_mid + (1 - phase) * pst_end)
+        mid_tuple = self.PST_MID_FLAT[piece_type][color]
+        end_tuple = self.PST_END_FLAT[piece_type][color]
+        return phase * mid_tuple[square] + (1.0 - phase) * end_tuple[square]
 
-    def __is_passed_pawn(self, board: chess.Board, square: chess.Square, color: chess.Color) -> bool:
-        file = chess.square_file(square)
-        rank = chess.square_rank(square)
-        for opp_sq in board.pieces(chess.PAWN, not color):
-            opp_file = chess.square_file(opp_sq)
-            opp_rank = chess.square_rank(opp_sq)
-            if abs(opp_file - file) <= 1:
-                if (color == chess.WHITE and opp_rank > rank) or (color == chess.BLACK and opp_rank < rank):
-                    return False
-        return True
+    def __is_passed_pawn(self, board: chess.Board, square: chess.Square, color: chess.Color,
+                         pieces_by: dict | None = None) -> bool:
+        """
+        A pawn is `passed` iff no enemy pawn occupies any square on the same file or
+        either adjacent file in front of it (towards the promotion rank).
 
-    def __passed_pawns(self, board: chess.Board, color: chess.Color) -> list[chess.Square]:
-        return [sq for sq in board.pieces(chess.PAWN, color) if self.__is_passed_pawn(board, sq, color)]
+        Implementation: a single bitboard AND between the precomputed
+        `PASSED_PAWN_SPAN[color][square]` mask and the enemy pawn bitboard. The mask is
+        built once at import time (see `_build_passed_pawn_spans`), keyed first by
+        `int(color)` (Black=0, White=1) and then by source square. `SquareSet.mask` is
+        the underlying `int` bitboard, so the AND happens entirely in C-level int code.
+        """
+        if pieces_by is None:
+            pieces_by = self.__snapshot_pieces(board)
+        enemy_pawn_mask = pieces_by[(chess.PAWN, not color)].mask
+        return (self.PASSED_PAWN_SPAN[color][square] & enemy_pawn_mask) == 0
 
-    def __effective_king_safety_phase(self, board: chess.Board, phase: float) -> float:
-        queens_on_board = bool(board.pieces(chess.QUEEN, chess.WHITE) or board.pieces(chess.QUEEN, chess.BLACK))
+    def __passed_pawns(self, board: chess.Board, color: chess.Color,
+                       pieces_by: dict | None = None) -> list[chess.Square]:
+        if pieces_by is None:
+            pieces_by = self.__snapshot_pieces(board)
+        return [sq for sq in pieces_by[(chess.PAWN, color)]
+                if self.__is_passed_pawn(board, sq, color, pieces_by)]
+
+    def __effective_king_safety_phase(self, board: chess.Board, phase: float,
+                                      pieces_by: dict | None = None) -> float:
+        if pieces_by is None:
+            pieces_by = self.__snapshot_pieces(board)
+        queens_on_board = bool(pieces_by[(chess.QUEEN, chess.WHITE)] or pieces_by[(chess.QUEEN, chess.BLACK)])
         if queens_on_board:
             return max(phase, self.KING_SAFETY_QUEENS_ON_BOARD_PHASE_FLOOR)
         return phase
 
-    def __evaluate_pawn_structure(self, board: chess.Board, phase: float) -> float:
+    def __evaluate_pawn_structure(self, board: chess.Board, phase: float,
+                                  pieces_by: dict | None = None,
+                                  passed_pawns_by_color: dict | None = None) -> float:
         """
         Evaluates pawn structure for both sides, considering doubled, isolated, and passed pawns.
         Returns a score (positive for White, negative for Black).
+
+        `passed_pawns_by_color` is an optional precomputed mapping
+        `{chess.WHITE: list[Square], chess.BLACK: list[Square]}` — when provided, the
+        per-color passed-pawn list is taken from it instead of recomputing via
+        `__passed_pawns`. `evaluate_board` populates this once per call so the same
+        passed-pawn lists are shared with `__evaluate_endgame_king_activity`.
         """
         start = time.perf_counter() if self.debug else 0.0
+
+        if pieces_by is None:
+            pieces_by = self.__snapshot_pieces(board)
 
         endgame_weight = 1.0 - phase
         def evaluate_passed_pawn(square: chess.Square, color: chess.Color,
@@ -311,7 +363,7 @@ class BoardEvaluatorTrad(BoardEvaluator):
 
         score = 0.0
         for color in [chess.WHITE, chess.BLACK]:
-            pawns = board.pieces(chess.PAWN, color)
+            pawns = pieces_by[(chess.PAWN, color)]
             files = [chess.square_file(sq) for sq in pawns]
             # Doubled pawns
             doubled_penalty = sum(files.count(f) - 1 for f in set(files) if files.count(f) > 1)
@@ -324,7 +376,10 @@ class BoardEvaluatorTrad(BoardEvaluator):
                 if not has_left and not has_right:
                     isolated_penalty += 1
             # Passed pawns
-            passed_pawns = self.__passed_pawns(board, color)
+            if passed_pawns_by_color is not None:
+                passed_pawns = passed_pawns_by_color[color]
+            else:
+                passed_pawns = self.__passed_pawns(board, color, pieces_by)
             passed_bonus = sum(evaluate_passed_pawn(sq, color, pawns, passed_pawns) for sq in passed_pawns)
             # Penalties and bonuses
             penalty = -self.DOUBLED_PAWN_PENALTY * doubled_penalty - self.ISOLATED_PAWN_PENALTY * isolated_penalty
@@ -345,13 +400,16 @@ class BoardEvaluatorTrad(BoardEvaluator):
                     f'{"WHITE" if self.color else "BLACK"} BoardEvaluatorTrad.__evaluate_pawn_structure() average time after {self.__eval_count_evaluate_pawn_structure} calls: {avg:.6f}s')
         return score
 
-    def __evaluate_king_safety(self, board: chess.Board) -> float:
+    def __evaluate_king_safety(self, board: chess.Board, pieces_by: dict | None = None) -> float:
         """
         Evaluates king safety for both sides.
         Considers pawn shield and open files near the king.
         Returns a score (positive for White, negative for Black).
         """
         start = time.perf_counter() if self.debug else 0.0
+
+        if pieces_by is None:
+            pieces_by = self.__snapshot_pieces(board)
 
         def king_zone_squares(king_sq: int) -> list[int]:
             zone = [king_sq]
@@ -393,8 +451,8 @@ class BoardEvaluatorTrad(BoardEvaluator):
                         shield += 1
             # Open files near king: penalty for open/semi-open files
             open_file_penalty = 0.0
-            own_pawn_files = {chess.square_file(sq) for sq in board.pieces(chess.PAWN, color)}
-            opp_pawn_files = {chess.square_file(sq) for sq in board.pieces(chess.PAWN, not color)}
+            own_pawn_files = {chess.square_file(sq) for sq in pieces_by[(chess.PAWN, color)]}
+            opp_pawn_files = {chess.square_file(sq) for sq in pieces_by[(chess.PAWN, not color)]}
             for df in [-1, 0, 1]:
                 f = file + df
                 if 0 <= f < 8:
@@ -437,13 +495,16 @@ class BoardEvaluatorTrad(BoardEvaluator):
                     f'{"WHITE" if self.color else "BLACK"} BoardEvaluatorTrad.__evaluate_king_safety() average time after {self.__eval_count_evaluate_king_safety} calls: {avg:.6f}s')
         return score
 
-    def __evaluate_minor_piece_features(self, board: chess.Board, phase: float) -> float:
+    def __evaluate_minor_piece_features(self, board: chess.Board, phase: float,
+                                        pieces_by: dict | None = None) -> float:
         """
         Evaluates lightweight minor-piece positional features.
         Currently rewards the bishop pair, with a slightly larger bonus in open/endgame positions.
         Returns a score (positive for White, negative for Black).
         """
-        total_pawns = len(board.pieces(chess.PAWN, chess.WHITE)) + len(board.pieces(chess.PAWN, chess.BLACK))
+        if pieces_by is None:
+            pieces_by = self.__snapshot_pieces(board)
+        total_pawns = len(pieces_by[(chess.PAWN, chess.WHITE)]) + len(pieces_by[(chess.PAWN, chess.BLACK)])
         openness = (16 - total_pawns) / 16.0
         endgame_weight = 1.0 - phase
 
@@ -452,18 +513,21 @@ class BoardEvaluatorTrad(BoardEvaluator):
 
         score = 0.0
         for color in [chess.WHITE, chess.BLACK]:
-            if len(board.pieces(chess.BISHOP, color)) >= 2:
+            if len(pieces_by[(chess.BISHOP, color)]) >= 2:
                 if color == chess.WHITE:
                     score += bishop_pair_bonus
                 else:
                     score -= bishop_pair_bonus
         return score
 
-    def __evaluate_rook_activity(self, board: chess.Board, phase: float) -> float:
+    def __evaluate_rook_activity(self, board: chess.Board, phase: float,
+                                 pieces_by: dict | None = None) -> float:
         """
         Evaluates rook activity: open/semi-open files, rooks on the 7th/2nd rank,
         and doubled rooks on useful files. Returns a score (positive for White, negative for Black).
         """
+        if pieces_by is None:
+            pieces_by = self.__snapshot_pieces(board)
         endgame_weight = 1.0 - phase
         activity_scale = self.ROOK_ACTIVITY_PHASE_BASE + self.ROOK_ACTIVITY_ENDGAME_BONUS * endgame_weight
 
@@ -475,14 +539,16 @@ class BoardEvaluatorTrad(BoardEvaluator):
         score = 0.0
         for color in [chess.WHITE, chess.BLACK]:
             color_sign = 1 if color == chess.WHITE else -1
-            rooks = board.pieces(chess.ROOK, color)
+            rooks = pieces_by[(chess.ROOK, color)]
+            own_pawns = pieces_by[(chess.PAWN, color)]
+            enemy_pawns = pieces_by[(chess.PAWN, not color)]
             useful_rook_files = set()
 
             for sq in rooks:
                 file = chess.square_file(sq)
                 rank = chess.square_rank(sq)
-                own_pawns_on_file = any(chess.square_file(pawn_sq) == file for pawn_sq in board.pieces(chess.PAWN, color))
-                enemy_pawns_on_file = any(chess.square_file(pawn_sq) == file for pawn_sq in board.pieces(chess.PAWN, not color))
+                own_pawns_on_file = any(chess.square_file(pawn_sq) == file for pawn_sq in own_pawns)
+                enemy_pawns_on_file = any(chess.square_file(pawn_sq) == file for pawn_sq in enemy_pawns)
 
                 if not own_pawns_on_file and not enemy_pawns_on_file:
                     score += color_sign * open_file_bonus
@@ -501,17 +567,20 @@ class BoardEvaluatorTrad(BoardEvaluator):
 
         return score
 
-    def __evaluate_threats_and_hanging_pieces(self, board: chess.Board) -> float:
+    def __evaluate_threats_and_hanging_pieces(self, board: chess.Board,
+                                              pieces_by: dict | None = None) -> float:
         """
         Evaluates lightweight tactical static features: hanging pieces, pieces attacked by pawns,
         and higher-value pieces attacked by lower-value pieces. Returns a score from White's
         perspective (positive for White, negative for Black).
         """
+        if pieces_by is None:
+            pieces_by = self.__snapshot_pieces(board)
         score = 0.0
         for color in [chess.WHITE, chess.BLACK]:
             color_sign = 1 if color == chess.WHITE else -1
             for piece_type in [chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]:
-                for sq in board.pieces(piece_type, color):
+                for sq in pieces_by[(piece_type, color)]:
                     attackers = board.attackers(not color, sq)
                     if not attackers:
                         continue
@@ -542,17 +611,27 @@ class BoardEvaluatorTrad(BoardEvaluator):
                     score -= color_sign * penalty
         return score
 
-    def __evaluate_endgame_king_activity(self, board: chess.Board, phase: float) -> float:
+    def __evaluate_endgame_king_activity(self, board: chess.Board, phase: float,
+                                         pieces_by: dict | None = None,
+                                         passed_pawns_by_color: dict | None = None) -> float:
         """
         Rewards active kings in endgames: centralization, attacking enemy pawns, supporting own
         passed pawns, and stopping enemy passed pawns. Returns a score from White's perspective.
+
+        `passed_pawns_by_color` is an optional precomputed mapping
+        `{chess.WHITE: list[Square], chess.BLACK: list[Square]}` — when provided, both
+        own and enemy passed-pawn lookups are O(1) dict reads instead of recomputing
+        `__passed_pawns` (which iterates all pawns of the queried color).
         """
         endgame_weight = 1.0 - phase
         if endgame_weight <= 0.0:
             return 0.0
 
+        if pieces_by is None:
+            pieces_by = self.__snapshot_pieces(board)
+
         center_squares = self.CENTER_SQUARES
-        queens_on_board = bool(board.pieces(chess.QUEEN, chess.WHITE) or board.pieces(chess.QUEEN, chess.BLACK))
+        queens_on_board = bool(pieces_by[(chess.QUEEN, chess.WHITE)] or pieces_by[(chess.QUEEN, chess.BLACK)])
         center_multiplier = self.ENDGAME_KING_CENTER_QUEENS_ON_BOARD_MULTIPLIER if queens_on_board else 1.0
 
         score = 0.0
@@ -568,17 +647,21 @@ class BoardEvaluatorTrad(BoardEvaluator):
             activity += center_multiplier * self.ENDGAME_KING_CENTER_BONUS * max(0, 4 - center_distance)
 
             enemy_pawn_pressure = 0.0
-            for enemy_pawn_sq in board.pieces(chess.PAWN, not color):
+            for enemy_pawn_sq in pieces_by[(chess.PAWN, not color)]:
                 distance = chess.square_distance(king_sq, enemy_pawn_sq)
                 enemy_pawn_pressure += self.ENDGAME_KING_ENEMY_PAWN_PRESSURE_BONUS * max(0, 4 - distance)
             activity += min(self.ENDGAME_KING_ENEMY_PAWN_PRESSURE_LIMIT, enemy_pawn_pressure)
 
-            own_passed_pawns = self.__passed_pawns(board, color)
+            own_passed_pawns = (passed_pawns_by_color[color]
+                                if passed_pawns_by_color is not None
+                                else self.__passed_pawns(board, color, pieces_by))
             for pawn_sq in own_passed_pawns:
                 distance = chess.square_distance(king_sq, pawn_sq)
                 activity += self.ENDGAME_KING_OWN_PASSER_SUPPORT_BONUS * max(0, 4 - distance)
 
-            enemy_passed_pawns = self.__passed_pawns(board, not color)
+            enemy_passed_pawns = (passed_pawns_by_color[not color]
+                                  if passed_pawns_by_color is not None
+                                  else self.__passed_pawns(board, not color, pieces_by))
             for pawn_sq in enemy_passed_pawns:
                 distance_to_pawn = chess.square_distance(king_sq, pawn_sq)
                 promotion_sq = chess.square(chess.square_file(pawn_sq), 0 if color == chess.WHITE else 7)
@@ -589,7 +672,8 @@ class BoardEvaluatorTrad(BoardEvaluator):
             score += color_sign * activity * endgame_weight
         return score
 
-    def __evaluate_mobility_and_activity(self, board: chess.Board) -> float:
+    def __evaluate_mobility_and_activity(self, board: chess.Board,
+                                         pieces_by: dict | None = None) -> float:
         """
         Evaluates piece mobility and activity for both sides.
         Mobility: Number of attacked squares for each piece type (except pawns and kings),
@@ -599,6 +683,9 @@ class BoardEvaluatorTrad(BoardEvaluator):
         """
         start = time.perf_counter() if self.debug else 0.0
 
+        if pieces_by is None:
+            pieces_by = self.__snapshot_pieces(board)
+
         mobility_weights = self.MOBILITY_WEIGHTS
         activity_bonus = self.ACTIVITY_BONUS
         central_control_bonus = self.CENTRAL_CONTROL_BONUS
@@ -607,7 +694,7 @@ class BoardEvaluatorTrad(BoardEvaluator):
         for color in [chess.WHITE, chess.BLACK]:
             color_sign = 1 if color == chess.WHITE else -1
             for piece_type in [chess.KNIGHT, chess.BISHOP, chess.ROOK, chess.QUEEN]:
-                for sq in board.pieces(piece_type, color):
+                for sq in pieces_by[(piece_type, color)]:
                     # Mobility: count attacked squares not occupied by friendly pieces. This remains
                     # symmetric and independent of whose turn it is. Do not mutate board.turn here:
                     # minimax relies on evaluate_board() preserving the exact board state it receives.
@@ -643,12 +730,13 @@ class BoardEvaluatorTrad(BoardEvaluator):
                 board.is_seventyfive_moves() or board.is_fivefold_repetition():
             result = 0.0
         else:
-            phase = self.__get_game_phase(board)
+            pieces_by = self.__snapshot_pieces(board)
+            phase = self.__get_game_phase(board, pieces_by)
             white_score = 0.0
             black_score = 0.0
             for piece_type in PIECE_VALUES.keys():
                 for color in [chess.WHITE, chess.BLACK]:
-                    squares = board.pieces(piece_type, color)
+                    squares = pieces_by[(piece_type, color)]
                     for sq in squares:
                         material_value = 0.0 if piece_type == chess.KING else PIECE_VALUES[piece_type]
                         value = material_value + self.__pst_value(piece_type, sq, color, phase)
@@ -656,13 +744,23 @@ class BoardEvaluatorTrad(BoardEvaluator):
                             white_score += value
                         else:
                             black_score += value
-            pawn_structure_score = self.__evaluate_pawn_structure(board, phase)
-            king_safety_score = self.__effective_king_safety_phase(board, phase) * self.__evaluate_king_safety(board)
-            minor_piece_score = self.__evaluate_minor_piece_features(board, phase)
-            rook_activity_score = self.__evaluate_rook_activity(board, phase)
-            threats_score = self.__evaluate_threats_and_hanging_pieces(board)
-            endgame_king_activity_score = self.__evaluate_endgame_king_activity(board, phase)
-            mobility_activity_score = self.__evaluate_mobility_and_activity(board)
+            # Compute passed-pawn lists once per evaluation and share them with both
+            # __evaluate_pawn_structure (1 use per color) and __evaluate_endgame_king_activity
+            # (own + enemy uses per color), saving up to 4 __passed_pawns calls per call.
+            passed_pawns_by_color = {
+                chess.WHITE: self.__passed_pawns(board, chess.WHITE, pieces_by),
+                chess.BLACK: self.__passed_pawns(board, chess.BLACK, pieces_by),
+            }
+            pawn_structure_score = self.__evaluate_pawn_structure(board, phase, pieces_by,
+                                                                   passed_pawns_by_color)
+            king_safety_score = self.__effective_king_safety_phase(board, phase, pieces_by) \
+                                * self.__evaluate_king_safety(board, pieces_by)
+            minor_piece_score = self.__evaluate_minor_piece_features(board, phase, pieces_by)
+            rook_activity_score = self.__evaluate_rook_activity(board, phase, pieces_by)
+            threats_score = self.__evaluate_threats_and_hanging_pieces(board, pieces_by)
+            endgame_king_activity_score = self.__evaluate_endgame_king_activity(
+                board, phase, pieces_by, passed_pawns_by_color)
+            mobility_activity_score = self.__evaluate_mobility_and_activity(board, pieces_by)
             result = ((white_score - black_score) + pawn_structure_score + king_safety_score +
                       minor_piece_score + rook_activity_score + threats_score + endgame_king_activity_score +
                       mobility_activity_score)
@@ -676,3 +774,71 @@ class BoardEvaluatorTrad(BoardEvaluator):
                 LOGGER.debug(
                     f'{"WHITE" if self.color else "BLACK"} BoardEvaluatorTrad.evaluate_board() average time after {self.__eval_count} calls: {avg:.6f}s')
         return result
+
+
+def _build_pst_flat(piece_table: dict, scale: float) -> dict:
+    """
+    Build a pre-mirrored, pre-scaled flat PST as `dict {piece_type: (black_tuple, white_tuple)}`.
+
+    Inner storage is a 2-tuple indexed by `int(color)` (chess.BLACK == False == 0,
+    chess.WHITE == True == 1), so callers can write `flat[piece_type][color][square]`
+    without allocating a `(piece_type, color)` tuple key on every lookup.
+
+    For White entries the source square index is used directly; for Black entries the
+    table is looked up at `square_mirror(sq)`. `scale` is applied once per entry, so
+    `__pst_value` no longer needs to multiply by `PST_SCALE`. Returned tuples are
+    immutable to prevent accidental mutation of these shared module-level constants.
+    """
+    flat = {}
+    for piece_type, values in piece_table.items():
+        white_tuple = tuple(scale * v for v in values)
+        black_tuple = tuple(scale * values[chess.square_mirror(sq)] for sq in range(64))
+        # Index by int(color): chess.BLACK == 0, chess.WHITE == 1.
+        flat[piece_type] = (black_tuple, white_tuple)
+    return flat
+
+
+def _build_passed_pawn_spans() -> tuple:
+    """
+    Build per-color, per-square `passed-pawn` span bitboards as a 2-tuple of 64-tuples.
+
+    The returned structure is `(black_spans, white_spans)` so it can be indexed by
+    `int(color)` (Black=0, White=1), mirroring the layout used by the flat PST tables.
+
+    For a White pawn on `sq` with file `f` and rank `r`, the span covers files
+    `[max(0, f-1), min(7, f+1)]` on every rank in `r+1 .. 7`. For a Black pawn the
+    span covers the same file range on ranks `0 .. r-1`. A pawn is passed iff its
+    span shares no bits with the enemy pawn bitboard.
+    """
+    black_spans = [0] * 64
+    white_spans = [0] * 64
+    for sq in range(64):
+        f = chess.square_file(sq)
+        r = chess.square_rank(sq)
+        f_lo = max(0, f - 1)
+        f_hi = min(7, f + 1)
+        white_mask = 0
+        for rr in range(r + 1, 8):
+            for ff in range(f_lo, f_hi + 1):
+                white_mask |= 1 << chess.square(ff, rr)
+        white_spans[sq] = white_mask
+        black_mask = 0
+        for rr in range(0, r):
+            for ff in range(f_lo, f_hi + 1):
+                black_mask |= 1 << chess.square(ff, rr)
+        black_spans[sq] = black_mask
+    return (tuple(black_spans), tuple(white_spans))
+
+
+# Populate flat PST class attributes once, at import time. Keeping these as class
+# attributes (not module-level) preserves access via `self.PST_MID_FLAT` / `self.PST_END_FLAT`
+# inside methods and keeps related constants together with the source PST tables above.
+BoardEvaluatorTrad.PST_MID_FLAT = _build_pst_flat(
+    BoardEvaluatorTrad.PIECE_SQUARE_TABLE_MID, BoardEvaluatorTrad.PST_SCALE)
+BoardEvaluatorTrad.PST_END_FLAT = _build_pst_flat(
+    BoardEvaluatorTrad.PIECE_SQUARE_TABLE_END, BoardEvaluatorTrad.PST_SCALE)
+BoardEvaluatorTrad.PASSED_PAWN_SPAN = _build_passed_pawn_spans()
+
+
+
+
