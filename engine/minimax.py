@@ -9,6 +9,7 @@ from chess.polyglot import ZobristHasher, POLYGLOT_RANDOM_ARRAY
 
 from chess_board_screen import ChessBoardScreen
 from constants import LOGGER, PIECE_VALUES
+from move_policy import force_queen_promotion, queen_promotions_only
 from opening_book import OpeningBook
 from order_moves_minimax import OrderMovesMinimax
 from player import Player
@@ -122,7 +123,7 @@ class Minimax(Player):
 
         internal_board: chess.Board = board.copy()
 
-        legal_moves: List[chess.Move] = list(internal_board.legal_moves)
+        legal_moves: List[chess.Move] = queen_promotions_only(internal_board.legal_moves)
         if not legal_moves:
             return
 
@@ -178,6 +179,7 @@ class Minimax(Player):
                 break
 
         if best_move is not None:
+            best_move = force_queen_promotion(board, best_move)
             board.push(best_move)
         else:
             LOGGER.warning(f'{type(self).__name__}; move_number: {move_number}; No valid move found. Skipping push.')
@@ -270,7 +272,7 @@ class Minimax(Player):
 
         board.push(chess.Move.null())
         try:
-            for move in board.legal_moves:
+            for move in queen_promotions_only(board.legal_moves):
                 board.push(move)
                 is_mate = board.is_checkmate()
                 board.pop()
@@ -441,7 +443,7 @@ class Minimax(Player):
             elif not maximizing_player and null_eval <= alpha:
                 return alpha
 
-        legal_moves: List[chess.Move] = list(board.legal_moves)
+        legal_moves: List[chess.Move] = queen_promotions_only(board.legal_moves)
         tt_move = tt_entry.get('m') if tt_entry else None
         ordered_moves: List[chess.Move] = self.order_moves_minimax.order_moves(board, legal_moves, ply=current_ply,
                                                                                tt_move=tt_move)
@@ -722,12 +724,12 @@ class Minimax(Player):
         # - Otherwise: only captures and promotions (noisy moves), with SEE pruning.
         candidate_moves: List[chess.Move] = []
         if in_check:
-            candidate_moves = list(board.legal_moves)
+            candidate_moves = queen_promotions_only(board.legal_moves)
             if not candidate_moves:
                 # Checkmate: side to move is mated.
                 return self.__mate_score(board, actual_ply)
         else:
-            for move in board.legal_moves:
+            for move in queen_promotions_only(board.legal_moves):
                 is_promotion: bool = move.promotion is not None
                 is_capture: bool = board.is_capture(move)
                 if not (is_capture or is_promotion):

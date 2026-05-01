@@ -10,6 +10,7 @@ import chess.polyglot
 
 from chess_board_screen import ChessBoardScreen
 from constants import LOGGER, PIECE_VALUES
+from move_policy import force_queen_promotion, queen_promotions_only
 from opening_book import OpeningBook
 from order_moves_mcts import OrderMovesMCTS
 from player import Player
@@ -26,7 +27,7 @@ class MCTSNode:
         self.parent = parent
         self.move = move
         self.children: List['MCTSNode'] = []
-        self.untried_moves = list(board.legal_moves)
+        self.untried_moves = queen_promotions_only(board.legal_moves)
         self.visits = 0
         self.value = 0.0
         self.player = board.turn
@@ -167,11 +168,18 @@ class MCTS(Player):
             iterations += 1
         if root.children:
             best_child, policy = self.__select_root_move(root)
-            best_move = best_child.move
+            best_move = force_queen_promotion(board, best_child.move)
             assert best_move is not None
             board.push(best_move)
-            self.__root = root
-            self.__last_best_child = best_child
+            if best_move == best_child.move:
+                self.__root = root
+                self.__last_best_child = best_child
+            else:
+                # Safety fallback only: if a selected underpromotion was
+                # normalized at the root, the old child board no longer matches
+                # the real game state, so subtree reuse must be disabled.
+                self.__root = None
+                self.__last_best_child = None
             duration = time.perf_counter() - start_time
             mean_value = best_child.value / best_child.visits if best_child.visits > 0 else 0.0
             new_visits = best_child.visits - inherited_child_visits.get(best_child.move, 0)
@@ -197,7 +205,7 @@ class MCTS(Player):
             )
             LOGGER.info(
                 f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; move_number: {move_number}; '
-                f'time: {duration:.6f}s; move: {best_child.move.uci()}; value: {mean_value:.4f}; '
+                f'time: {duration:.6f}s; move: {best_move.uci()}; value: {mean_value:.4f}; '
                 f'new_visits: {new_visits}; total_visits: {best_child.visits}; iterations: {iterations}; '
                 f'reused: {inherited_root_visits}; policy: {policy}; proven_root: {proven_root_str}; '
                 f'proven_root_stm: {proven_root_stm_str}; '
@@ -382,7 +390,7 @@ class MCTS(Player):
                 raw_white = self.evaluate_board(board)
                 return raw_white if board.turn == chess.WHITE else -raw_white
             best = -math.inf
-            for move in board.legal_moves:
+            for move in queen_promotions_only(board.legal_moves):
                 board.push(move)
                 score = -self.__qs_negamax(board, depth_left - 1, -beta, -alpha)
                 board.pop()
@@ -403,7 +411,7 @@ class MCTS(Player):
         if depth_left <= 0:
             return stand_pat
         best = stand_pat
-        for move in board.legal_moves:
+        for move in queen_promotions_only(board.legal_moves):
             if not (board.is_capture(move) or move.promotion):
                 continue
             # Skip clearly losing captures (negative SEE). Promotions always
@@ -453,7 +461,7 @@ class MCTS(Player):
         recaptures on ``target_sq`` (pawn units, ≥ 0). Side may also pass."""
         lva_move = None
         lva_val = math.inf
-        for m in board.legal_moves:
+        for m in queen_promotions_only(board.legal_moves):
             if m.to_square != target_sq or not board.is_capture(m):
                 continue
             attacker = board.piece_at(m.from_square)
