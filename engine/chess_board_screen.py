@@ -92,6 +92,11 @@ class ChessBoardScreen:
 
     def __draw_chess_pieces(self) -> None:
         for square, piece in self.board.piece_map().items():
+            # In graphical engine-vs-engine mode the engine thread can update
+            # the shared board while pygame is drawing. A transiently empty
+            # square from such a race should simply be skipped, not crash GUI.
+            if piece is None:
+                continue
             row = (BOARD_SIZE - 1) - (square // BOARD_SIZE)
             col = square % BOARD_SIZE
             piece_symbol = piece.symbol()
