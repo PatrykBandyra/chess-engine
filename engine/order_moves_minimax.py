@@ -25,6 +25,8 @@ class OrderMovesMinimax(OrderMoves):
         self.move_ordering_killer_bonus = 750_000
         self.move_ordering_tt_move_bonus = 2_000_000
 
+        self.stats = None
+
     def order_moves(self, board: chess.Board, moves: List[chess.Move], ply: int | None,
                     tt_move: chess.Move | None = None) -> List[chess.Move]:
         """
@@ -92,7 +94,16 @@ class OrderMovesMinimax(OrderMoves):
 
             # 4. Quiet Moves (apply Killer and History Heuristics)
             else:
-                is_killer: bool = move == killers[0] or move == killers[1]
+                is_killer = False
+                for slot in killers:
+                    if slot is not None:
+                        if self.stats:
+                            self.stats['killer_checks'] += 1
+                        if move == slot:
+                            is_killer = True
+                            if self.stats:
+                                self.stats['killer_hits'] += 1
+                            break
                 if is_killer:
                     score += self.move_ordering_killer_bonus
 

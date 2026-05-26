@@ -59,6 +59,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument('-mtb', '--mcts_time_black', help='MCTS time budget in seconds for black', type=float,
                         default=20.0, required=False)
     parser.add_argument('-d', '--debug', help='Debug mode', action='store_true', required=False)
+    parser.add_argument('-jl', '--json_log', help='JSON metrics log file', type=str, required=False)
     return parser.parse_args()
 
 

@@ -1,5 +1,7 @@
 import argparse
+import json
 import threading
+import time
 
 import chess
 import chess.pgn
@@ -33,6 +35,8 @@ class Engine:
         if not self.is_settings_mode:
             self.white_player = self.__get_player(args.white, chess.WHITE)
             self.black_player = self.__get_player(args.black, chess.BLACK)
+
+        self.json_log_file = open(f'out/{args.json_log}', 'w', encoding='utf-8') if args.json_log else None
 
         self.board: chess.Board = chess.Board()
         if args.input:
@@ -81,28 +85,110 @@ class Engine:
         if self.is_graphic_mode:
             self.screen_ready_event.wait()
 
+        total_time_white = 0.0
+        total_time_black = 0.0
+        white_moves = 0
+        black_moves = 0
+
         while not self.__is_game_over_or_draw_claim_available():
             white_move_number = self.board.fullmove_number
+            stack_len_before = len(self.board.move_stack)
+            t0 = time.perf_counter()
             self.white_player.make_move(self.board, self.screen)
-            LOGGER.info(f'move_number: {white_move_number}; White move: {self.board.move_stack[-1].uci() if len(self.board.move_stack) > 0 else "None"}')
+            move_time = time.perf_counter() - t0
+            last_move = self.board.move_stack[-1] if len(self.board.move_stack) > stack_len_before else None
+            LOGGER.info(f'move_number: {white_move_number}; White move: {last_move.uci() if last_move else "None"}')
+            if last_move:
+                total_time_white += move_time
+                white_moves += 1
+                self.__log_move_json(white_move_number, 'WHITE', last_move, self.white_player, move_time)
             if self.__is_game_over_or_draw_claim_available():
                 break
-            black_move_number = self.board.fullmove_number
-            self.black_player.make_move(self.board, self.screen)
-            LOGGER.info(f'move_number: {black_move_number}; Black move: {self.board.move_stack[-1].uci() if len(self.board.move_stack) > 0 else "None"}')
 
-        self.__handle_game_over()
+            black_move_number = self.board.fullmove_number
+            stack_len_before = len(self.board.move_stack)
+            t0 = time.perf_counter()
+            self.black_player.make_move(self.board, self.screen)
+            move_time = time.perf_counter() - t0
+            last_move = self.board.move_stack[-1] if len(self.board.move_stack) > stack_len_before else None
+            LOGGER.info(f'move_number: {black_move_number}; Black move: {last_move.uci() if last_move else "None"}')
+            if last_move:
+                total_time_black += move_time
+                black_moves += 1
+                self.__log_move_json(black_move_number, 'BLACK', last_move, self.black_player, move_time)
+
+        self.__handle_game_over(total_time_white, total_time_black, white_moves, black_moves)
 
     def __is_game_over_or_draw_claim_available(self) -> bool:
         return (self.board.is_game_over()
                 or self.board.can_claim_threefold_repetition()
                 or self.board.can_claim_fifty_moves())
 
-    def __handle_game_over(self) -> None:
+    def __log_move_json(self, move_number: int, side: str, move: chess.Move,
+                        player: 'Player', move_time: float) -> None:
+        if not self.json_log_file:
+            return
+        move_log = {
+            'move_number': move_number,
+            'side': side,
+            'move': move.uci(),
+            'eval': getattr(player, 'last_eval', None),
+            'time_s': round(move_time, 4),
+            'phase': getattr(player, 'last_phase', None),
+            'algorithm_stats': getattr(player, 'stats', {}),
+        }
+        self.json_log_file.write(json.dumps(move_log) + '\n')
+        self.json_log_file.flush()
+
+    def __handle_game_over(self, total_time_white: float = 0.0, total_time_black: float = 0.0,
+                           white_moves: int = 0, black_moves: int = 0) -> None:
         LOGGER.info(f'GAME OVER - {self.__get_game_status()}')
         self.__save_moves_to_file()
+
+        if self.json_log_file:
+            termination_reason = self.__get_termination_reason()
+            outcome = self.board.outcome(claim_draw=True)
+            if outcome is None:
+                result = '1/2-1/2'
+            elif outcome.winner == chess.WHITE:
+                result = '1-0'
+            elif outcome.winner == chess.BLACK:
+                result = '0-1'
+            else:
+                result = '1/2-1/2'
+            game_summary = {
+                'type': 'game_summary',
+                'result': result,
+                'total_moves': len(self.board.move_stack),
+                'termination': termination_reason,
+                'total_time_white': round(total_time_white, 4),
+                'total_time_black': round(total_time_black, 4),
+                'avg_time_white': round(total_time_white / white_moves, 4) if white_moves > 0 else 0.0,
+                'avg_time_black': round(total_time_black / black_moves, 4) if black_moves > 0 else 0.0,
+            }
+            self.json_log_file.write(json.dumps(game_summary) + '\n')
+            self.json_log_file.close()
+            self.json_log_file = None
+
         if self.screen is not None:
             self.screen.running = False
+
+    def __get_termination_reason(self) -> str:
+        if self.board.is_checkmate():
+            return 'checkmate'
+        elif self.board.is_stalemate():
+            return 'stalemate'
+        elif self.board.is_seventyfive_moves():
+            return 'draw_75'
+        elif self.board.is_fivefold_repetition():
+            return 'draw_5fold'
+        elif self.board.is_insufficient_material():
+            return 'draw_insufficient'
+        elif self.board.can_claim_fifty_moves():
+            return 'draw_50_claim'
+        elif self.board.can_claim_threefold_repetition():
+            return 'draw_3fold_claim'
+        return 'unknown'
 
     def __get_game_status(self) -> str | None:
         if self.board.is_checkmate():

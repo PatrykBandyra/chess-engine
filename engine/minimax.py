@@ -127,6 +127,31 @@ class Minimax(Player):
         if not legal_moves:
             return
 
+        self.stats = {
+            'nodes_searched': 0,
+            'tt_lookups': 0,
+            'tt_hits': 0,
+            'tt_cutoffs': 0,
+            'nmp_cutoffs': 0,
+            'nmp_attempts': 0,
+            'rfp_cutoffs': 0,
+            'futility_prunes': 0,
+            'lmp_prunes': 0,
+            'see_prunes': 0,
+            'check_extensions': 0,
+            'aspiration_researches': 0,
+            'qs_nodes': 0,
+            'qs_max_depth': 0,
+            'see_calls': 0,
+            'killer_hits': 0,
+            'killer_checks': 0,
+            'depth_completed': 0,
+            'tt_size': 0,
+            'pv_from_tt': 0,
+            'nodes_per_depth': [],
+        }
+        self.order_moves_minimax.stats = self.stats
+
         best_move: chess.Move | None = None
         best_value: float = -math.inf if self.color == chess.WHITE else math.inf
         is_maximizing: bool = self.color == chess.WHITE
@@ -134,6 +159,7 @@ class Minimax(Player):
 
         # Iterative Deepening: search from depth 1 to self.depth
         for current_depth in range(1, self.depth + 1):
+            nodes_before = self.stats['nodes_searched']
 
             # Aspiration Windows: use a narrow window around the previous iteration's score
             if current_depth == 1:
@@ -146,6 +172,8 @@ class Minimax(Player):
             # Get TT move from previous iteration for root position
             tt_entry = self.transposition_table.get(board_hash)
             tt_move = tt_entry.get('m') if tt_entry else None
+            if tt_move is not None:
+                self.stats['pv_from_tt'] += 1
             ordered_moves: List[chess.Move] = self.order_moves_minimax.order_moves(
                 internal_board, legal_moves, ply=0, tt_move=tt_move)
 
@@ -154,6 +182,7 @@ class Minimax(Player):
 
             # Aspiration window fail-high or fail-low: re-search with full window
             if current_depth > 1 and (iteration_best_value <= alpha or iteration_best_value >= beta):
+                self.stats['aspiration_researches'] += 1
                 alpha = -math.inf
                 beta = math.inf
                 tt_entry = self.transposition_table.get(board_hash)
@@ -165,9 +194,11 @@ class Minimax(Player):
 
             self.__store_root_tt_entry(board_hash, current_depth, iteration_best_value,
                                        iteration_best_move, alpha, beta)
+            self.stats['depth_completed'] = current_depth
 
             best_move = iteration_best_move
             best_value = iteration_best_value
+            self.stats['nodes_per_depth'].append(self.stats['nodes_searched'] - nodes_before)
 
             LOGGER.debug(
                 f'{type(self).__name__}; move_number: {move_number}; ID iteration depth={current_depth}; '
@@ -177,6 +208,10 @@ class Minimax(Player):
             # Early termination: only after the requested depth confirms the mate score.
             if self.__is_mate_score(best_value) and current_depth == self.depth:
                 break
+
+        self.stats['tt_size'] = len(self.transposition_table)
+        self.last_eval = best_value
+        self.last_phase = self.board_evaluator.get_game_phase(internal_board) if hasattr(self, 'board_evaluator') else None
 
         if best_move is not None:
             best_move = force_queen_promotion(board, best_move)
@@ -375,6 +410,7 @@ class Minimax(Player):
         - Updates killer and history heuristics for quiet moves that cause cutoffs or improve bounds.
         - Returns the best evaluation found for the current player at this node.
         """
+        self.stats['nodes_searched'] += 1
         # Draw rules depend on halfmove clock / repetition history, which are not part
         # of the Polyglot hash used as the TT key. They must be handled before any TT lookup.
         if self.__is_drawn_position(board):
@@ -385,18 +421,22 @@ class Minimax(Player):
         original_beta: float = beta  # Store original beta for history update
 
         board_hash: int = self.hasher(board)
+        self.stats['tt_lookups'] += 1
         tt_entry = self.transposition_table.get(board_hash)
 
         # Transposition Table Lookup
         if tt_entry and tt_entry['d'] >= depth:
+            self.stats['tt_hits'] += 1
             tt_value = self.__score_from_tt(tt_entry['v'], actual_ply)
             if tt_entry['f'] == 'E':  # Flag: Exact
+                self.stats['tt_cutoffs'] += 1
                 return tt_value
             elif tt_entry['f'] == 'L':  # Flag: Lower bound
                 alpha = max(alpha, tt_value)
             elif tt_entry['f'] == 'U':  # Flag: Upper bound
                 beta = min(beta, tt_value)
             if beta <= alpha:
+                self.stats['tt_cutoffs'] += 1
                 return tt_value
 
         if board.is_game_over():
@@ -419,8 +459,10 @@ class Minimax(Player):
             static_eval = self.__evaluate_board_score(board, actual_ply)
             rfp_margin = depth * self.RFP_MARGIN_PER_DEPTH
             if maximizing_player and static_eval - rfp_margin >= beta:
+                self.stats['rfp_cutoffs'] += 1
                 return beta
             if not maximizing_player and static_eval + rfp_margin <= alpha:
+                self.stats['rfp_cutoffs'] += 1
                 return alpha
 
         # Null Move Pruning: if giving the opponent a free move still results in a cutoff,
@@ -431,6 +473,7 @@ class Minimax(Player):
                 and depth >= 3
                 and not board.is_check()
                 and not self.__is_zugzwang_risk(board)):
+            self.stats['nmp_attempts'] += 1
             R: int = 2  # Reduction factor
             board.push(chess.Move.null())
             null_eval = self.__minimax_alphabeta(board, depth - 1 - R, alpha, beta,
@@ -439,8 +482,10 @@ class Minimax(Player):
             board.pop()
 
             if maximizing_player and null_eval >= beta:
+                self.stats['nmp_cutoffs'] += 1
                 return beta
             elif not maximizing_player and null_eval <= alpha:
+                self.stats['nmp_cutoffs'] += 1
                 return alpha
 
         legal_moves: List[chess.Move] = queen_promotions_only(board.legal_moves)
@@ -464,6 +509,7 @@ class Minimax(Player):
                         and not opponent_has_mate_threat
                         and not board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)):
+                    self.stats['lmp_prunes'] += 1
                     pruned_any_move = True
                     continue
 
@@ -477,6 +523,7 @@ class Minimax(Player):
                     if static_eval is None:
                         static_eval = self.__evaluate_board_score(board, actual_ply)
                     if static_eval + depth * self.FUTILITY_MARGIN_PER_DEPTH <= alpha:
+                        self.stats['futility_prunes'] += 1
                         pruned_any_move = True
                         continue
 
@@ -487,6 +534,7 @@ class Minimax(Player):
                         and board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)
                         and self.__static_exchange_evaluation(board, move) < 0):
+                    self.stats['see_prunes'] += 1
                     pruned_any_move = True
                     continue
 
@@ -494,6 +542,8 @@ class Minimax(Player):
                 board.push(move)
                 # Check extension: extend search by 1 ply when the move gives check
                 extension = 1 if extensions_left > 0 and board.is_check() else 0
+                if extension == 1:
+                    self.stats['check_extensions'] += 1
                 evaluation = self.__minimax_alphabeta(board, depth - 1 + extension, alpha, beta, False,
                                                      extensions_left - extension,
                                                      actual_ply=actual_ply + 1)
@@ -561,6 +611,7 @@ class Minimax(Player):
                         and not opponent_has_mate_threat
                         and not board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)):
+                    self.stats['lmp_prunes'] += 1
                     pruned_any_move = True
                     continue
 
@@ -574,6 +625,7 @@ class Minimax(Player):
                     if static_eval is None:
                         static_eval = self.__evaluate_board_score(board, actual_ply)
                     if static_eval - depth * self.FUTILITY_MARGIN_PER_DEPTH >= beta:
+                        self.stats['futility_prunes'] += 1
                         pruned_any_move = True
                         continue
 
@@ -584,6 +636,7 @@ class Minimax(Player):
                         and board.is_capture(move) and move.promotion is None
                         and not board.gives_check(move)
                         and self.__static_exchange_evaluation(board, move) < 0):
+                    self.stats['see_prunes'] += 1
                     pruned_any_move = True
                     continue
 
@@ -591,6 +644,8 @@ class Minimax(Player):
                 board.push(move)
                 # Check extension: extend search by 1 ply when the move gives check
                 extension = 1 if extensions_left > 0 and board.is_check() else 0
+                if extension == 1:
+                    self.stats['check_extensions'] += 1
                 evaluation = self.__minimax_alphabeta(board, depth - 1 + extension, alpha, beta, True,
                                                      extensions_left - extension,
                                                      actual_ply=actual_ply + 1)
@@ -689,6 +744,9 @@ class Minimax(Player):
           Promotions and capture-checks are always searched.
         - Captures are ordered by MVV-LVA so the most promising are tried first.
         """
+        self.stats['qs_nodes'] += 1
+        if qs_depth > self.stats['qs_max_depth']:
+            self.stats['qs_max_depth'] = qs_depth
         in_check: bool = board.is_check()
 
         if self.__is_drawn_position(board):
@@ -802,6 +860,7 @@ class Minimax(Player):
         - Pinned attackers are filtered out via `board.is_legal()` at each step.
         - Uses push/pop on the board to simulate the swap without allocating a board copy.
         """
+        self.stats['see_calls'] += 1
         to_sq: int = move.to_square
 
         # Initial victim value (the piece originally captured by `move`).

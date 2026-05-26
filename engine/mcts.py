@@ -142,6 +142,26 @@ class MCTS(Player):
         # how many visits were actually added during *this* turn.
         inherited_root_visits = root.visits
         inherited_child_visits = {c.move: c.visits for c in root.children}
+
+        self.stats = {
+            'iterations': 0,
+            'skipped_terminals': 0,
+            'nodes_created': 0,
+            'max_depth': 0,
+            'eval_calls': 0,
+            'eval_cache_hits': 0,
+            'reused_visits': root.visits,
+            'root_children_count': 0,
+            'best_child_visits': 0,
+            'root_visit_entropy': 0.0,
+            'convergence_point': 1.0,
+            'avg_backprop_depth': 0.0,
+        }
+        self._backprop_total_depth = 0
+        self._backprop_count = 0
+        convergence_iteration = None
+        current_best_move = None
+
         end_time = time.perf_counter() + self.mcts_time_budget
         iterations = 0
         while True:
@@ -153,6 +173,7 @@ class MCTS(Player):
             node = self.__select(root)
             # Skip already-evaluated proven nodes to avoid re-simulating them.
             if node.proven_value is not None and node.visits > 0:
+                self.stats['skipped_terminals'] += 1
                 iterations += 1
                 continue
             if node.untried_moves:
@@ -165,9 +186,33 @@ class MCTS(Player):
             self.__backpropagate(node, value)
             if node.proven_value is not None:
                 self.__propagate_proof(node.parent)
+            if root.children:
+                top_child = max(root.children, key=lambda c: c.visits)
+                if top_child.move != current_best_move:
+                    current_best_move = top_child.move
+                    convergence_iteration = iterations
             iterations += 1
+        self.stats['iterations'] = iterations
         if root.children:
             best_child, policy = self.__select_root_move(root)
+            self.stats['root_children_count'] = len(root.children)
+            self.stats['best_child_visits'] = best_child.visits
+            total_visits = sum(c.visits for c in root.children) or 1
+            entropy = 0.0
+            for c in root.children:
+                if c.visits > 0:
+                    p = c.visits / total_visits
+                    entropy -= p * math.log(p)
+            self.stats['root_visit_entropy'] = round(entropy, 4)
+            self.stats['convergence_point'] = round(
+                (convergence_iteration or 0) / max(iterations, 1), 4
+            )
+            if self._backprop_count > 0:
+                self.stats['avg_backprop_depth'] = round(
+                    self._backprop_total_depth / self._backprop_count, 2
+                )
+            self.last_eval = best_child.value / max(best_child.visits, 1)
+            self.last_phase = self.board_evaluator.get_game_phase(board) if hasattr(self, 'board_evaluator') else None
             best_move = force_queen_promotion(board, best_child.move)
             assert best_move is not None
             board.push(best_move)
@@ -275,15 +320,20 @@ class MCTS(Player):
         )
 
     def __select(self, node: MCTSNode) -> MCTSNode:
+        depth = 0
         while not node.is_terminal and node.children:
             if node.untried_moves:
                 self.__prepare_untried_moves(node)
                 best_child = node.best_child(self.C_PUCT)
                 if self.__best_untried_score(node) >= self.__puct_child_score(node, best_child):
-                    return node
+                    break
                 node = best_child
+                depth += 1
             elif node.is_fully_expanded():
                 node = node.best_child(self.C_PUCT)
+                depth += 1
+        if hasattr(self, 'stats') and depth > self.stats.get('max_depth', 0):
+            self.stats['max_depth'] = depth
         return node
 
     def __prepare_untried_moves(self, node: MCTSNode) -> None:
@@ -328,6 +378,8 @@ class MCTS(Player):
         child_node = MCTSNode(next_board, parent=node, move=move, _copy=False)
         child_node.prior = prior
         node.children.append(child_node)
+        if hasattr(self, 'stats'):
+            self.stats['nodes_created'] += 1
         return child_node
 
     @staticmethod
@@ -351,7 +403,11 @@ class MCTS(Player):
     def __simulate(self, node: MCTSNode) -> float:
         board = node.board
         cache_key = (chess.polyglot.zobrist_hash(board), board.halfmove_clock)
+        if hasattr(self, 'stats'):
+            self.stats['eval_calls'] += 1
         if cache_key in self.__eval_cache:
+            if hasattr(self, 'stats'):
+                self.stats['eval_cache_hits'] += 1
             self.__eval_cache.move_to_end(cache_key)
             v = self.__eval_cache[cache_key]
         else:
@@ -483,11 +539,16 @@ class MCTS(Player):
         return max(0.0, captured_value - opp_gain)
 
     def __backpropagate(self, node: MCTSNode, value: float) -> None:
+        depth = 0
         while node is not None:
             node.visits += 1
             node.value += value
-            value = 1.0 - value  # complement: flip perspective for the next level
+            value = 1.0 - value
             node = node.parent
+            depth += 1
+        if hasattr(self, '_backprop_total_depth'):
+            self._backprop_total_depth += depth
+            self._backprop_count += 1
 
     def __propagate_proof(self, node: Optional[MCTSNode]) -> None:
         """

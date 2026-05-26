@@ -239,6 +239,9 @@ class BoardEvaluatorTrad(BoardEvaluator):
         ]
     }
 
+    def get_game_phase(self, board: chess.Board) -> float:
+        return self.__get_game_phase(board)
+
     def __get_game_phase(self, board: chess.Board, pieces_by: dict | None = None) -> float:
         """
         Returns a phase value in [0, 1]: 1.0 = middlegame, 0.0 = endgame, interpolated by non-pawn material.
