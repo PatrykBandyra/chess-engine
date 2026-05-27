@@ -18,7 +18,10 @@ class StockfishPlayer(Player):
         self.skill_level: int = args.skill_white if color == chess.WHITE else args.skill_black
         self.stockfish_path: str = args.stockfish_path if args.stockfish_path is not None else STOCKFISH_PATH
 
-        self.stockfish = Stockfish(self.stockfish_path)
+        # Threads=1: consistent with BoardEvaluatorNN — avoid CPU overcommit when multiple
+        # games run in parallel (e.g. Exp 5 with 4 variants × parallel terminals).
+        # Hash=128MB: improves search speed via larger transposition table.
+        self.stockfish = Stockfish(self.stockfish_path, parameters={'Threads': 1, 'Hash': 128})
         self.stockfish.set_depth(self.depth)
         self.stockfish.set_skill_level(self.skill_level)
 

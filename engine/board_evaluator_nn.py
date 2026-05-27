@@ -23,7 +23,12 @@ class BoardEvaluatorNN(BoardEvaluator):
         self.skill: int = args.skill_white if color == chess.WHITE else args.skill_black
         self.stockfish_path: str = args.stockfish_path if args.stockfish_path is not None else STOCKFISH_PATH
 
-        self.stockfish = Stockfish(self.stockfish_path, parameters={'Threads': 10})
+        # Threads=1: avoid CPU overcommit when running multiple BoardEvaluatorNN instances
+        # in parallel (e.g. 6+ pairs running concurrently). Single-threaded Stockfish is only
+        # ~10-20% slower for shallow evaluations (depth 10-15) but eliminates context switching.
+        # Hash=128MB: larger transposition table speeds up repeated position lookups within
+        # iterative deepening, especially at the same depth searched many times per move.
+        self.stockfish = Stockfish(self.stockfish_path, parameters={'Threads': 1, 'Hash': 128})
         if self.skill is not None:
             self.stockfish.set_skill_level(self.skill)
         if self.depth_stockfish is not None:
