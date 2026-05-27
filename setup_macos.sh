@@ -15,7 +15,9 @@
 # Optional flags:
 #     ./setup_macos.sh --skip-deps        # skip Python package install
 #     ./setup_macos.sh --skip-stockfish   # skip Stockfish download
-#     ./setup_macos.sh --python python3.12  # use specific Python interpreter
+#     ./setup_macos.sh --python python3.13  # use different interpreter (3.11–3.13 supported)
+#
+# Note: pinned deps (matplotlib/numpy/pandas) require Python 3.11–3.13 (no wheels for 3.14+).
 # =============================================================================
 
 set -euo pipefail
@@ -36,7 +38,7 @@ SF_RELEASE_TAG="sf_17"
 SF_BASE_URL="https://github.com/official-stockfish/Stockfish/releases/download/${SF_RELEASE_TAG}"
 
 # Defaults
-PYTHON_CMD="python3"
+PYTHON_CMD="python3.12"
 SKIP_DEPS=0
 SKIP_STOCKFISH=0
 SKIP_PATCH=0
@@ -100,10 +102,13 @@ case "$ARCH" in
 esac
 ok "Detected architecture: $ARCH -> binary: $SF_FILE"
 
-# Python check
+# Python check — pinned dependencies (matplotlib 3.10.3, numpy 2.2.5, pandas 2.2.3)
+# only ship prebuilt wheels for Python 3.11–3.13. Python 3.14+ forces source builds
+# which fail (freetype download over SSL, etc.). Stick to 3.12 unless overridden.
 if ! command -v "$PYTHON_CMD" >/dev/null 2>&1; then
     err "Python not found: $PYTHON_CMD"
     err "Install via: brew install python@3.12"
+    err "Or pass a specific interpreter: ./setup_macos.sh --python python3.13"
     exit 1
 fi
 
@@ -113,7 +118,15 @@ PY_MINOR="${PY_VERSION##*.}"
 
 if [[ "$PY_MAJOR" -lt 3 ]] || [[ "$PY_MAJOR" -eq 3 && "$PY_MINOR" -lt 11 ]]; then
     err "Python 3.11+ required (found $PY_VERSION)"
-    err "Install newer Python: brew install python@3.12"
+    err "Install via: brew install python@3.12"
+    exit 1
+fi
+
+if [[ "$PY_MAJOR" -gt 3 ]] || [[ "$PY_MAJOR" -eq 3 && "$PY_MINOR" -gt 13 ]]; then
+    err "Python $PY_VERSION is too new for the pinned requirements (matplotlib/numpy/pandas)."
+    err "Pinned wheels only exist for Python 3.11–3.13."
+    err "Install via: brew install python@3.12"
+    err "Then re-run: ./setup_macos.sh --python python3.12"
     exit 1
 fi
 ok "Python: $PY_VERSION ($PYTHON_CMD)"
