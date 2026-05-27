@@ -28,7 +28,7 @@ set -euo pipefail
 
 PROJECT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PARENT_DIR="$(cd "$PROJECT_DIR/.." && pwd)"
-STOCKFISH_PARENT_DIR="$PARENT_DIR/stockfish_ai"
+STOCKFISH_PARENT_DIR="$PROJECT_DIR/stockfish_ai"
 VENV_DIR="$PROJECT_DIR/.venv"
 REQUIREMENTS="$PROJECT_DIR/requirements-macos.txt"
 CONSTANTS_FILE="$PROJECT_DIR/engine/constants.py"
@@ -262,8 +262,8 @@ else
     fi
 
     # The engine/main.py runs from engine/ directory, so paths in constants.py
-    # are relative to engine/. The Stockfish lives at PARENT_DIR/stockfish_ai/...
-    # which is ../stockfish_ai/... from engine/.
+    # are relative to engine/. The Stockfish lives at PROJECT_DIR/stockfish_ai/
+    # (sibling to engine/), which from chess-engine/engine/ is ../stockfish_ai/.
     NEW_PATH="../stockfish_ai/stockfish/$SF_FILE"
 
     # Backup once
