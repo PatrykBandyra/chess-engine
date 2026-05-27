@@ -14,7 +14,7 @@
 
 param(
     [int]$CalibrationGames = 3,
-    [int]$Depth = 4
+    [int]$Depth = 3
 )
 
 $ErrorActionPreference = 'Stop'

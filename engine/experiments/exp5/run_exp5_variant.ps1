@@ -100,7 +100,7 @@ foreach ($skill in $skillLevels) {
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Green
-Write-Host "  EXP 5 — Variant $Variant/4: $variantName" -ForegroundColor Green
+Write-Host "  EXP 5 -- Variant $Variant/4: $variantName" -ForegroundColor Green
 Write-Host "  Matchups: 8 (vs Stockfish skill 0/3/5/8/10/13/15/20)" -ForegroundColor Green
 Write-Host "  Games per matchup: $GamesPerPair (swap colors)" -ForegroundColor Green
 Write-Host "  Total games: $($GamesPerPair * 8)" -ForegroundColor Green
@@ -135,17 +135,16 @@ $sharedDir = "exp5_stockfish_$ExperimentTag"
 # RUN
 # ============================================================================
 
-$expArgs = @(
-    '-ConfigFile', $configPath,
-    '-GamesPerPair', $GamesPerPair,
-    '-SwapColors',
-    '-Adjudicate',
-    '-OpeningsFile', 'experiments\openings_eco25.fen',
-    '-StockfishPath', $StockfishPath,
-    '-OutputSubDir', $sharedDir
-)
-
-if ($Gui) { $expArgs += '-Gui' }
+$expArgs = @{
+    ConfigFile = $configPath
+    GamesPerPair = $GamesPerPair
+    SwapColors = $true
+    Adjudicate = $true
+    OpeningsFile = 'experiments\openings_eco25.fen'
+    StockfishPath = $StockfishPath
+    OutputSubDir = $sharedDir
+}
+if ($Gui) { $expArgs.Gui = $true }
 
 & .\experiments\run_experiment.ps1 @expArgs
 $exitCode = $LASTEXITCODE

@@ -25,7 +25,7 @@
         9  MCTS_NN   20s  vs MCTS_NN   20s  (sanity check)
         10 MCTS_NN   40s  vs MCTS_NN   20s
 
-    WARNING: matchups 5 and 10 (40s vs 20s) are heavy — ~40+h per matchup at 30 games.
+    WARNING: matchups 5 and 10 (40s vs 20s) are heavy -- ~40+h per matchup at 30 games.
     Consider lowering -GamesPerPair for those if time-constrained.
 
     After all 10 finish, run:
@@ -54,7 +54,7 @@ if (-not (Test-Path -LiteralPath 'main.py')) {
 }
 
 # ============================================================================
-# MATCHUP DEFINITIONS — labels must match exp3_mcts_time.json
+# MATCHUP DEFINITIONS -- labels must match exp3_mcts_time.json
 # ============================================================================
 
 $matchups = @(
@@ -75,7 +75,7 @@ $label = $matchupDef.label
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Green
-Write-Host "  EXP 3 — Matchup $Matchup/10" -ForegroundColor Green
+Write-Host "  EXP 3 -- Matchup $Matchup/10" -ForegroundColor Green
 Write-Host "  $($matchupDef.white) t=$($matchupDef.mcts_time_white)s vs $($matchupDef.black) t=$($matchupDef.mcts_time_black)s" -ForegroundColor Green
 Write-Host "  Games: $GamesPerPair (swap colors)" -ForegroundColor Green
 Write-Host "  Working dir: $engineDir" -ForegroundColor Green
@@ -107,16 +107,15 @@ $sharedDir = "exp3_mcts_time_$ExperimentTag"
 # RUN
 # ============================================================================
 
-$expArgs = @(
-    '-ConfigFile', $configPath,
-    '-GamesPerPair', $GamesPerPair,
-    '-SwapColors',
-    '-Adjudicate',
-    '-OpeningsFile', 'experiments\openings_eco25.fen',
-    '-OutputSubDir', $sharedDir
-)
-
-if ($Gui) { $expArgs += '-Gui' }
+$expArgs = @{
+    ConfigFile = $configPath
+    GamesPerPair = $GamesPerPair
+    SwapColors = $true
+    Adjudicate = $true
+    OpeningsFile = 'experiments\openings_eco25.fen'
+    OutputSubDir = $sharedDir
+}
+if ($Gui) { $expArgs.Gui = $true }
 
 & .\experiments\run_experiment.ps1 @expArgs
 $exitCode = $LASTEXITCODE

@@ -8,18 +8,21 @@ Ustalenie względnej siły wszystkich 4 wariantów silnika szachowego (oś A: al
 
 | Wariant | Algorytm | Ewaluator | Parametr zasobu |
 |---|---|---|---|
-| `MINIMAX_TRAD` | Minimax α-β | Heurystyczny | `depth = 4` |
+| `MINIMAX_TRAD` | Minimax α-β | Heurystyczny | `depth = 3` |
 | `MINIMAX_NN` | Minimax α-β | "NN" (Stockfish low-depth) | `depth = 3` |
-| `MCTS_TRAD` | MCTS (PUCT) | Heurystyczny | `time = 2.674s` (skalibrowane) |
-| `MCTS_NN` | MCTS (PUCT) | "NN" (Stockfish low-depth) | `time = 2.674s` |
+| `MCTS_TRAD` | MCTS (PUCT) | Heurystyczny | `time = 2.61s` (skalibrowane) |
+| `MCTS_NN` | MCTS (PUCT) | "NN" (Stockfish low-depth) | `time = 2.61s` |
 
-**Dlaczego MINIMAX_NN ma głębokość 3, a TRAD ma 4?** Ewaluacja NN jest ~10-20× wolniejsza (Stockfish vs heurystyka), więc niższa głębokość = porównywalny czas/ruch.
+**Dlaczego oba warianty Minimax mają tę samą głębokość d=3?**
+- **Czyste porównanie Osi B (ewaluator)** — różni się tylko ewaluator, nie głębokość przeszukiwania
+- **Wykonalne czasowo** — d=4 z ewaluatorem NN dawał ~30-50s/ruch (niepraktyczne); d=3 z NN to ~3-6s/ruch
+- **Metodologicznie ciekawsze** — przy mniejszej głębokości, jakość ewaluatora ma **większy** wpływ (mniej kompensacji przez głębsze szukanie), co czyni Axis B bardziej widocznym
 
-**Dlaczego MCTS dostaje 2.674s?** To wynik kalibracji — średni czas/ruch zmierzony dla MINIMAX_TRAD d=4 na 3 partiach próbnych. Dzięki temu **wszystkie warianty mają porównywalny budżet obliczeniowy na ruch** (kluczowe dla uczciwości porównania).
+**Dlaczego MCTS dostaje 2.61s?** To wynik kalibracji — średnia czasu/ruch zmierzona z 3 partii MINIMAX_TRAD vs MINIMAX_TRAD (447 ruchów, dane w `out/exp1_calibration_*`), zapisana do `_mcts_calibrated_time.txt`. Dzięki temu MCTS dostaje znaczący budżet czasowy. **Uwaga o asymetrii:** MINIMAX_TRAD d=3 zużywa ~0.5s/ruch, MINIMAX_NN d=3 ~3-6s/ruch — MCTS przy 2.61s mieści się w środku, dając mu fair budget vs średni Minimax. Dla **czystego Axis A comparison** decydujący jest porównywalny budżet czasowy między algorytmami, a dla **Axis B** — porównywalna głębokość przeszukiwania między ewaluatorami.
 
 ## Struktura meczowa (6 par)
 
-Każda para gra **N=50 partii** (25 w oryginalnym układzie kolorów + 25 z zamianą):
+Każda para gra **N=30 partii** (15 w oryginalnym układzie kolorów + 15 z zamianą):
 
 | # | Pair | Komentarz |
 |---|---|---|
@@ -30,11 +33,11 @@ Każda para gra **N=50 partii** (25 w oryginalnym układzie kolorów + 25 z zami
 | 5 | MINIMAX_NN vs MCTS_TRAD | Cross-axis |
 | 6 | MINIMAX_NN vs MCTS_NN | Cross-axis dla NN |
 
-**Razem: 300 partii.**
+**Razem: 180 partii.** (Zgodnie z planem badawczym dla Exp 2/3 — jednolita metodologia. N=30 wykrywa różnice Elo ≥100 przy p<0.05; subtelniejsze różnice (<80 Elo) mogą być niestatystycznie istotne.)
 
 ## Otwarcia (kontrola wariancji)
 
-Każda z 50 gier w parze startuje od jednej z **25 ustandaryzowanych pozycji ECO** (po 4 pełnych ruchach), z pliku `experiments/openings_eco25.fen`. Każda pozycja używana 2× (raz w oryginalnym układzie, raz z zamianą kolorów).
+Każda z 30 gier w parze startuje od jednej z **25 ustandaryzowanych pozycji ECO** (po 4 pełnych ruchach), z pliku `experiments/openings_eco25.fen`. Pozycje są cyklicznie wybierane modulo 25 (pozycje 1-25 dla pierwszych 25 gier; pozycje 1-5 powtórzone dla gier 26-30 w drugim cyklu — z zamianą kolorów).
 
 Otwarcia: Italian, Ruy Lopez, Scotch, Four Knights, Petrov, Vienna, Sicilian (4 warianty), French, Caro-Kann, Pirc, Scandinavian, QGD (2), Slav, QGA, KID (2), Grünfeld, Nimzo-Indian, English, Catalan, Reti.
 
@@ -63,9 +66,11 @@ Partia kończy się przez:
 - Rozgrywa 3 partie MINIMAX_TRAD d=4 vs MINIMAX_TRAD d=4
 - Parsuje JSONL, oblicza średni `time_s` per ruch
 - Zapisuje do `experiments/exp1/_mcts_calibrated_time.txt`
-- **Już wykonano:** wynik = **2.674s**
+- **Już wykonano:** wynik = **2.61s** (z 3 partii kalibracyjnych, 447 ruchów łącznie)
+- Plik: `experiments/exp1/_mcts_calibrated_time.txt`
+- Ponowna kalibracja: `.\experiments\exp1\run_exp1_calibrate.ps1` (default `-Depth 3`)
 
-### Krok 2 — 6 par równolegle (~25h obliczeń, podzielone)
+### Krok 2 — 6 par równolegle (~3-4h obliczeń wall-clock)
 
 ```powershell
 # Terminal 1:
@@ -100,7 +105,7 @@ Katalog wyjściowy: `engine/out/exp1_round_robin_<data>/`
 | `_results.csv` | Per-game: pair, game #, opening idx, result, termination, czas |
 | `analysis_moves.csv` | Per-move: eval, czas, fazę gry, wszystkie metryki algorytmu (MCTS iterations, Minimax nodes, TT hits, pruning stats, etc.) |
 | `analysis_games.csv` | Per-game: result, total moves, termination reason, czas |
-| `analysis_wdl.csv` | Per-matchup: 50 gier × {wygrane białe, remisy, wygrane czarne}, white_score, avg_moves, avg_time |
+| `analysis_wdl.csv` | Per-matchup: 30 gier × {wygrane białe, remisy, wygrane czarne}, white_score, avg_moves, avg_time |
 | `analysis_elo.csv` | Bradley-Terry maximum likelihood Elo dla 4 wariantów |
 | `analysis_metrics_summary.csv` | Per-matchup × side: mean/std/median wszystkich metryk algorytmu |
 | `exp1_pair_significance.csv` | Per-para: binomial test na decisive games, p-value, 95% CI |
@@ -167,16 +172,29 @@ W pracy zazwyczaj prezentuje się:
 
 ## Szacunek czasu obliczeń
 
-- **Per partia:** ~5-8 min (zależnie od pary; MCTS_NN vs MINIMAX_NN — najwolniejsze ze względu na ewaluatory NN)
-- **Per para (50 gier):** ~4-7h
-- **6 par równolegle** na 6 maszynach / 6 terminalach: ~7h wall-clock
-- **Sekwencyjnie:** ~25-40h
-- **+ kalibracja:** ~5-10 min
+Średnie czasy/ruch przy obecnej konfiguracji (d=3 Minimax, 2.61s MCTS):
+- MINIMAX_TRAD d=3: ~0.5s/ruch
+- MINIMAX_NN d=3: ~3-6s/ruch (Stockfish jako oracle eval)
+- MCTS_TRAD: 2.61s/ruch (fixed)
+- MCTS_NN: 2.61s/ruch (fixed)
+
+Szacunkowe czasy par (30 gier, ~80 ruchów/gra):
+- **Para 1** (MINIMAX_TRAD vs MINIMAX_NN): zdominowana przez NN side, ~3-4h
+- **Para 2** (MCTS_TRAD vs MCTS_NN): ~3-4h
+- **Para 3** (MINIMAX_TRAD d=3 vs MCTS_TRAD 2.61s): ~2h
+- **Para 4** (MINIMAX_TRAD d=3 vs MCTS_NN 2.61s): ~2h
+- **Para 5** (MINIMAX_NN vs MCTS_TRAD): ~3-4h
+- **Para 6** (MINIMAX_NN vs MCTS_NN): ~3-4h
+- **6 par równolegle:** ~3-4h wall-clock
+- **Sekwencyjnie:** ~16-20h
+- **+ kalibracja:** już wykonana
+
+**Konsekwencja wyboru d=3 dla Minimax + MCTS 2.61s (z kalibracji d=4):** MCTS dostaje znaczący budżet czasowy mimo niższej głębokości Minimax. Można interpretować jako **podwójne sprawdzenie Axis A**: MCTS z 2.61s vs Minimax d=3 (~0.5s) testuje czy MCTS umie wykorzystać dodatkowy czas; MCTS z 2.61s vs Minimax NN d=3 (~3-6s) testuje czy MCTS poradzi sobie z silniejszym przeciwnikiem mającym podobny budżet. W pracy warto otwarcie omówić tę asymetrię i odwołać się do Eksp. 2/3 jako kontrolnych dla skalowania zasobów.
 
 ## Ważne uwagi praktyczne
 
-1. **Kalibracja już wykonana** — `_mcts_calibrated_time.txt` zawiera `2.674`
+1. **Kalibracja już wykonana** — `_mcts_calibrated_time.txt` zawiera `2.61` (s/ruch)
 2. **Wszystkie 6 par MUSI być uruchomione tego samego dnia** żeby trafiły do tego samego shared dir (tag jest oparty na dacie, format `yyyyMMdd`)
 3. **Adjudykacja jest WŁĄCZONA** — bez tego MCTS vs MCTS może produkować bardzo długie partie
-4. **Każdy plik metryczny waży ~50-200KB** — 300 gier × ~100KB = ~30MB danych
+4. **Każdy plik metryczny waży ~50-200KB** — 180 gier × ~100KB = ~18MB danych
 5. **Quick smoke test:** `.\experiments\exp1\run_exp1_pair.ps1 -Pair 1 -GamesPerPair 2` (4 minuty, sprawdza pipeline)

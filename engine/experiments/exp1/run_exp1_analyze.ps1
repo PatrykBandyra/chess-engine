@@ -54,7 +54,7 @@ $metricsCount = (Get-ChildItem -Path $ExperimentDir -Filter 'metrics_*.jsonl').C
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Cyan
-Write-Host '  EXP 1 — Combined Analysis' -ForegroundColor Cyan
+Write-Host '  EXP 1 -- Combined Analysis' -ForegroundColor Cyan
 Write-Host "  Directory: $ExperimentDir" -ForegroundColor Cyan
 Write-Host "  Metrics files: $metricsCount" -ForegroundColor Cyan
 Write-Host '================================================================' -ForegroundColor Cyan
@@ -65,7 +65,7 @@ Write-Host '--- Phase 1: Standard analysis ---' -ForegroundColor Yellow
 & $Python $AnalysisScript $ExperimentDir --elo --plots
 $exitCode1 = $LASTEXITCODE
 if ($exitCode1 -ne 0) {
-    Write-Warning "Standard analysis returned $exitCode1 — continuing with exp1 analysis"
+    Write-Warning "Standard analysis returned $exitCode1 -- continuing with exp1 analysis"
 }
 
 Write-Host ''
@@ -80,16 +80,16 @@ if ($exitCode2 -eq 0) {
     Write-Host '  EXP 1 ANALYSIS COMPLETE' -ForegroundColor Green
     Write-Host "  Results in: $ExperimentDir" -ForegroundColor Green
     Write-Host '  Key files:' -ForegroundColor Green
-    Write-Host '    analysis_wdl.csv               — W/D/L per matchup (generic)' -ForegroundColor Green
-    Write-Host '    analysis_elo.csv               — Bradley-Terry Elo (generic)' -ForegroundColor Green
-    Write-Host '    exp1_pair_significance.csv     — binomial test per pair + 95% CI' -ForegroundColor Green
-    Write-Host '    exp1_axis_summary.csv          — axis A (algo) + B (eval) main effects' -ForegroundColor Green
-    Write-Host '    exp1_color_advantage.csv       — White vs Black overall' -ForegroundColor Green
-    Write-Host '    exp1_round_robin_summary.txt   — human-readable' -ForegroundColor Green
-    Write-Host '    plots\exp1_pair_significance.png — bar chart per pair with CI' -ForegroundColor Green
-    Write-Host '    plots\exp1_axis_a_effect.png     — MINIMAX vs MCTS aggregate' -ForegroundColor Green
-    Write-Host '    plots\exp1_axis_b_effect.png     — TRAD vs NN aggregate' -ForegroundColor Green
-    Write-Host '    plots\exp1_wdl_matrix.png        — 4x4 score matrix' -ForegroundColor Green
+    Write-Host '    analysis_wdl.csv               -- W/D/L per matchup (generic)' -ForegroundColor Green
+    Write-Host '    analysis_elo.csv               -- Bradley-Terry Elo (generic)' -ForegroundColor Green
+    Write-Host '    exp1_pair_significance.csv     -- binomial test per pair + 95% CI' -ForegroundColor Green
+    Write-Host '    exp1_axis_summary.csv          -- axis A (algo) + B (eval) main effects' -ForegroundColor Green
+    Write-Host '    exp1_color_advantage.csv       -- White vs Black overall' -ForegroundColor Green
+    Write-Host '    exp1_round_robin_summary.txt   -- human-readable' -ForegroundColor Green
+    Write-Host '    plots\exp1_pair_significance.png -- bar chart per pair with CI' -ForegroundColor Green
+    Write-Host '    plots\exp1_axis_a_effect.png     -- MINIMAX vs MCTS aggregate' -ForegroundColor Green
+    Write-Host '    plots\exp1_axis_b_effect.png     -- TRAD vs NN aggregate' -ForegroundColor Green
+    Write-Host '    plots\exp1_wdl_matrix.png        -- 4x4 score matrix' -ForegroundColor Green
     Write-Host '================================================================' -ForegroundColor Green
 }
 

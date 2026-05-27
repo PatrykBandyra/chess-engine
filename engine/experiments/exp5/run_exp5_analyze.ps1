@@ -4,9 +4,9 @@
 
 .DESCRIPTION
     Phase 1: standard analyze_experiment.py (CSVs, generic plots)
-    Phase 2: stockfish_reval.py — re-evaluate all games with Stockfish d=20
+    Phase 2: stockfish_reval.py -- re-evaluate all games with Stockfish d=20
              (optional, can be skipped with -SkipReval; very expensive)
-    Phase 3: exp5_stockfish_bench.py — variant Elo interpolation, ACPL,
+    Phase 3: exp5_stockfish_bench.py -- variant Elo interpolation, ACPL,
              blunder rate
 
     Usage:
@@ -61,7 +61,7 @@ $metricsCount = (Get-ChildItem -Path $ExperimentDir -Filter 'metrics_*.jsonl').C
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Cyan
-Write-Host '  EXP 5 — Combined Analysis (Stockfish benchmark)' -ForegroundColor Cyan
+Write-Host '  EXP 5 -- Combined Analysis (Stockfish benchmark)' -ForegroundColor Cyan
 Write-Host "  Directory: $ExperimentDir" -ForegroundColor Cyan
 Write-Host "  Metrics files: $metricsCount" -ForegroundColor Cyan
 Write-Host '================================================================' -ForegroundColor Cyan
@@ -81,7 +81,7 @@ if (-not $SkipReval) {
     Write-Host ''
     Write-Host '--- Phase 2: Stockfish d=' $RevalDepth ' re-evaluation (this is slow) ---' -ForegroundColor Yellow
     if (-not (Test-Path -LiteralPath $StockfishPath)) {
-        Write-Warning "Stockfish not found at $StockfishPath — skipping re-evaluation"
+        Write-Warning "Stockfish not found at $StockfishPath -- skipping re-evaluation"
     } else {
         $revalArgs = @($ExperimentDir, '--stockfish', $StockfishPath, '--depth', $RevalDepth)
         if ($RevalLimit -gt 0) { $revalArgs += @('--limit', $RevalLimit) }
@@ -104,14 +104,14 @@ if ($exitCode -eq 0) {
     Write-Host '  EXP 5 ANALYSIS COMPLETE' -ForegroundColor Green
     Write-Host "  Results in: $ExperimentDir" -ForegroundColor Green
     Write-Host '  Key files:' -ForegroundColor Green
-    Write-Host '    analysis_wdl.csv               — raw W/D/L per matchup' -ForegroundColor Green
-    Write-Host '    stockfish_reval.csv            — Stockfish ACPL per game' -ForegroundColor Green
-    Write-Host '    exp5_variant_summary.csv       — variant scores + ACPL per SF level' -ForegroundColor Green
-    Write-Host '    exp5_variant_elo.csv           — interpolated variant Elo' -ForegroundColor Green
-    Write-Host '    exp5_variant_summary.txt       — human-readable summary' -ForegroundColor Green
-    Write-Host '    plots\exp5_score_curve.png     — performance vs SF Elo' -ForegroundColor Green
-    Write-Host '    plots\exp5_acpl_by_variant.png — ACPL comparison' -ForegroundColor Green
-    Write-Host '    plots\exp5_blunder_rate.png    — blunder rate per variant' -ForegroundColor Green
+    Write-Host '    analysis_wdl.csv               -- raw W/D/L per matchup' -ForegroundColor Green
+    Write-Host '    stockfish_reval.csv            -- Stockfish ACPL per game' -ForegroundColor Green
+    Write-Host '    exp5_variant_summary.csv       -- variant scores + ACPL per SF level' -ForegroundColor Green
+    Write-Host '    exp5_variant_elo.csv           -- interpolated variant Elo' -ForegroundColor Green
+    Write-Host '    exp5_variant_summary.txt       -- human-readable summary' -ForegroundColor Green
+    Write-Host '    plots\exp5_score_curve.png     -- performance vs SF Elo' -ForegroundColor Green
+    Write-Host '    plots\exp5_acpl_by_variant.png -- ACPL comparison' -ForegroundColor Green
+    Write-Host '    plots\exp5_blunder_rate.png    -- blunder rate per variant' -ForegroundColor Green
     Write-Host '================================================================' -ForegroundColor Green
 }
 

@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Phase 1: standard analyze_experiment.py (CSVs, Elo, generic plots)
-    Phase 2: exp2_depth_scaling.py — depth-specific analysis:
+    Phase 2: exp2_depth_scaling.py -- depth-specific analysis:
              Elo curve per depth, EBF / time / nodes vs depth,
              pruning techniques per depth.
 
@@ -55,7 +55,7 @@ $metricsCount = (Get-ChildItem -Path $ExperimentDir -Filter 'metrics_*.jsonl').C
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Cyan
-Write-Host '  EXP 2 — Combined Analysis (Minimax depth scaling)' -ForegroundColor Cyan
+Write-Host '  EXP 2 -- Combined Analysis (Minimax depth scaling)' -ForegroundColor Cyan
 Write-Host "  Directory: $ExperimentDir" -ForegroundColor Cyan
 Write-Host "  Metrics files: $metricsCount" -ForegroundColor Cyan
 Write-Host '================================================================' -ForegroundColor Cyan
@@ -82,16 +82,16 @@ if ($exitCode2 -eq 0) {
     Write-Host '  EXP 2 ANALYSIS COMPLETE' -ForegroundColor Green
     Write-Host "  Results in: $ExperimentDir" -ForegroundColor Green
     Write-Host '  Key files:' -ForegroundColor Green
-    Write-Host '    analysis_wdl.csv             — W/D/L per matchup' -ForegroundColor Green
-    Write-Host '    analysis_elo.csv             — overall Elo (mixed groups)' -ForegroundColor Green
-    Write-Host '    exp2_elo_per_depth.csv       — Elo per depth, anchored to d=4' -ForegroundColor Green
-    Write-Host '    exp2_depth_summary.csv       — per-(eval, depth) metrics' -ForegroundColor Green
-    Write-Host '    exp2_depth_summary.txt       — human-readable summary' -ForegroundColor Green
-    Write-Host '    plots\exp2_elo_curve.png     — Elo vs depth (per evaluator)' -ForegroundColor Green
-    Write-Host '    plots\exp2_ebf_curve.png     — Effective Branching Factor' -ForegroundColor Green
-    Write-Host '    plots\exp2_time_curve.png    — time per move (log scale)' -ForegroundColor Green
-    Write-Host '    plots\exp2_nodes_curve.png   — nodes searched (log scale)' -ForegroundColor Green
-    Write-Host '    plots\exp2_pruning_by_depth.png — pruning techniques' -ForegroundColor Green
+    Write-Host '    analysis_wdl.csv             -- W/D/L per matchup' -ForegroundColor Green
+    Write-Host '    analysis_elo.csv             -- overall Elo (mixed groups)' -ForegroundColor Green
+    Write-Host '    exp2_elo_per_depth.csv       -- Elo per depth, anchored to d=4' -ForegroundColor Green
+    Write-Host '    exp2_depth_summary.csv       -- per-(eval, depth) metrics' -ForegroundColor Green
+    Write-Host '    exp2_depth_summary.txt       -- human-readable summary' -ForegroundColor Green
+    Write-Host '    plots\exp2_elo_curve.png     -- Elo vs depth (per evaluator)' -ForegroundColor Green
+    Write-Host '    plots\exp2_ebf_curve.png     -- Effective Branching Factor' -ForegroundColor Green
+    Write-Host '    plots\exp2_time_curve.png    -- time per move (log scale)' -ForegroundColor Green
+    Write-Host '    plots\exp2_nodes_curve.png   -- nodes searched (log scale)' -ForegroundColor Green
+    Write-Host '    plots\exp2_pruning_by_depth.png -- pruning techniques' -ForegroundColor Green
     Write-Host '================================================================' -ForegroundColor Green
 }
 

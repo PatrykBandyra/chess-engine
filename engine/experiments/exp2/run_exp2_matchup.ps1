@@ -51,7 +51,7 @@ if (-not (Test-Path -LiteralPath 'main.py')) {
 }
 
 # ============================================================================
-# MATCHUP DEFINITIONS — must match labels in exp2_minimax_depth.json
+# MATCHUP DEFINITIONS -- must match labels in exp2_minimax_depth.json
 # ============================================================================
 
 $matchups = @(
@@ -72,7 +72,7 @@ $label = $matchupDef.label
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Green
-Write-Host "  EXP 2 — Matchup $Matchup/10" -ForegroundColor Green
+Write-Host "  EXP 2 -- Matchup $Matchup/10" -ForegroundColor Green
 Write-Host "  $($matchupDef.white) d=$($matchupDef.depth_white) vs $($matchupDef.black) d=$($matchupDef.depth_black)" -ForegroundColor Green
 Write-Host "  Games: $GamesPerPair (swap colors)" -ForegroundColor Green
 Write-Host "  Working dir: $engineDir" -ForegroundColor Green
@@ -104,16 +104,15 @@ $sharedDir = "exp2_minimax_depth_$ExperimentTag"
 # RUN
 # ============================================================================
 
-$expArgs = @(
-    '-ConfigFile', $configPath,
-    '-GamesPerPair', $GamesPerPair,
-    '-SwapColors',
-    '-Adjudicate',
-    '-OpeningsFile', 'experiments\openings_eco25.fen',
-    '-OutputSubDir', $sharedDir
-)
-
-if ($Gui) { $expArgs += '-Gui' }
+$expArgs = @{
+    ConfigFile = $configPath
+    GamesPerPair = $GamesPerPair
+    SwapColors = $true
+    Adjudicate = $true
+    OpeningsFile = 'experiments\openings_eco25.fen'
+    OutputSubDir = $sharedDir
+}
+if ($Gui) { $expArgs.Gui = $true }
 
 & .\experiments\run_experiment.ps1 @expArgs
 $exitCode = $LASTEXITCODE

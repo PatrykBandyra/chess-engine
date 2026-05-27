@@ -3,42 +3,42 @@
     "white": "MINIMAX_TRAD",
     "black": "MINIMAX_NN",
     "label": "minimax_trad_vs_minimax_nn",
-    "depth_white": 4,
+    "depth_white": 3,
     "depth_black": 3
   },
   {
     "white": "MCTS_TRAD",
     "black": "MCTS_NN",
     "label": "mcts_trad_vs_mcts_nn",
-    "mcts_time_white": 1.0,
-    "mcts_time_black": 1.0
+    "mcts_time_white": 0.5,
+    "mcts_time_black": 0.5
   },
   {
     "white": "MINIMAX_TRAD",
     "black": "MCTS_TRAD",
     "label": "minimax_trad_vs_mcts_trad",
-    "depth_white": 4,
-    "mcts_time_black": 1.0
+    "depth_white": 3,
+    "mcts_time_black": 0.5
   },
   {
     "white": "MINIMAX_TRAD",
     "black": "MCTS_NN",
     "label": "minimax_trad_vs_mcts_nn",
-    "depth_white": 4,
-    "mcts_time_black": 1.0
+    "depth_white": 3,
+    "mcts_time_black": 0.5
   },
   {
     "white": "MINIMAX_NN",
     "black": "MCTS_TRAD",
     "label": "minimax_nn_vs_mcts_trad",
     "depth_white": 3,
-    "mcts_time_black": 1.0
+    "mcts_time_black": 0.5
   },
   {
     "white": "MINIMAX_NN",
     "black": "MCTS_NN",
     "label": "minimax_nn_vs_mcts_nn",
     "depth_white": 3,
-    "mcts_time_black": 1.0
+    "mcts_time_black": 0.5
   }
 ]

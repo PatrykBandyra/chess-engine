@@ -3,11 +3,11 @@
     Runs one configuration of Experiment 7 (Opening book impact).
 
 .DESCRIPTION
-    4 configurations (book OFF / book ON × MINIMAX / MCTS, self-play):
-        1  MINIMAX_TRAD d=4 — book OFF
-        2  MINIMAX_TRAD d=4 — book ON
-        3  MCTS_TRAD        — book OFF
-        4  MCTS_TRAD        — book ON
+    4 configurations (book OFF / book ON x MINIMAX / MCTS, self-play):
+        1  MINIMAX_TRAD d=4 -- book OFF
+        2  MINIMAX_TRAD d=4 -- book ON
+        3  MCTS_TRAD        -- book OFF
+        4  MCTS_TRAD        -- book ON
 
     Launch 4 instances in separate terminals for parallel execution.
 
@@ -83,7 +83,7 @@ foreach ($key in @('depth_white', 'depth_black', 'mcts_time_white', 'mcts_time_b
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Green
-Write-Host "  EXP 7 — Config $Config/4: $configName" -ForegroundColor Green
+Write-Host "  EXP 7 -- Config $Config/4: $configName" -ForegroundColor Green
 Write-Host "  Type: $($cfg.type) self-play" -ForegroundColor Green
 Write-Host "  Book: $(if ($cfg.useBook) {'ON'} else {'OFF'})" -ForegroundColor Green
 Write-Host "  Games: $GamesPerPair (swap colors)" -ForegroundColor Green
@@ -119,22 +119,19 @@ if (-not $ExperimentTag) {
 $sharedDir = "exp7_opening_book_$ExperimentTag"
 
 # ============================================================================
-# RUN — note: NO -OpeningsFile (games from standard start)
+# RUN -- note: NO -OpeningsFile (games from standard start)
 # ============================================================================
 
-$expArgs = @(
-    '-ConfigFile', $configPath,
-    '-GamesPerPair', $GamesPerPair,
-    '-SwapColors',
-    '-Adjudicate',
-    '-StockfishPath', $StockfishPath,
-    '-OutputSubDir', $sharedDir
-)
-if ($cfg.useBook) {
-    $expArgs += '-OpeningBook'
+$expArgs = @{
+    ConfigFile = $configPath
+    GamesPerPair = $GamesPerPair
+    SwapColors = $true
+    Adjudicate = $true
+    StockfishPath = $StockfishPath
+    OutputSubDir = $sharedDir
 }
-
-if ($Gui) { $expArgs += '-Gui' }
+if ($cfg.useBook) { $expArgs.OpeningBook = $true }
+if ($Gui) { $expArgs.Gui = $true }
 
 & .\experiments\run_experiment.ps1 @expArgs
 $exitCode = $LASTEXITCODE

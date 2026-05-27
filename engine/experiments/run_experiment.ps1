@@ -12,7 +12,7 @@
         .\experiments\run_experiment.ps1 -ConfigFile experiments\exp1_round_robin.json -GamesPerPair 50 -SwapColors -Adjudicate
         .\experiments\run_experiment.ps1 -ConfigFile experiments\exp1_round_robin.json -OpeningsFile experiments\openings_eco25.fen
 
-    Config JSON format — array of matchup objects:
+    Config JSON format -- array of matchup objects:
     [
       {
         "white": "MCTS_TRAD",
@@ -133,25 +133,25 @@ function Build-GameArgs {
         '-jl', "$outSubDir\metrics_${GameTag}.jsonl"
     )
 
-    # MCTS time budgets — respect swap
+    # MCTS time budgets -- respect swap
     $mtw = if ($White -eq $Matchup.white) { $Matchup.mcts_time_white } else { $Matchup.mcts_time_black }
     $mtb = if ($Black -eq $Matchup.black) { $Matchup.mcts_time_black } else { $Matchup.mcts_time_white }
     if ($mtw) { $args_ += @('-mtw', "$mtw") }
     if ($mtb) { $args_ += @('-mtb', "$mtb") }
 
-    # Minimax depths — respect swap
+    # Minimax depths -- respect swap
     $dw = if ($White -eq $Matchup.white) { $Matchup.depth_white } else { $Matchup.depth_black }
     $db = if ($Black -eq $Matchup.black) { $Matchup.depth_black } else { $Matchup.depth_white }
     if ($dw) { $args_ += @('-dw', "$dw") }
     if ($db) { $args_ += @('-db', "$db") }
 
-    # Stockfish depths — respect swap
+    # Stockfish depths -- respect swap
     $dws = if ($White -eq $Matchup.white) { $Matchup.depth_white_stockfish } else { $Matchup.depth_black_stockfish }
     $dbs = if ($Black -eq $Matchup.black) { $Matchup.depth_black_stockfish } else { $Matchup.depth_white_stockfish }
     if ($dws) { $args_ += @('-dws', "$dws") }
     if ($dbs) { $args_ += @('-dbs', "$dbs") }
 
-    # Stockfish skill — respect swap
+    # Stockfish skill -- respect swap
     $sw = if ($White -eq $Matchup.white) { $Matchup.skill_white } else { $Matchup.skill_black }
     $sb = if ($Black -eq $Matchup.black) { $Matchup.skill_black } else { $Matchup.skill_white }
     if ($sw) { $args_ += @('-sw', "$sw") }
@@ -201,7 +201,7 @@ Write-Host "  Adjudicate: $(if ($Adjudicate) {"yes (threshold=$AdjudicateThresho
 Write-Host "  Mode:       $(if ($Gui) {'GUI (graphical, slower, interactive)'} else {'Background (headless)'})"
 Write-Host ('=' * 70) -ForegroundColor Green
 if ($Gui) {
-    Write-Host '  WARNING: GUI mode runs each game in a window — close it to advance.' -ForegroundColor Yellow
+    Write-Host '  WARNING: GUI mode runs each game in a window -- close it to advance.' -ForegroundColor Yellow
     Write-Host '  Best for debugging / demos. For batch runs use background mode.' -ForegroundColor Yellow
     Write-Host ''
 }
@@ -230,7 +230,12 @@ foreach ($matchup in $config) {
             $fen = $openings[$openingIdx]
             $fenTempName = "_temp_opening_${label}_g${gameIdx}.fen"
             $fenTempFile = $fenTempName
-            Set-Content -Path "out\$fenTempName" -Value $fen -Encoding utf8
+            # Write FEN without BOM (PowerShell 5.1's -Encoding utf8 adds BOM, which python-chess rejects)
+            [System.IO.File]::WriteAllText(
+                (Join-Path (Get-Location) "out\$fenTempName"),
+                $fen,
+                [System.Text.UTF8Encoding]::new($false)
+            )
         }
 
         $gameTag = "${label}_g${gameIdx}_${colorTag}"

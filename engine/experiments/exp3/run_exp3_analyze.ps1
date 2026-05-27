@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Phase 1: standard analyze_experiment.py (CSVs, Elo, generic plots)
-    Phase 2: exp3_time_scaling.py — time-specific analysis:
+    Phase 2: exp3_time_scaling.py -- time-specific analysis:
              Elo curve vs log(time) with log-linear fit,
              throughput TRAD vs NN, tree size/depth/entropy scaling.
 
@@ -55,7 +55,7 @@ $metricsCount = (Get-ChildItem -Path $ExperimentDir -Filter 'metrics_*.jsonl').C
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Cyan
-Write-Host '  EXP 3 — Combined Analysis (MCTS time scaling)' -ForegroundColor Cyan
+Write-Host '  EXP 3 -- Combined Analysis (MCTS time scaling)' -ForegroundColor Cyan
 Write-Host "  Directory: $ExperimentDir" -ForegroundColor Cyan
 Write-Host "  Metrics files: $metricsCount" -ForegroundColor Cyan
 Write-Host '================================================================' -ForegroundColor Cyan
@@ -82,16 +82,16 @@ if ($exitCode2 -eq 0) {
     Write-Host '  EXP 3 ANALYSIS COMPLETE' -ForegroundColor Green
     Write-Host "  Results in: $ExperimentDir" -ForegroundColor Green
     Write-Host '  Key files:' -ForegroundColor Green
-    Write-Host '    analysis_wdl.csv               — W/D/L per matchup' -ForegroundColor Green
-    Write-Host '    exp3_elo_per_time.csv          — Elo per time budget' -ForegroundColor Green
-    Write-Host '    exp3_elo_log_fit.csv           — log-linear fit (Elo per doubling)' -ForegroundColor Green
-    Write-Host '    exp3_time_summary.csv          — per-(eval, time) MCTS metrics' -ForegroundColor Green
-    Write-Host '    exp3_time_summary.txt          — human-readable summary' -ForegroundColor Green
-    Write-Host '    plots\exp3_elo_curve.png       — Elo vs log2(time) + fit' -ForegroundColor Green
-    Write-Host '    plots\exp3_throughput_curve.png — iter/s TRAD vs NN' -ForegroundColor Green
-    Write-Host '    plots\exp3_tree_size_curve.png — nodes created vs time' -ForegroundColor Green
-    Write-Host '    plots\exp3_max_depth_curve.png — tree depth vs time' -ForegroundColor Green
-    Write-Host '    plots\exp3_entropy_curve.png   — search certainty vs time' -ForegroundColor Green
+    Write-Host '    analysis_wdl.csv               -- W/D/L per matchup' -ForegroundColor Green
+    Write-Host '    exp3_elo_per_time.csv          -- Elo per time budget' -ForegroundColor Green
+    Write-Host '    exp3_elo_log_fit.csv           -- log-linear fit (Elo per doubling)' -ForegroundColor Green
+    Write-Host '    exp3_time_summary.csv          -- per-(eval, time) MCTS metrics' -ForegroundColor Green
+    Write-Host '    exp3_time_summary.txt          -- human-readable summary' -ForegroundColor Green
+    Write-Host '    plots\exp3_elo_curve.png       -- Elo vs log2(time) + fit' -ForegroundColor Green
+    Write-Host '    plots\exp3_throughput_curve.png -- iter/s TRAD vs NN' -ForegroundColor Green
+    Write-Host '    plots\exp3_tree_size_curve.png -- nodes created vs time' -ForegroundColor Green
+    Write-Host '    plots\exp3_max_depth_curve.png -- tree depth vs time' -ForegroundColor Green
+    Write-Host '    plots\exp3_entropy_curve.png   -- search certainty vs time' -ForegroundColor Green
     Write-Host '================================================================' -ForegroundColor Green
 }
 

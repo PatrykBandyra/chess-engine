@@ -98,7 +98,7 @@ $variantName = $variantDef.name
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Green
-Write-Host "  EXP 6 — Variant $Variant/4: $variantName" -ForegroundColor Green
+Write-Host "  EXP 6 -- Variant $Variant/4: $variantName" -ForegroundColor Green
 Write-Host "  Puzzles: $PuzzlesFile" -ForegroundColor Green
 if ($Limit -gt 0) { Write-Host "  Limit: $Limit (testing mode)" -ForegroundColor Yellow }
 Write-Host '================================================================' -ForegroundColor Green

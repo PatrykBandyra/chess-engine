@@ -30,9 +30,9 @@ param(
     [ValidateRange(1, 6)]
     [int]$Pair,
 
-    [int]$GamesPerPair = 50,
-    [double]$MctsTime = 0,
-    [int]$MinimaxDepth = 4,
+    [int]$GamesPerPair = 30,
+    [double]$MctsTime = 2.7,
+    [int]$MinimaxDepth = 3,
     [int]$MinimaxDepthNN = 3,
     [string]$ExperimentTag = '',
     [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe',
@@ -112,7 +112,7 @@ $label = $pairDef.label
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Green
-Write-Host "  EXP 1 — Pair $Pair/6: $($pairDef.white) vs $($pairDef.black)" -ForegroundColor Green
+Write-Host "  EXP 1 -- Pair $Pair/6: $($pairDef.white) vs $($pairDef.black)" -ForegroundColor Green
 Write-Host "  Games: $GamesPerPair (swap colors)" -ForegroundColor Green
 Write-Host "  MCTS time: $MctsTime s" -ForegroundColor Green
 Write-Host "  Working dir: $engineDir" -ForegroundColor Green
@@ -144,16 +144,16 @@ $sharedDir = "exp1_round_robin_$ExperimentTag"
 # RUN
 # ============================================================================
 
-$expArgs = @(
-    '-ConfigFile', $configPath,
-    '-GamesPerPair', $GamesPerPair,
-    '-SwapColors',
-    '-Adjudicate',
-    '-OpeningsFile', 'experiments\openings_eco25.fen',
-    '-StockfishPath', $StockfishPath,
-    '-OutputSubDir', $sharedDir
-)
-if ($Gui) { $expArgs += '-Gui' }
+$expArgs = @{
+    ConfigFile = $configPath
+    GamesPerPair = $GamesPerPair
+    SwapColors = $true
+    Adjudicate = $true
+    OpeningsFile = 'experiments\openings_eco25.fen'
+    StockfishPath = $StockfishPath
+    OutputSubDir = $sharedDir
+}
+if ($Gui) { $expArgs.Gui = $true }
 
 & .\experiments\run_experiment.ps1 @expArgs
 $exitCode = $LASTEXITCODE

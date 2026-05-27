@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Phase 1: standard analyze_experiment.py (CSVs, generic plots)
-    Phase 2: exp7_book_impact.py — book-specific analysis:
+    Phase 2: exp7_book_impact.py -- book-specific analysis:
              Per-condition W/D/L, book exit move number, opening phase time,
              chi-square and McNemar paired tests.
 
@@ -55,7 +55,7 @@ $metricsCount = (Get-ChildItem -Path $ExperimentDir -Filter 'metrics_*.jsonl').C
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Cyan
-Write-Host '  EXP 7 — Combined Analysis (Opening book impact)' -ForegroundColor Cyan
+Write-Host '  EXP 7 -- Combined Analysis (Opening book impact)' -ForegroundColor Cyan
 Write-Host "  Directory: $ExperimentDir" -ForegroundColor Cyan
 Write-Host "  Metrics files: $metricsCount" -ForegroundColor Cyan
 Write-Host '================================================================' -ForegroundColor Cyan
@@ -66,7 +66,7 @@ Write-Host '--- Phase 1: Standard analysis ---' -ForegroundColor Yellow
 & $Python $AnalysisScript $ExperimentDir --elo --plots
 $exitCode1 = $LASTEXITCODE
 if ($exitCode1 -ne 0) {
-    Write-Warning "Standard analysis returned $exitCode1 — continuing with exp7 analysis"
+    Write-Warning "Standard analysis returned $exitCode1 -- continuing with exp7 analysis"
 }
 
 Write-Host ''
@@ -81,14 +81,14 @@ if ($exitCode2 -eq 0) {
     Write-Host '  EXP 7 ANALYSIS COMPLETE' -ForegroundColor Green
     Write-Host "  Results in: $ExperimentDir" -ForegroundColor Green
     Write-Host '  Key files:' -ForegroundColor Green
-    Write-Host '    analysis_wdl.csv                  — raw W/D/L per matchup' -ForegroundColor Green
-    Write-Host '    exp7_raw_per_game.csv             — per-game book metrics' -ForegroundColor Green
-    Write-Host '    exp7_summary.csv                  — per-condition aggregates' -ForegroundColor Green
-    Write-Host '    exp7_statistical_tests.csv        — chi-square + McNemar' -ForegroundColor Green
-    Write-Host '    exp7_summary.txt                  — human-readable' -ForegroundColor Green
-    Write-Host '    plots\exp7_wdl_comparison.png     — book OFF vs ON' -ForegroundColor Green
-    Write-Host '    plots\exp7_book_exit_hist.png     — book exit move distribution' -ForegroundColor Green
-    Write-Host '    plots\exp7_opening_time.png       — opening phase time' -ForegroundColor Green
+    Write-Host '    analysis_wdl.csv                  -- raw W/D/L per matchup' -ForegroundColor Green
+    Write-Host '    exp7_raw_per_game.csv             -- per-game book metrics' -ForegroundColor Green
+    Write-Host '    exp7_summary.csv                  -- per-condition aggregates' -ForegroundColor Green
+    Write-Host '    exp7_statistical_tests.csv        -- chi-square + McNemar' -ForegroundColor Green
+    Write-Host '    exp7_summary.txt                  -- human-readable' -ForegroundColor Green
+    Write-Host '    plots\exp7_wdl_comparison.png     -- book OFF vs ON' -ForegroundColor Green
+    Write-Host '    plots\exp7_book_exit_hist.png     -- book exit move distribution' -ForegroundColor Green
+    Write-Host '    plots\exp7_opening_time.png       -- opening phase time' -ForegroundColor Green
     Write-Host '================================================================' -ForegroundColor Green
 }
 

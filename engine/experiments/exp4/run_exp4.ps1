@@ -1,12 +1,12 @@
 <#
 .SYNOPSIS
-    Runs Experiment 4 (evaluation function comparison) — all 3 sub-experiments.
+    Runs Experiment 4 (evaluation function comparison) -- all 3 sub-experiments.
 
 .DESCRIPTION
     Phase 0 (optional): prepare 200 test positions if not present
-    Phase 1: 4a — static evaluation accuracy (TRAD/NN/SF-d1 vs SF-d20)
-    Phase 2: 4b — move agreement (each variant vs SF-d20 top-3) [slow]
-    Phase 3: 4c — evaluation speed microbenchmark
+    Phase 1: 4a -- static evaluation accuracy (TRAD/NN/SF-d1 vs SF-d20)
+    Phase 2: 4b -- move agreement (each variant vs SF-d20 top-3) [slow]
+    Phase 3: 4c -- evaluation speed microbenchmark
 
     Usage:
         .\run_exp4.ps1                            # all phases
@@ -53,7 +53,7 @@ if (-not (Test-Path -LiteralPath $sfAbs)) {
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Cyan
-Write-Host '  EXPERIMENT 4 — Evaluation function comparison' -ForegroundColor Cyan
+Write-Host '  EXPERIMENT 4 -- Evaluation function comparison' -ForegroundColor Cyan
 Write-Host "  Stockfish: $sfAbs" -ForegroundColor Cyan
 Write-Host "  Ground truth depth: $GroundTruthDepth" -ForegroundColor Cyan
 Write-Host "  NN depth: $NNDepth" -ForegroundColor Cyan
@@ -89,7 +89,7 @@ if (-not $SkipAccuracy) {
 # Phase 2: move agreement (slow)
 if (-not $SkipMoveAgreement) {
     Write-Host ''
-    Write-Host '--- Phase 2: Move agreement (4b) — SLOW ---' -ForegroundColor Yellow
+    Write-Host '--- Phase 2: Move agreement (4b) -- SLOW ---' -ForegroundColor Yellow
     $args2 = @('--stockfish', $sfAbs,
                '--minimax-depth', "$MinimaxDepth",
                '--minimax-nn-depth', "$MinimaxNNDepth",
@@ -119,10 +119,10 @@ Write-Host '================================================================' -F
 Write-Host "  EXPERIMENT 4 COMPLETE in $([math]::Round($elapsed, 1)) min" -ForegroundColor Green
 Write-Host "  Results in: $expDir" -ForegroundColor Green
 Write-Host '  Key files:' -ForegroundColor Green
-Write-Host '    exp4a_evaluations.csv         — per-position evals' -ForegroundColor Green
-Write-Host '    exp4a_accuracy_summary.csv    — Spearman/MAE/RMSE per evaluator+phase' -ForegroundColor Green
-Write-Host '    exp4b_moves.csv               — variant moves vs SF top-3' -ForegroundColor Green
-Write-Host '    exp4b_move_agreement.csv      — match rate per variant' -ForegroundColor Green
-Write-Host '    exp4c_speed_summary.csv       — eval latency stats' -ForegroundColor Green
-Write-Host '    plots\                       — scatter plots, bar charts, histograms' -ForegroundColor Green
+Write-Host '    exp4a_evaluations.csv         -- per-position evals' -ForegroundColor Green
+Write-Host '    exp4a_accuracy_summary.csv    -- Spearman/MAE/RMSE per evaluator+phase' -ForegroundColor Green
+Write-Host '    exp4b_moves.csv               -- variant moves vs SF top-3' -ForegroundColor Green
+Write-Host '    exp4b_move_agreement.csv      -- match rate per variant' -ForegroundColor Green
+Write-Host '    exp4c_speed_summary.csv       -- eval latency stats' -ForegroundColor Green
+Write-Host '    plots\                       -- scatter plots, bar charts, histograms' -ForegroundColor Green
 Write-Host '================================================================' -ForegroundColor Green
