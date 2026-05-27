@@ -153,7 +153,7 @@ $expArgs = @(
     '-OutputSubDir', $sharedDir
 )
 
-& .\run_experiment.ps1 @expArgs
+& .\experiments\run_experiment.ps1 @expArgs
 $exitCode = $LASTEXITCODE
 
 Write-Host ''
