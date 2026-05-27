@@ -35,7 +35,8 @@ param(
     [int]$Matchup,
 
     [int]$GamesPerPair = 30,
-    [string]$ExperimentTag = ''
+    [string]$ExperimentTag = '',
+    [switch]$Gui
 )
 
 $ErrorActionPreference = 'Stop'
@@ -111,6 +112,8 @@ $expArgs = @(
     '-OpeningsFile', 'experiments\openings_eco25.fen',
     '-OutputSubDir', $sharedDir
 )
+
+if ($Gui) { $expArgs += '-Gui' }
 
 & .\experiments\run_experiment.ps1 @expArgs
 $exitCode = $LASTEXITCODE

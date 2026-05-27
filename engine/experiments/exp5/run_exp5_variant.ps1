@@ -34,7 +34,8 @@ param(
     [double]$MctsTime = 0,
     [string]$ExperimentTag = '',
     [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe',
-    [int]$StockfishDepth = 10
+    [int]$StockfishDepth = 10,
+    [switch]$Gui
 )
 
 $ErrorActionPreference = 'Stop'
@@ -143,6 +144,8 @@ $expArgs = @(
     '-StockfishPath', $StockfishPath,
     '-OutputSubDir', $sharedDir
 )
+
+if ($Gui) { $expArgs += '-Gui' }
 
 & .\experiments\run_experiment.ps1 @expArgs
 $exitCode = $LASTEXITCODE

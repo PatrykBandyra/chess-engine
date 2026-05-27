@@ -38,7 +38,8 @@ param(
     [int]$MinimaxDepth = 4,
     [double]$McTsTime = 20.0,
     [string]$ExperimentTag = '',
-    [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe'
+    [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe',
+    [switch]$Gui
 )
 
 $ErrorActionPreference = 'Stop'
@@ -132,6 +133,8 @@ $expArgs = @(
 if ($cfg.useBook) {
     $expArgs += '-OpeningBook'
 }
+
+if ($Gui) { $expArgs += '-Gui' }
 
 & .\experiments\run_experiment.ps1 @expArgs
 $exitCode = $LASTEXITCODE

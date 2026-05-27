@@ -48,7 +48,8 @@ param(
     [switch]$OpeningBook,
     [string]$OpeningsFile,
     [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe',
-    [string]$OutputSubDir
+    [string]$OutputSubDir,
+    [switch]$Gui
 )
 
 $ErrorActionPreference = 'Stop'
@@ -126,7 +127,7 @@ function Build-GameArgs {
     $args_ = @(
         '-w', $White,
         '-b', $Black,
-        '-m', 'B',
+        '-m', $(if ($Gui) { 'G' } else { 'B' }),
         '-g', "$outSubDir\game_${GameTag}.txt",
         '-l', "$outSubDir\log_${GameTag}.txt",
         '-jl', "$outSubDir\metrics_${GameTag}.jsonl"
@@ -197,7 +198,13 @@ Write-Host "  Matchups:   $($config.Count)"
 Write-Host "  Games/pair: $GamesPerPair $(if ($SwapColors) {'(swap colors)'} else {'(no swap)'})"
 Write-Host "  Openings:   $(if ($openings.Count -gt 0) {"$($openings.Count) positions"} else {'standard start'})"
 Write-Host "  Adjudicate: $(if ($Adjudicate) {"yes (threshold=$AdjudicateThreshold, moves=$AdjudicateMoves)"} else {'no'})"
+Write-Host "  Mode:       $(if ($Gui) {'GUI (graphical, slower, interactive)'} else {'Background (headless)'})"
 Write-Host ('=' * 70) -ForegroundColor Green
+if ($Gui) {
+    Write-Host '  WARNING: GUI mode runs each game in a window — close it to advance.' -ForegroundColor Yellow
+    Write-Host '  Best for debugging / demos. For batch runs use background mode.' -ForegroundColor Yellow
+    Write-Host ''
+}
 Write-Host ''
 
 foreach ($matchup in $config) {
