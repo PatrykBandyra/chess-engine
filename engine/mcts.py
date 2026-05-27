@@ -129,7 +129,10 @@ class MCTS(Player):
             if self.opening_book.make_move(board, start_time):
                 self.__root = None
                 self.__last_best_child = None
-                return  # Move already made from an opening book
+                self.stats = {'from_book': True}
+                self.last_eval = None
+                self.last_phase = None
+                return
         LOGGER.info(
             f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; move_number: {move_number}; '
             f'starting search; time_budget: {self.mcts_time_budget:.6f}s'
@@ -156,6 +159,7 @@ class MCTS(Player):
             'root_visit_entropy': 0.0,
             'convergence_point': 1.0,
             'avg_backprop_depth': 0.0,
+            'c_puct': self.C_PUCT,
         }
         self._backprop_total_depth = 0
         self._backprop_count = 0

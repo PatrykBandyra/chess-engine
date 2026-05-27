@@ -98,7 +98,10 @@ class Minimax(Player):
 
         if self.opening_book.use_opening_book and self.opening_book.is_opening:
             if self.opening_book.make_move(board, start_time):
-                return  # Move already made from an opening book
+                self.stats = {'from_book': True}
+                self.last_eval = None
+                self.last_phase = None
+                return
 
         LOGGER.info(
             f'{type(self).__name__}; {"WHITE" if self.color else "BLACK"}; move_number: {move_number}; '

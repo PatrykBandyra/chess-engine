@@ -60,6 +60,12 @@ def parse_args() -> argparse.Namespace:
                         default=20.0, required=False)
     parser.add_argument('-d', '--debug', help='Debug mode', action='store_true', required=False)
     parser.add_argument('-jl', '--json_log', help='JSON metrics log file', type=str, required=False)
+    parser.add_argument('-adj', '--adjudicate', help='Enable eval-based draw adjudication', action='store_true',
+                        required=False)
+    parser.add_argument('-adjt', '--adjudicate_threshold', help='Eval threshold for adjudication (default 0.05)',
+                        type=float, default=0.05, required=False)
+    parser.add_argument('-adjm', '--adjudicate_moves', help='Consecutive full moves for adjudication (default 20)',
+                        type=int, default=20, required=False)
     return parser.parse_args()
 
 

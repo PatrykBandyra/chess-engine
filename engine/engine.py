@@ -89,6 +89,8 @@ class Engine:
         total_time_black = 0.0
         white_moves = 0
         black_moves = 0
+        self._adjudicated = False
+        consecutive_low_eval = 0
 
         while not self.__is_game_over_or_draw_claim_available():
             white_move_number = self.board.fullmove_number
@@ -116,6 +118,21 @@ class Engine:
                 total_time_black += move_time
                 black_moves += 1
                 self.__log_move_json(black_move_number, 'BLACK', last_move, self.black_player, move_time)
+
+            if self.args.adjudicate:
+                white_eval = getattr(self.white_player, 'last_eval', None)
+                black_eval = getattr(self.black_player, 'last_eval', None)
+                threshold = self.args.adjudicate_threshold
+                if (white_eval is not None and black_eval is not None
+                        and abs(white_eval) <= threshold and abs(black_eval) <= threshold):
+                    consecutive_low_eval += 1
+                else:
+                    consecutive_low_eval = 0
+                if consecutive_low_eval >= self.args.adjudicate_moves:
+                    LOGGER.info(f'Adjudication: draw by eval threshold ({threshold}) '
+                                f'for {self.args.adjudicate_moves} consecutive full moves')
+                    self._adjudicated = True
+                    break
 
         self.__handle_game_over(total_time_white, total_time_black, white_moves, black_moves)
 
@@ -174,6 +191,8 @@ class Engine:
             self.screen.running = False
 
     def __get_termination_reason(self) -> str:
+        if self._adjudicated:
+            return 'adjudication'
         if self.board.is_checkmate():
             return 'checkmate'
         elif self.board.is_stalemate():
@@ -191,6 +210,8 @@ class Engine:
         return 'unknown'
 
     def __get_game_status(self) -> str | None:
+        if self._adjudicated:
+            return 'Draw by adjudication (eval threshold)'
         if self.board.is_checkmate():
             if self.board.turn == chess.WHITE:
                 return 'Black wins by checkmate'

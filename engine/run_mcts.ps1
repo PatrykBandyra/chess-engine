@@ -61,14 +61,14 @@ $StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockf
 # Variant 1: MCTS_TRAD vs MCTS_TRAD, background, 1s vs 1s, no opening book
 # Simplest self-play test with the traditional MCTS evaluator.
 # ----------------------------------------------------------------------------
-$runArgs = @(
-    '-w',  'MCTS_TRAD',
-    '-b',  'MCTS_TRAD',
-    '-m',  'B',
-    '-mtw','1', '-mtb','1',
-    '-g',  "game_mcts_trad_selfplay_1s_$RunTag.txt",
-    '-l',  "log_mcts_trad_selfplay_1s_$RunTag.txt"
-)
+#$runArgs = @(
+#    '-w',  'MCTS_TRAD',
+#    '-b',  'MCTS_TRAD',
+#    '-m',  'B',
+#    '-mtw','1', '-mtb','1',
+#    '-g',  "game_mcts_trad_selfplay_1s_$RunTag.txt",
+#    '-l',  "log_mcts_trad_selfplay_1s_$RunTag.txt"
+#)
 
 # ----------------------------------------------------------------------------
 # Variant 2: MCTS_TRAD vs MCTS_TRAD, GUI, 20s vs 20s, opening book
@@ -91,8 +91,9 @@ $runArgs = @(
 # $runArgs = @(
 #     '-w',  'MCTS_TRAD',
 #     '-b',  'MCTS_TRAD',
-#     '-m',  'B',
-#     '-mtw','3', '-mtb','3',
+#     '-m',  'G',
+#     '-ob',
+#     '-mtw','3', '-mtb','20',
 #     '-g',  "game_mcts_trad_selfplay_3s_$RunTag.txt",
 #     '-l',  "log_mcts_trad_selfplay_3s_$RunTag.txt"
 # )
@@ -216,14 +217,15 @@ $runArgs = @(
 # ----------------------------------------------------------------------------
 # Variant 13: MCTS_NN vs MCTS_NN, asymmetric (white 2s, black 0.5s)
 # ----------------------------------------------------------------------------
-# $runArgs = @(
-#     '-w',  'MCTS_NN',
-#     '-b',  'MCTS_NN',
-#     '-m',  'B',
-#     '-mtw','2', '-mtb','0.5',
-#     '-g',  "game_mcts_nn_w2s_b05s_$RunTag.txt",
-#     '-l',  "log_mcts_nn_w2s_b05s_$RunTag.txt"
-# )
+$runArgs = @(
+    '-w', 'MCTS_NN',
+    '-b', 'MCTS_NN',
+    '-m', 'G',
+    '-mtw', '10', '-mtb', '5',
+    '-ob',
+    '-g', "game_mcts_nn_w2s_b05s_$RunTag.txt",
+    '-l', "log_mcts_nn_w2s_b05s_$RunTag.txt"
+)
 
 # ----------------------------------------------------------------------------
 # Variant 14: MCTS_NN (W) vs MCTS_TRAD (B), 1s vs 1s
@@ -403,28 +405,31 @@ $runArgs = @(
 # EXECUTION - do not edit below unless you know what you're doing.
 # ============================================================================
 
-if (-not $runArgs) {
+if (-not $runArgs)
+{
     Write-Error 'No variant selected - uncomment one of the $runArgs blocks.'
     exit 1
 }
 
 # Validate that main.py exists
 $mainPath = Join-Path -Path '.' -ChildPath $MainScript
-if (-not (Test-Path -LiteralPath $mainPath)) {
+if (-not (Test-Path -LiteralPath $mainPath))
+{
     Write-Error "File not found: $mainPath. Are you running this script from the 'engine' folder?"
     exit 1
 }
 
 # Ensure out/ exists (main.py writes logs and results there).
 $outDir = Join-Path -Path '.' -ChildPath 'out'
-if (-not (Test-Path -LiteralPath $outDir)) {
+if (-not (Test-Path -LiteralPath $outDir))
+{
     New-Item -ItemType Directory -Path $outDir | Out-Null
     Write-Host "Created directory: $outDir"
 }
 
 Write-Host '------------------------------------------------------------'
-Write-Host "Running: $Python $MainScript $($runArgs -join ' ')"
-Write-Host "Cwd: $(Get-Location)"
+Write-Host "Running: $Python $MainScript $( $runArgs -join ' ' )"
+Write-Host "Cwd: $( Get-Location )"
 Write-Host '------------------------------------------------------------'
 
 & $Python $MainScript @runArgs
