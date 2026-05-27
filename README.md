@@ -1,1 +1,1 @@
-# Maste degree project
+# Master degree project

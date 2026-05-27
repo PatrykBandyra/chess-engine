@@ -1,0 +1,15 @@
+# macOS-compatible requirements for chess-engine experiments
+# No CUDA torch (project's NN evaluator is actually Stockfish, not a real NN)
+# No pywin32/pywinpty (Windows-only)
+# Minimal set for engine + experiment scripts
+
+chess==1.11.2
+python-chess==1.999
+pygame==2.6.1
+stockfish==3.28.0
+
+# Analysis dependencies
+numpy==2.2.5
+pandas==2.2.3
+matplotlib==3.10.3
+scipy==1.15.3
