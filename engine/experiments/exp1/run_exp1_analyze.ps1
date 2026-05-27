@@ -13,8 +13,10 @@
 
 param(
     [string]$ExperimentDir = '',
-    [string]$Python = 'python'
+    [string]$Python = ''
 )
+
+if (-not $Python) { $Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' } }
 
 # Resolve engine/ directory relative to this script
 $engineDir = (Resolve-Path "$PSScriptRoot\..\..").Path

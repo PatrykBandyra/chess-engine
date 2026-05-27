@@ -41,10 +41,10 @@
 # COMMON SETTINGS
 # ============================================================================
 
-# Path to the Python interpreter. Defaults to 'python' from PATH.
+# Path to the Python interpreter. Auto-selects 'python3' on macOS/Linux, 'python' on Windows.
 # For a specific venv/conda env, set the full path, e.g.:
 # $Python = 'C:\Users\me\anaconda3\envs\chess-engine\python.exe'
-$Python = 'python'
+$Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' }
 
 # Entry-point script
 $MainScript = 'main.py'

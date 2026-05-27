@@ -18,7 +18,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$Python     = 'python'
+$Python     = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' }
 
 # Resolve engine/ directory relative to this script
 $engineDir = (Resolve-Path "$PSScriptRoot\..\..").Path

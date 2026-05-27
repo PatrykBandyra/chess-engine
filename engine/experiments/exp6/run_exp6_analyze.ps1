@@ -20,8 +20,10 @@
 
 param(
     [string]$Tag = '',
-    [string]$Python = 'python'
+    [string]$Python = ''
 )
+
+if (-not $Python) { $Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' } }
 
 $engineDir = (Resolve-Path "$PSScriptRoot\..\..").Path
 Set-Location $engineDir

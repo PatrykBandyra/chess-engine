@@ -36,7 +36,7 @@ param(
 # COMMON SETTINGS
 # ============================================================================
 
-$Python     = 'python'
+$Python     = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' }
 $MainScript = 'main.py'
 $RunTag     = (Get-Date -Format 'yyyyMMdd_HHmmss')
 

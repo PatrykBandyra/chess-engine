@@ -18,12 +18,14 @@
 
 param(
     [string]$ExperimentDir = '',
-    [string]$Python = 'python',
+    [string]$Python = '',
     [switch]$SkipReval,
     [int]$RevalDepth = 20,
     [int]$RevalLimit = 0,
     [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe'
 )
+
+if (-not $Python) { $Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' } }
 
 $engineDir = (Resolve-Path "$PSScriptRoot\..\..").Path
 Set-Location $engineDir

@@ -40,10 +40,10 @@
 # COMMON SETTINGS (edit here if your environment differs)
 # ============================================================================
 
-# Path to the Python interpreter. Defaults to 'python' from PATH.
+# Path to the Python interpreter. Auto-selects 'python3' on macOS/Linux, 'python' on Windows.
 # For a specific venv, set the full path, e.g.:
 # $Python = 'C:\Users\me\.venvs\chess\Scripts\python.exe'
-$Python = 'python'
+$Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' }
 
 # Entry-point script
 $MainScript = 'main.py'

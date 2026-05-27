@@ -17,7 +17,7 @@
 #>
 
 param(
-    [string]$Python = 'python',
+    [string]$Python = '',
     [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe',
     [int]$Limit = 0,
     [int]$NNDepth = 10,
@@ -31,6 +31,8 @@ param(
     [switch]$SkipMoveAgreement,
     [switch]$SkipSpeed
 )
+
+if (-not $Python) { $Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' } }
 
 $ErrorActionPreference = 'Stop'
 

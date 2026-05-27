@@ -53,7 +53,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$Python     = 'python'
+$Python     = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' }
 $MainScript = 'main.py'
 
 # ============================================================================

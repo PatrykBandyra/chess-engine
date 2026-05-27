@@ -41,8 +41,10 @@ param(
     [int]$Limit = 0,
     [string]$ExperimentTag = '',
     [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe',
-    [string]$Python = 'python'
+    [string]$Python = ''
 )
+
+if (-not $Python) { $Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' } }
 
 $ErrorActionPreference = 'Stop'
 
