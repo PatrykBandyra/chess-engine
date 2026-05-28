@@ -1,0 +1,20 @@
+Experiment 1 — Round-Robin between 4 engine variants
+============================================================
+
+Per-pair results (variant A = white_label, variant B = black_label):
+                     label    variant_a  variant_b  games  a_wins  draws  b_wins  a_score  decisive  a_win_rate_decisive  p_value  lower_ci  upper_ci                            note
+      mcts_trad_vs_mcts_nn    mcts_trad    mcts_nn     30       1     25       4    0.450         5                0.200   0.3750     0.005     0.716 binomial test on decisive games
+     minimax_nn_vs_mcts_nn   minimax_nn    mcts_nn     30      12     18       0    0.700        12                1.000   0.0005     0.735     1.000 binomial test on decisive games
+   minimax_nn_vs_mcts_trad   minimax_nn  mcts_trad     30      20     10       0    0.833        20                1.000   0.0000     0.832     1.000 binomial test on decisive games
+   minimax_trad_vs_mcts_nn minimax_trad    mcts_nn     30       4     26       0    0.567         4                1.000   0.1250     0.398     1.000 binomial test on decisive games
+ minimax_trad_vs_mcts_trad minimax_trad  mcts_trad     30       5     23       2    0.550         7                0.714   0.4531     0.290     0.963 binomial test on decisive games
+minimax_trad_vs_minimax_nn minimax_trad minimax_nn     30       2      5      23    0.150        25                0.080   0.0000     0.010     0.260 binomial test on decisive games
+
+Axis main effects:
+     axis  MINIMAX_wins  draws  MCTS_wins  total_games  MINIMAX_score                                                                                         pairs_used  TRAD_wins  NN_wins  TRAD_score
+algorithm          41.0     77        2.0          120          0.662 minimax_nn_vs_mcts_nn; minimax_nn_vs_mcts_trad; minimax_trad_vs_mcts_nn; minimax_trad_vs_mcts_trad        NaN      NaN         NaN
+evaluator           NaN     66        NaN          120            NaN mcts_trad_vs_mcts_nn; minimax_nn_vs_mcts_trad; minimax_trad_vs_mcts_nn; minimax_trad_vs_minimax_nn        7.0     47.0       0.333
+
+Color advantage:
+ total_games  white_wins  draws  black_wins  white_score
+         180          34    107          39        0.486
