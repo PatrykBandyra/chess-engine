@@ -83,7 +83,7 @@ Write-Host ''
 # GENERATE SINGLE-MATCHUP CONFIG
 # ============================================================================
 
-$configPath = "experiments\exp2\_exp2_matchup${Matchup}.json"
+$configPath = Join-Path 'experiments' 'exp2' "_exp2_matchup${Matchup}.json"
 $configJson = ConvertTo-Json @($matchupDef) -Depth 3
 [System.IO.File]::WriteAllText(
     (Join-Path $engineDir $configPath),
@@ -109,12 +109,12 @@ $expArgs = @{
     GamesPerPair = $GamesPerPair
     SwapColors = $true
     Adjudicate = $true
-    OpeningsFile = 'experiments\openings_eco25.fen'
+    OpeningsFile = (Join-Path 'experiments' 'openings_eco25.fen')
     OutputSubDir = $sharedDir
 }
 if ($Gui) { $expArgs.Gui = $true }
 
-& .\experiments\run_experiment.ps1 @expArgs
+& (Join-Path '.' 'experiments' 'run_experiment.ps1') @expArgs
 $exitCode = $LASTEXITCODE
 
 Write-Host ''

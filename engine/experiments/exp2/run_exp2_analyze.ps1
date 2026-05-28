@@ -23,8 +23,8 @@ if (-not $Python) { $Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'p
 $engineDir = (Resolve-Path "$PSScriptRoot\..\..").Path
 Set-Location $engineDir
 
-$AnalysisScript = Join-Path $engineDir 'analysis\analyze_experiment.py'
-$Exp2Script     = Join-Path $engineDir 'analysis\exp2_depth_scaling.py'
+$AnalysisScript = Join-Path $engineDir 'analysis' 'analyze_experiment.py'
+$Exp2Script     = Join-Path $engineDir 'analysis' 'exp2_depth_scaling.py'
 
 if (-not (Test-Path -LiteralPath $AnalysisScript)) {
     Write-Error "Analysis script not found: $AnalysisScript"

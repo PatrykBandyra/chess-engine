@@ -103,13 +103,13 @@ if ($OutputSubDir) {
 } else {
     $outSubDir = "${configName}_${runTag}"
 }
-$outDir = "out\$outSubDir"
+$outDir = Join-Path 'out' $outSubDir
 
 New-Item -ItemType Directory -Path $outDir -Force | Out-Null
 Write-Host "Output directory: $outDir" -ForegroundColor Cyan
 
 # Copy config for reproducibility
-Copy-Item -Path $ConfigFile -Destination "$outDir\_config.json"
+Copy-Item -Path $ConfigFile -Destination (Join-Path $outDir '_config.json')
 
 # ============================================================================
 # HELPER: build main.py arguments for a single game
@@ -128,9 +128,9 @@ function Build-GameArgs {
         '-w', $White,
         '-b', $Black,
         '-m', $(if ($Gui) { 'G' } else { 'B' }),
-        '-g', "$outSubDir\game_${GameTag}.txt",
-        '-l', "$outSubDir\log_${GameTag}.txt",
-        '-jl', "$outSubDir\metrics_${GameTag}.jsonl"
+        '-g', (Join-Path $outSubDir "game_${GameTag}.txt"),
+        '-l', (Join-Path $outSubDir "log_${GameTag}.txt"),
+        '-jl', (Join-Path $outSubDir "metrics_${GameTag}.jsonl")
     )
 
     # MCTS time budgets -- respect swap
@@ -232,7 +232,7 @@ foreach ($matchup in $config) {
             $fenTempFile = $fenTempName
             # Write FEN without BOM (PowerShell 5.1's -Encoding utf8 adds BOM, which python-chess rejects)
             [System.IO.File]::WriteAllText(
-                (Join-Path (Get-Location) "out\$fenTempName"),
+                (Join-Path (Get-Location) 'out' $fenTempName),
                 $fen,
                 [System.Text.UTF8Encoding]::new($false)
             )
@@ -251,7 +251,7 @@ foreach ($matchup in $config) {
         $elapsed = ((Get-Date) - $gameStart).TotalSeconds
 
         # Read result from metrics file
-        $metricsPath = "$outDir\metrics_${gameTag}.jsonl"
+        $metricsPath = Join-Path $outDir "metrics_${gameTag}.jsonl"
         $result = '?'
         $termination = '?'
         if (Test-Path -LiteralPath $metricsPath) {
@@ -287,8 +287,9 @@ foreach ($matchup in $config) {
         }
 
         # Clean up temp FEN file
-        if ($fenTempFile -and (Test-Path -LiteralPath "out\$fenTempFile")) {
-            Remove-Item "out\$fenTempFile" -Confirm:$false
+        $fenTempPath = if ($fenTempFile) { Join-Path 'out' $fenTempFile } else { $null }
+        if ($fenTempFile -and (Test-Path -LiteralPath $fenTempPath)) {
+            Remove-Item $fenTempPath -Confirm:$false
         }
     }
     Write-Host ''
@@ -308,7 +309,7 @@ Write-Host "  Output:      $outDir"
 Write-Host ('=' * 70) -ForegroundColor Cyan
 
 # Save results summary CSV
-$csvPath = "$outDir\_results.csv"
+$csvPath = Join-Path $outDir '_results.csv'
 $resultsLog | Export-Csv -Path $csvPath -NoTypeInformation -Encoding utf8
 Write-Host "Results CSV: $csvPath"
 

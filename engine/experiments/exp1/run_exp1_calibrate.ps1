@@ -39,7 +39,7 @@ if (-not (Test-Path -LiteralPath $outDir)) {
 $calTag = Get-Date -Format 'yyyyMMdd_HHmmss'
 $calSubDir = "exp1_calibration_$calTag"
 
-New-Item -ItemType Directory -Path "$outDir\$calSubDir" -Force | Out-Null
+New-Item -ItemType Directory -Path (Join-Path $outDir $calSubDir) -Force | Out-Null
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Cyan
@@ -55,9 +55,9 @@ for ($i = 1; $i -le $CalibrationGames; $i++) {
         '-m', 'B',
         '-dw', "$Depth", '-db', "$Depth",
         '-adj',
-        '-g', "$calSubDir\cal_game_$i.txt",
-        '-l', "$calSubDir\cal_log_$i.txt",
-        '-jl', "$calSubDir\cal_metrics_$i.jsonl"
+        '-g', (Join-Path $calSubDir "cal_game_$i.txt"),
+        '-l', (Join-Path $calSubDir "cal_log_$i.txt"),
+        '-jl', (Join-Path $calSubDir "cal_metrics_$i.jsonl")
     )
     Write-Host "  Calibration game $i/$CalibrationGames ... " -NoNewline
     $t0 = Get-Date
@@ -69,7 +69,7 @@ for ($i = 1; $i -le $CalibrationGames; $i++) {
 # Parse JSONL files to compute avg time per move
 $totalTime = 0.0
 $totalMoves = 0
-foreach ($f in (Get-ChildItem "$outDir\$calSubDir\cal_metrics_*.jsonl")) {
+foreach ($f in (Get-ChildItem -Path (Join-Path $outDir $calSubDir) -Filter 'cal_metrics_*.jsonl')) {
     foreach ($line in (Get-Content $f.FullName -Encoding utf8)) {
         if (-not $line.Trim()) { continue }
         try {
