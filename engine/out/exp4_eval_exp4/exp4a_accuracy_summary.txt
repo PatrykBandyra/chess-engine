@@ -1,0 +1,18 @@
+Experiment 4a — Static evaluation accuracy
+============================================================
+
+Ground truth: Stockfish d=20
+Evaluators tested: TRAD (heuristic), SF_d1 (1-ply Stockfish baseline)
+NN excluded: biased vs SF-d20 ground truth (same engine, different depth)
+Test positions: 200
+
+Accuracy metrics:
+evaluator phase_band  n_positions  spearman_rho   mae   rmse
+     TRAD        all          199        0.8666 5.635 10.706
+    SF_d1        all          200        0.9418 3.759  9.640
+     TRAD    opening           50        0.5450 2.885  3.677
+    SF_d1    opening           50        0.8255 1.482  2.305
+     TRAD    midgame          100        0.8599 5.779 10.840
+    SF_d1    midgame          100        0.9423 3.473  8.770
+     TRAD    endgame           49        0.9213 8.147 14.556
+    SF_d1    endgame           50        0.9470 6.608 14.580

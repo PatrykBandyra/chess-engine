@@ -1,0 +1,13 @@
+Experiment 4c — Evaluation speed benchmark
+============================================================
+
+Positions: 10000
+NN depth (Stockfish): 10
+
+evaluator     n  mean_us  median_us   p95_us   p99_us  stdev_us  min_us   max_us
+     TRAD 10000   137.44     136.00   157.12   180.59     12.97  104.17   307.42
+       NN 10000  3794.47    2456.46 11247.93 19738.88   3838.33 1027.29 53764.04
+
+NN is 27.6x slower than TRAD on average.
+TRAD throughput: 7276 evals/s
+NN   throughput: 264 evals/s

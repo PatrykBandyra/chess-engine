@@ -114,10 +114,14 @@ def main():
     parser.add_argument('--nn-depth', type=int, default=10)
     parser.add_argument('--seed', type=int, default=42)
     parser.add_argument('--openings-file', type=str, default='')
+    parser.add_argument('--output-dir', type=str, default='',
+                        help='Output directory (default: script directory)')
     args = parser.parse_args()
 
     script_dir = Path(__file__).resolve().parent
     engine_dir = script_dir.parent.parent
+    output_dir = Path(args.output_dir) if args.output_dir else script_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     openings_file = Path(args.openings_file) if args.openings_file else \
         engine_dir / 'experiments' / 'openings_eco25.fen'
@@ -149,7 +153,7 @@ def main():
         for i, us in enumerate(stats['raw_timings_us']):
             detail_rows.append({'evaluator': evaluator_name, 'position_idx': i, 'time_us': us})
     detail_df = pd.DataFrame(detail_rows)
-    detail_csv = script_dir / 'exp4c_speed_results.csv'
+    detail_csv = output_dir / 'exp4c_speed_results.csv'
     detail_df.to_csv(detail_csv, index=False)
     print(f"\nSaved: {detail_csv.name} ({len(detail_df)} timings)")
 
@@ -158,7 +162,7 @@ def main():
         {k: v for k, v in s.items() if k != 'raw_timings_us'}
         for s in [trad_stats, nn_stats]
     ])
-    summary_csv = script_dir / 'exp4c_speed_summary.csv'
+    summary_csv = output_dir / 'exp4c_speed_summary.csv'
     summary_df.to_csv(summary_csv, index=False)
     print(f"Saved: {summary_csv.name}")
 
@@ -178,7 +182,7 @@ def main():
         print("matplotlib not available — skipping plots")
         return
 
-    plots_dir = script_dir / 'plots'
+    plots_dir = output_dir / 'plots'
     plots_dir.mkdir(exist_ok=True)
 
     fig, ax = plt.subplots(figsize=(8, 5))
@@ -208,7 +212,7 @@ def main():
     plt.close(fig)
 
     # Text summary
-    txt_path = script_dir / 'exp4c_speed_summary.txt'
+    txt_path = output_dir / 'exp4c_speed_summary.txt'
     with open(txt_path, 'w', encoding='utf-8') as f:
         f.write('Experiment 4c — Evaluation speed benchmark\n')
         f.write('=' * 60 + '\n\n')

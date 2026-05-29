@@ -1,24 +1,26 @@
 """
-Experiment 4a — Static evaluation accuracy.
+Experiment 4a — Static evaluation accuracy (TRAD vs SF-d1 vs SF-d20 ground truth).
+
+NN (Stockfish d=10) excluded: it shares the engine with the ground truth, making
+the comparison auto-correlated and methodologically biased. See README.
 
 For each test position, queries:
   - BoardEvaluatorTrad (heuristic)
-  - BoardEvaluatorNN   (Stockfish low-depth, as configured in the project)
   - Stockfish d=1      (baseline)
   - Stockfish d=20     (ground truth)
 
 Computes Spearman ρ, MAE, RMSE against d=20. Stratifies by game phase.
 
 Output:
-  exp4a_evaluations.csv     — per-position evaluations and phase
+  exp4a_evaluations.csv      — per-position evaluations and phase
   exp4a_accuracy_summary.csv — Spearman/MAE/RMSE per evaluator + phase band
   exp4a_accuracy_summary.txt — human-readable
-  plots/exp4a_scatter_trad.png, exp4a_scatter_nn.png, exp4a_scatter_sfd1.png
+  plots/exp4a_scatter_trad.png, exp4a_scatter_sf_d1.png
   plots/exp4a_mae_by_phase.png
 
 Usage:
     python run_exp4a_accuracy.py --stockfish <path>
-    python run_exp4a_accuracy.py --stockfish <path> --positions test_positions.fen --nn-depth 10
+    python run_exp4a_accuracy.py --stockfish <path> --positions test_positions.fen
 """
 
 import argparse
@@ -102,13 +104,15 @@ def main():
     parser.add_argument('--stockfish', type=str, required=True)
     parser.add_argument('--positions', type=str, default='',
                         help='Default: experiments/exp4/test_positions.fen')
-    parser.add_argument('--nn-depth', type=int, default=10,
-                        help='Depth for BoardEvaluatorNN (Stockfish under the hood)')
     parser.add_argument('--ground-truth-depth', type=int, default=20)
     parser.add_argument('--limit', type=int, default=0, help='Limit positions for testing')
+    parser.add_argument('--output-dir', type=str, default='',
+                        help='Output directory (default: script directory)')
     args = parser.parse_args()
 
     script_dir = Path(__file__).resolve().parent
+    output_dir = Path(args.output_dir) if args.output_dir else script_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     pos_file = Path(args.positions) if args.positions else script_dir / 'test_positions.fen'
     if not pos_file.is_file():
@@ -121,14 +125,12 @@ def main():
         positions = positions[:args.limit]
     print(f"Loaded {len(positions)} test positions from {pos_file.name}")
 
-    # Instantiate evaluators
-    print(f"Initializing BoardEvaluatorTrad and BoardEvaluatorNN (depth={args.nn_depth})...")
+    # Instantiate evaluators (NN excluded — biased vs SF-d20 ground truth)
+    print(f"Initializing BoardEvaluatorTrad...")
     from board_evaluator_trad import BoardEvaluatorTrad
-    from board_evaluator_nn import BoardEvaluatorNN
 
-    eval_args = make_eval_args(args.stockfish, args.nn_depth)
+    eval_args = make_eval_args(args.stockfish, 10)  # nn_depth unused, dummy
     trad = BoardEvaluatorTrad(eval_args, chess.WHITE)
-    nn = BoardEvaluatorNN(eval_args, chess.WHITE)
 
     # Ground-truth and baseline Stockfish
     print(f"Initializing Stockfish d=1 baseline and d={args.ground_truth_depth} ground truth...")
@@ -158,11 +160,6 @@ def main():
                 print(f"  [{i}] TRAD error: {e}", file=sys.stderr)
                 e_trad = math.nan
             try:
-                e_nn = nn.evaluate_board(board)
-            except Exception as e:
-                print(f"  [{i}] NN error: {e}", file=sys.stderr)
-                e_nn = math.nan
-            try:
                 e_sf1 = sf_eval_cp(engine_d1, board, 1)
             except Exception as e:
                 print(f"  [{i}] SF d=1 error: {e}", file=sys.stderr)
@@ -173,15 +170,13 @@ def main():
                 print(f"  [{i}] SF d={args.ground_truth_depth} error: {e}", file=sys.stderr)
                 e_sf20 = math.nan
 
-            # Make TRAD/NN consistent with SF convention (always from White's perspective)
-            # BoardEvaluatorTrad/NN return eval from side-to-move perspective in some
+            # Make TRAD consistent with SF convention (always from White's perspective).
+            # BoardEvaluatorTrad returns eval from side-to-move perspective in some
             # implementations. Normalize to White's perspective:
             if board.turn == chess.BLACK:
                 e_trad_white = -e_trad
-                e_nn_white = -e_nn
             else:
                 e_trad_white = e_trad
-                e_nn_white = e_nn
 
             # Cap values to avoid mate-score noise dominating MAE
             def cap(v):
@@ -196,7 +191,6 @@ def main():
                 'phase': round(phase, 3),
                 'phase_band': band,
                 'eval_trad': cap(e_trad_white),
-                'eval_nn': cap(e_nn_white),
                 'eval_sf_d1': cap(e_sf1),
                 'eval_sf_d20': cap(e_sf20),
             })
@@ -210,7 +204,7 @@ def main():
         engine_d1.quit()
 
     df = pd.DataFrame(rows)
-    out_csv = script_dir / 'exp4a_evaluations.csv'
+    out_csv = output_dir / 'exp4a_evaluations.csv'
     df.to_csv(out_csv, index=False)
     print(f"\nSaved: {out_csv.name} ({len(df)} rows)")
 
@@ -219,7 +213,7 @@ def main():
 
     summary_rows = []
     bands = ['all', 'opening', 'midgame', 'endgame']
-    evaluators = [('TRAD', 'eval_trad'), ('NN', 'eval_nn'), ('SF_d1', 'eval_sf_d1')]
+    evaluators = [('TRAD', 'eval_trad'), ('SF_d1', 'eval_sf_d1')]
     gt_col = 'eval_sf_d20'
 
     for band in bands:
@@ -252,7 +246,7 @@ def main():
             })
 
     summary = pd.DataFrame(summary_rows)
-    sum_csv = script_dir / 'exp4a_accuracy_summary.csv'
+    sum_csv = output_dir / 'exp4a_accuracy_summary.csv'
     summary.to_csv(sum_csv, index=False)
     print(f"Saved: {sum_csv.name}")
 
@@ -268,7 +262,7 @@ def main():
         print("matplotlib not available — skipping plots")
         return
 
-    plots_dir = script_dir / 'plots'
+    plots_dir = output_dir / 'plots'
     plots_dir.mkdir(exist_ok=True)
 
     # Scatter plots per evaluator
@@ -311,12 +305,13 @@ def main():
             plt.close(fig)
 
     # Text summary
-    txt_path = script_dir / 'exp4a_accuracy_summary.txt'
+    txt_path = output_dir / 'exp4a_accuracy_summary.txt'
     with open(txt_path, 'w', encoding='utf-8') as f:
         f.write('Experiment 4a — Static evaluation accuracy\n')
         f.write('=' * 60 + '\n\n')
         f.write(f'Ground truth: Stockfish d={args.ground_truth_depth}\n')
-        f.write(f'NN evaluator depth: {args.nn_depth}\n')
+        f.write(f'Evaluators tested: TRAD (heuristic), SF_d1 (1-ply Stockfish baseline)\n')
+        f.write(f'NN excluded: biased vs SF-d20 ground truth (same engine, different depth)\n')
         f.write(f'Test positions: {len(df)}\n\n')
         f.write('Accuracy metrics:\n')
         f.write(summary.to_string(index=False) + '\n')

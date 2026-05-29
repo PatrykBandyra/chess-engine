@@ -1,11 +1,14 @@
 """
-Experiment 4b — Move agreement with Stockfish d=20.
+Experiment 4b — Move agreement with Stockfish d=20 (TRAD variants only).
+
+NN variants (MINIMAX_NN, MCTS_NN) excluded: they use Stockfish d=10 as their
+evaluator, sharing the engine with the SF-d20 ground truth, making the
+comparison auto-correlated and methodologically biased. See README.
 
 For each test position:
   1. Get Stockfish d=20 top-3 best moves (ground truth).
-  2. For each of 4 engine variants (MINIMAX_TRAD/NN, MCTS_TRAD/NN),
-     run main.py via subprocess with -i <fen> for a single move,
-     extract the engine's chosen move.
+  2. For each TRAD variant (MINIMAX_TRAD, MCTS_TRAD), run main.py via subprocess
+     with -i <fen> for a single move, extract the engine's chosen move.
   3. Record match (exact) and top-3 match per variant.
 
 Output:
@@ -16,11 +19,11 @@ Output:
 Usage:
     python run_exp4b_move_agreement.py --stockfish <path>
     python run_exp4b_move_agreement.py --stockfish <path> --positions test_positions.fen \
-        --minimax-depth 4 --mcts-time 1.0 --limit 20
+        --minimax-depth 3 --mcts-time 2.61 --limit 20
 
-Performance note: each position = 4 main.py invocations. With Python startup
-(~1.5s) + search time (~1-10s), this is heavy. For 200 positions × 4 variants
-= 800 runs × ~5s avg = ~1h.
+Performance note: each position = 2 main.py invocations. With Python startup
+(~1.5s) + search time (~2-4s with MINIMAX d=3 / MCTS 2.61s). For 200 positions
+× 2 variants = 400 runs × ~4-5s avg = ~30 min.
 """
 
 import argparse
@@ -40,9 +43,7 @@ import pandas as pd
 
 VARIANTS = [
     {'name': 'MINIMAX_TRAD_d4', 'type': 'MINIMAX_TRAD', 'depth_arg': '-dw', 'time_arg': None},
-    {'name': 'MINIMAX_NN_d3',   'type': 'MINIMAX_NN',   'depth_arg': '-dw', 'time_arg': None},
     {'name': 'MCTS_TRAD',       'type': 'MCTS_TRAD',    'depth_arg': None,  'time_arg': '-mtw'},
-    {'name': 'MCTS_NN',         'type': 'MCTS_NN',      'depth_arg': None,  'time_arg': '-mtw'},
 ]
 
 
@@ -191,18 +192,23 @@ def main():
     parser = argparse.ArgumentParser(description='Exp 4b — Move agreement with Stockfish')
     parser.add_argument('--stockfish', type=str, required=True)
     parser.add_argument('--positions', type=str, default='')
-    parser.add_argument('--minimax-depth', type=int, default=4)
-    parser.add_argument('--minimax-nn-depth', type=int, default=3)
-    parser.add_argument('--mcts-time', type=float, default=1.0)
+    parser.add_argument('--minimax-depth', type=int, default=3,
+                        help='MINIMAX_TRAD search depth (default: 3, consistent with Exp 1)')
+    parser.add_argument('--mcts-time', type=float, default=2.61,
+                        help='MCTS time budget in seconds (default: 2.61, calibrated from Exp 1)')
     parser.add_argument('--ground-truth-depth', type=int, default=20)
     parser.add_argument('--python', type=str, default='python')
     parser.add_argument('--limit', type=int, default=0)
-    parser.add_argument('--variants', type=str, default='1,2,3,4',
-                        help='Comma-separated variant indices (1=MINIMAX_TRAD, 2=MINIMAX_NN, 3=MCTS_TRAD, 4=MCTS_NN)')
+    parser.add_argument('--variants', type=str, default='1,2',
+                        help='Comma-separated variant indices (1=MINIMAX_TRAD, 2=MCTS_TRAD)')
+    parser.add_argument('--output-dir', type=str, default='',
+                        help='Output directory (default: script directory)')
     args = parser.parse_args()
 
     script_dir = Path(__file__).resolve().parent
     engine_dir = script_dir.parent.parent
+    output_dir = Path(args.output_dir) if args.output_dir else script_dir
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     pos_file = Path(args.positions) if args.positions else script_dir / 'test_positions.fen'
     if not pos_file.is_file():
@@ -247,11 +253,7 @@ def main():
     call_idx = 0
 
     for variant in selected_variants:
-        # Determine depth/time for this variant
-        if variant['name'] == 'MINIMAX_NN_d3':
-            mm_depth = args.minimax_nn_depth
-        else:
-            mm_depth = args.minimax_depth
+        mm_depth = args.minimax_depth
 
         for fen, tag in positions:
             call_idx += 1
@@ -292,7 +294,7 @@ def main():
                   f"[{duration:.1f}s, total {elapsed/60:.1f}min]")
 
     df = pd.DataFrame(rows)
-    out_csv = script_dir / 'exp4b_moves.csv'
+    out_csv = output_dir / 'exp4b_moves.csv'
     df.to_csv(out_csv, index=False)
     print(f"\nSaved: {out_csv.name} ({len(df)} rows)")
 
@@ -320,7 +322,7 @@ def main():
             })
 
     summary = pd.DataFrame(summary_rows)
-    summary_csv = script_dir / 'exp4b_move_agreement.csv'
+    summary_csv = output_dir / 'exp4b_move_agreement.csv'
     summary.to_csv(summary_csv, index=False)
     print(f"Saved: {summary_csv.name}")
 
@@ -335,7 +337,7 @@ def main():
     except ImportError:
         return
 
-    plots_dir = script_dir / 'plots'
+    plots_dir = output_dir / 'plots'
     plots_dir.mkdir(exist_ok=True)
 
     all_band = summary[summary['phase_band'] == 'all'].copy().sort_values('match_rate', ascending=False)
