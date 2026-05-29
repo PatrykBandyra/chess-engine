@@ -9,29 +9,30 @@
 
     Usage:
         .\run_exp2_matchup.ps1 -Matchup 1
-        .\run_exp2_matchup.ps1 -Matchup 5 -GamesPerPair 30
+        .\run_exp2_matchup.ps1 -Matchup 4 -GamesPerPair 30
         ...
-        .\run_exp2_matchup.ps1 -Matchup 10
+        .\run_exp2_matchup.ps1 -Matchup 8
 
     Matchups:
         1  MINIMAX_TRAD d=2 vs MINIMAX_TRAD d=4
         2  MINIMAX_TRAD d=3 vs MINIMAX_TRAD d=4
         3  MINIMAX_TRAD d=4 vs MINIMAX_TRAD d=4  (sanity check)
         4  MINIMAX_TRAD d=5 vs MINIMAX_TRAD d=4
-        5  MINIMAX_TRAD d=6 vs MINIMAX_TRAD d=4
-        6  MINIMAX_NN   d=2 vs MINIMAX_NN   d=4
-        7  MINIMAX_NN   d=3 vs MINIMAX_NN   d=4
-        8  MINIMAX_NN   d=4 vs MINIMAX_NN   d=4  (sanity check)
-        9  MINIMAX_NN   d=5 vs MINIMAX_NN   d=4
-        10 MINIMAX_NN   d=6 vs MINIMAX_NN   d=4
+        5  MINIMAX_NN   d=2 vs MINIMAX_NN   d=4
+        6  MINIMAX_NN   d=3 vs MINIMAX_NN   d=4
+        7  MINIMAX_NN   d=4 vs MINIMAX_NN   d=4  (sanity check)
+        8  MINIMAX_NN   d=5 vs MINIMAX_NN   d=4
 
-    After all 10 finish, run:
+    NOTE: d=6 matchups were removed due to computational cost
+    (TRAD d=6: ~28h per matchup, NN d=6: ~260h per matchup with N=30).
+
+    After all 8 finish, run:
         .\run_exp2_analyze.ps1
 #>
 
 param(
     [Parameter(Mandatory)]
-    [ValidateRange(1, 10)]
+    [ValidateRange(1, 8)]
     [int]$Matchup,
 
     [int]$GamesPerPair = 30,
@@ -59,12 +60,10 @@ $matchups = @(
     @{ white='MINIMAX_TRAD'; black='MINIMAX_TRAD'; depth_white=3; depth_black=4; label='minimax_trad_d3_vs_minimax_trad_d4' },
     @{ white='MINIMAX_TRAD'; black='MINIMAX_TRAD'; depth_white=4; depth_black=4; label='minimax_trad_d4_vs_minimax_trad_d4' },
     @{ white='MINIMAX_TRAD'; black='MINIMAX_TRAD'; depth_white=5; depth_black=4; label='minimax_trad_d5_vs_minimax_trad_d4' },
-    @{ white='MINIMAX_TRAD'; black='MINIMAX_TRAD'; depth_white=6; depth_black=4; label='minimax_trad_d6_vs_minimax_trad_d4' },
     @{ white='MINIMAX_NN';   black='MINIMAX_NN';   depth_white=2; depth_black=4; label='minimax_nn_d2_vs_minimax_nn_d4' },
     @{ white='MINIMAX_NN';   black='MINIMAX_NN';   depth_white=3; depth_black=4; label='minimax_nn_d3_vs_minimax_nn_d4' },
     @{ white='MINIMAX_NN';   black='MINIMAX_NN';   depth_white=4; depth_black=4; label='minimax_nn_d4_vs_minimax_nn_d4' },
-    @{ white='MINIMAX_NN';   black='MINIMAX_NN';   depth_white=5; depth_black=4; label='minimax_nn_d5_vs_minimax_nn_d4' },
-    @{ white='MINIMAX_NN';   black='MINIMAX_NN';   depth_white=6; depth_black=4; label='minimax_nn_d6_vs_minimax_nn_d4' }
+    @{ white='MINIMAX_NN';   black='MINIMAX_NN';   depth_white=5; depth_black=4; label='minimax_nn_d5_vs_minimax_nn_d4' }
 )
 
 $matchupDef = $matchups[$Matchup - 1]
@@ -72,7 +71,7 @@ $label = $matchupDef.label
 
 Write-Host ''
 Write-Host '================================================================' -ForegroundColor Green
-Write-Host "  EXP 2 -- Matchup $Matchup/10" -ForegroundColor Green
+Write-Host "  EXP 2 -- Matchup $Matchup/8" -ForegroundColor Green
 Write-Host "  $($matchupDef.white) d=$($matchupDef.depth_white) vs $($matchupDef.black) d=$($matchupDef.depth_black)" -ForegroundColor Green
 Write-Host "  Games: $GamesPerPair (swap colors)" -ForegroundColor Green
 Write-Host "  Working dir: $engineDir" -ForegroundColor Green
@@ -125,7 +124,7 @@ if ($exitCode -eq 0) {
 }
 Write-Host "  Output: out\$sharedDir" -ForegroundColor Cyan
 Write-Host ''
-Write-Host '  When all 10 matchups finish, run:' -ForegroundColor Yellow
+Write-Host '  When all 8 matchups finish, run:' -ForegroundColor Yellow
 Write-Host "    $PSScriptRoot\run_exp2_analyze.ps1" -ForegroundColor Yellow
 
 exit $exitCode

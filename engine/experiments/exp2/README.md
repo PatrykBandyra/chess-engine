@@ -4,9 +4,9 @@
 
 Zmierzenie jak siła gry Minimaxa rośnie wraz z głębokością przeszukiwania (oś A — wrażliwość zasobowa). Pokazanie krzywej malejących zwrotów: o ile Elo przybywa na każdy dodatkowy poziom głębokości, dla obu ewaluatorów (TRAD i NN).
 
-## Uczestnicy (10 matchupów)
+## Uczestnicy (8 matchupów)
 
-W odróżnieniu od Eksp. 1 (round-robin między 4 wariantami), Eksp. 2 to **seria pojedynków pomiędzy MINIMAX a tym samym MINIMAX o stałej głębokości referencyjnej d=4**, dla każdej z 5 testowanych głębokości i każdego z 2 ewaluatorów:
+W odróżnieniu od Eksp. 1 (round-robin między 4 wariantami), Eksp. 2 to **seria pojedynków pomiędzy MINIMAX a tym samym MINIMAX o stałej głębokości referencyjnej d=4**, dla każdej z 4 testowanych głębokości (d ∈ {2,3,4,5}) i każdego z 2 ewaluatorów:
 
 | # | Matchup | Komentarz |
 |---|---|---|
@@ -14,14 +14,18 @@ W odróżnieniu od Eksp. 1 (round-robin między 4 wariantami), Eksp. 2 to **seri
 | 2 | MINIMAX_TRAD d=3 vs MINIMAX_TRAD d=4 | Słabsza, mierzymy Δ Elo |
 | 3 | MINIMAX_TRAD d=4 vs MINIMAX_TRAD d=4 | **Sanity check** — Elo ≈ 0 ± kilkadziesiąt |
 | 4 | MINIMAX_TRAD d=5 vs MINIMAX_TRAD d=4 | Głębsza, mierzymy zysk |
-| 5 | MINIMAX_TRAD d=6 vs MINIMAX_TRAD d=4 | Najgłębsza, krzywa się spłaszcza? |
-| 6 | MINIMAX_NN d=2 vs MINIMAX_NN d=4 | Powtórzenie 1-5 dla ewaluatora NN |
-| 7 | MINIMAX_NN d=3 vs MINIMAX_NN d=4 | |
-| 8 | MINIMAX_NN d=4 vs MINIMAX_NN d=4 | Sanity check NN |
-| 9 | MINIMAX_NN d=5 vs MINIMAX_NN d=4 | |
-| 10 | MINIMAX_NN d=6 vs MINIMAX_NN d=4 | |
+| 5 | MINIMAX_NN d=2 vs MINIMAX_NN d=4 | Powtórzenie 1-4 dla ewaluatora NN |
+| 6 | MINIMAX_NN d=3 vs MINIMAX_NN d=4 | |
+| 7 | MINIMAX_NN d=4 vs MINIMAX_NN d=4 | Sanity check NN |
+| 8 | MINIMAX_NN d=5 vs MINIMAX_NN d=4 | |
 
-**Razem: 10 matchupów × 30 partii = 300 partii.**
+**Razem: 8 matchupów × 30 partii = 240 partii.**
+
+**Uwaga: d=6 zostało wykluczone z eksperymentu.** Estymacja kosztu obliczeniowego (z danych Eksp. 1):
+- MINIMAX_TRAD d=6: ~80s/ruch → ~28h per matchup z N=30
+- MINIMAX_NN d=6: ~750s/ruch (12.5 min!) → ~260h per matchup z N=30 (~11 dni)
+
+Konsekwencje są opisane w sekcji "Co do dyskusji w pracy" jako *"d=6 omitted due to computational cost; extrapolation from d=2-5 shown"*.
 
 **Dlaczego d=4 jako poziom odniesienia (anchor)?** d=4 jest "środkową" głębokością, dla której ewaluator daje wynik sensownie skorelowany z faktyczną wartością pozycji (mierzonej Stockfishem d=20). Krzywa Elo jest kotwiczona w punkcie d=4 → Elo = 0; pozostałe punkty wyliczane są względem niego przez Bradley-Terry maximum likelihood.
 
@@ -33,7 +37,7 @@ Identycznie jak w Eksp. 1: 25 ustandaryzowanych pozycji ECO z `experiments/openi
 
 ## Adjudykacja
 
-**WŁĄCZONA** z domyślnymi parametrami (`±0.05`, `20 ruchów`). Bez adjudykacji partie d=6 vs d=4 w pozycjach zbalansowanych mogą trwać 200+ ruchów.
+**WŁĄCZONA** z domyślnymi parametrami (`±0.05`, `20 ruchów`). Bez adjudykacji partie d=5 vs d=4 w pozycjach zbalansowanych mogą trwać 200+ ruchów.
 
 ## Książka otwarć
 
@@ -41,22 +45,22 @@ Identycznie jak w Eksp. 1: 25 ustandaryzowanych pozycji ECO z `experiments/openi
 
 ## Procedura uruchomienia
 
-### Krok 1 — Uruchom 10 matchupów (równolegle)
+### Krok 1 — Uruchom 8 matchupów (równolegle)
 
 ```powershell
 # Terminal 1:
 .\experiments\exp2\run_exp2_matchup.ps1 -Matchup 1   # MINIMAX_TRAD d=2 vs d=4
 # Terminal 2:
 .\experiments\exp2\run_exp2_matchup.ps1 -Matchup 2   # MINIMAX_TRAD d=3 vs d=4
-# ... (terminale 3-10 dla matchupów 3-10)
+# ... (terminale 3-8 dla matchupów 3-8)
 ```
 
 Każdy skrypt:
 1. Generuje single-matchup config JSON (`_exp2_matchup{N}.json`)
 2. Woła `run_experiment.ps1` z wspólnym `-OutputSubDir = exp2_minimax_depth_<data>`
-3. Wszystkie 10 matchupów pisze do **tego samego katalogu**
+3. Wszystkie 8 matchupów pisze do **tego samego katalogu**
 
-**Wszystkie 10 matchupów MUSI być uruchomione tego samego dnia** (tag oparty na dacie `yyyyMMdd`). Jeśli musisz przerwać i wznowić innego dnia, przekaż jawnie `-ExperimentTag` przy każdym wywołaniu.
+**Wszystkie 8 matchupów MUSI być uruchomione tego samego dnia** (tag oparty na dacie `yyyyMMdd`). Jeśli musisz przerwać i wznowić innego dnia, przekaż jawnie `-ExperimentTag` przy każdym wywołaniu.
 
 ### Krok 2 — Analiza zbiorcza (~2 min)
 
@@ -78,7 +82,7 @@ Katalog wyjściowy: `engine/out/exp2_minimax_depth_<data>/`
 | `analysis_moves.csv` | Per-move: eval, czas, fazę gry, wszystkie metryki Minimax |
 | `analysis_games.csv` | Per-game: result, total moves, termination reason, czas |
 | `analysis_wdl.csv` | Per-matchup: 30 gier × W/D/L, white_score, avg_moves, avg_time |
-| `analysis_elo.csv` | Bradley-Terry Elo dla wszystkich 5 głębokości × 2 ewaluatory (mixed) |
+| `analysis_elo.csv` | Bradley-Terry Elo dla wszystkich 4 głębokości × 2 ewaluatory (mixed) |
 | `analysis_metrics_summary.csv` | Per-matchup × side: mean/std/median metryk algorytmu |
 | `exp2_elo_per_depth.csv` | **Kluczowy:** Elo per (ewaluator, głębokość), z kotwicą w d=4 |
 | `exp2_depth_summary.csv` | Per-(ewaluator, głębokość): avg_time, avg_nodes, EBF, pruning rates |
@@ -118,7 +122,7 @@ Katalog wyjściowy: `engine/out/exp2_minimax_depth_<data>/`
 ## Analizy statystyczne
 
 1. **Elo per głębokość** — Bradley-Terry ML, oddzielnie dla każdego ewaluatora, kotwica = d=4 Elo = 0
-2. **Krzywa wzrostu Elo** — ile Elo zyskujemy przechodząc z d=4 do d=5? Z d=5 do d=6? (malejące zwroty)
+2. **Krzywa wzrostu Elo** — ile Elo zyskujemy przechodząc z d=2 do d=3, z d=3 do d=4, z d=4 do d=5? (malejące zwroty)
 3. **EBF (Effective Branching Factor)** — `EBF[d] = nodes[d] / nodes[d-1]`; powinno maleć z głębokością przy dobrym pruning
 4. **Czas vs głębokość** — dopasowanie wykładnicze; predykcja czasu dla większych głębokości
 5. **Pruning vs głębokość** — które techniki włączają się przy wyższych głębokościach (NMP wymaga `depth >= 3`, RFP `depth <= 3`, etc.)
@@ -140,8 +144,8 @@ W pracy zazwyczaj prezentuje się:
 ## Szacunek czasu obliczeń
 
 Czas/ruch rośnie wykładniczo z głębokością. Z danych Eksp. 1 (d=3):
-- MINIMAX_TRAD d=3: ~0.5s/ruch → d=4 ~3-5s, d=5 ~25-50s, d=6 ~250-500s
-- MINIMAX_NN d=3: ~3-6s/ruch → d=4 ~30-60s, d=5 ~300-600s, **d=6 niewykonalne (~3000-6000s/ruch)**
+- MINIMAX_TRAD d=3: ~0.5s/ruch → d=4 ~3-5s, d=5 ~15-25s
+- MINIMAX_NN d=3: ~6s/ruch → d=4 ~25-30s, d=5 ~150s
 
 Szacunkowe czasy matchupów (30 gier, ~80 ruchów/gra = ~2400 ruchów per matchup):
 
@@ -151,29 +155,26 @@ Szacunkowe czasy matchupów (30 gier, ~80 ruchów/gra = ~2400 ruchów per matchu
 | 2 | TRAD d=3 vs d=4 | ~2.5s | ~1.7h |
 | 3 | TRAD d=4 vs d=4 | ~4s | ~2.7h |
 | 4 | TRAD d=5 vs d=4 | ~15s | ~10h |
-| 5 | TRAD d=6 vs d=4 | ~100s | ~67h ⚠ |
-| 6 | NN d=2 vs d=4 | ~16s | ~11h |
-| 7 | NN d=3 vs d=4 | ~17s | ~11h |
-| 8 | NN d=4 vs d=4 | ~30s | ~20h |
-| 9 | NN d=5 vs d=4 | ~165s | ~110h ⚠⚠ |
-| 10 | NN d=6 vs d=4 | ~1500s | **~1000h niewykonalne** ❌ |
+| 5 | NN d=2 vs d=4 | ~16s | ~11h |
+| 6 | NN d=3 vs d=4 | ~17s | ~11h |
+| 7 | NN d=4 vs d=4 | ~30s | ~20h |
+| 8 | NN d=5 vs d=4 | ~90s | ~60h ⚠ |
 
 **Sumarycznie:**
-- Wszystkie 10 matchupów serialnie: **~1200h** (50 dni)
-- 10 matchupów równolegle: **bottleneck = matchup 10 (~1000h)** — niewykonalne
-- **Realistycznie wykonalne:** matchupy 1-8 równolegle (~110h wall-clock = ~4.5 dnia)
-- **Praktycznie:** Pomiń matchupy 9 i 10 (NN d=5, d=6) — w pracy odnotuj jako "out of scope due to computational cost"
+- Wszystkie 8 matchupów serialnie: **~120h** (~5 dni)
+- 8 matchupów równolegle: **bottleneck = matchup 8 (NN d=5, ~60h)** ~2.5 dnia
+- **Optymalna strategia:** uruchom matchupy 1-7 równolegle (~20h wall-clock), matchup 8 (NN d=5) osobno w tle
 
 ## Ważne uwagi praktyczne
 
 1. **Konfiguracja głębokości NN ma znacznie wyższy koszt** niż TRAD (Stockfish d=10 jako oracle eval)
-2. **Wszystkie 10 matchupów MUSI być tego samego dnia** żeby trafiły do shared dir
+2. **Wszystkie 8 matchupów MUSI być tego samego dnia** żeby trafiły do shared dir
 3. **Rozważ uruchamianie matchupów w grupach:**
-   - Grupa A (szybkie, 1-4 + 6-7): ~17h równolegle
-   - Grupa B (średnie, 5 + 8): ~67h
-   - Grupa C (powolne, 9 + 10): rozważ pominięcie
-4. **Quick smoke test:** `.\experiments\exp2\run_exp2_matchup.ps1 -Matchup 3 -GamesPerPair 2` (d=4 vs d=4, najmniej minut)
-5. **Adjudykacja jest KLUCZOWA** — bez niej d=6 matchupy mogłyby trwać 2x dłużej w pat-podobnych końcówkach
+   - Grupa A (szybkie, 1-4 + 5-6): ~13h równolegle (bottleneck = matchup 4 = TRAD d=5)
+   - Grupa B (średnia, 7): ~20h (NN d=4)
+   - Grupa C (powolna, 8): ~60h (NN d=5)
+4. **Quick smoke test:** `.\experiments\exp2\run_exp2_matchup.ps1 -Matchup 3 -GamesPerPair 2` (d=4 vs d=4, ~5 minut)
+5. **Adjudykacja jest KLUCZOWA** — bez niej d=5 matchupy mogłyby trwać 2x dłużej w pat-podobnych końcówkach
 6. **Kalibracja niepotrzebna** — Exp 2 nie używa MCTS, więc nie czyta `_mcts_calibrated_time.txt`
 
 ## Co do dyskusji w pracy
@@ -181,4 +182,4 @@ Szacunkowe czasy matchupów (30 gier, ~80 ruchów/gra = ~2400 ruchów per matchu
 - **Krzywa malejących zwrotów** — typowo w Minimaxie ΔElo per poziom maleje (~70-100 Elo na poziom przy małej głębokości, ~30-50 przy dużej)
 - **Porównanie tempa wzrostu TRAD vs NN** — jeśli NN szybciej osiąga "plateau", oznacza to że jakość ewaluatora limituje korzyść z głębszego przeszukiwania
 - **EBF jako miara jakości pruning** — w idealnym alpha-beta EBF ≈ sqrt(branching factor); w praktyce dobre engine'y mają EBF ~2-3
-- **Praktyczne ograniczenie głębokości** — w pracy pokazać dlaczego d=4 lub d=5 to praktyczny default (NN d=6 niewykonalne w czasie rzeczywistym)
+- **Praktyczne ograniczenie głębokości** — w pracy uzasadnić wykluczenie d=6 jako *"out of scope due to computational cost (~28h/matchup for TRAD, ~260h/matchup for NN with N=30)"*. Ekstrapolacja krzywej Elo z d=2-5 może być pokazana jako dolny szacunek.
