@@ -84,6 +84,9 @@ def san_to_uci(fen: str, san_moves: list[str]) -> list[str]:
 
 def extract_theme(ops: dict, source_set: str) -> str:
     """Extracts theme info from EPD ops, falling back to source set name."""
+    # WAC c0 is a free-text annotator comment, not a theme tag — always use the set name.
+    if source_set.upper() == 'WAC':
+        return source_set
     c0 = ops.get('c0', '')
     # STS format: c0 "STS(v1.0) <theme>"
     sts_m = re.match(r'STS\(v[\d.]+\)\s+(.+)', c0)

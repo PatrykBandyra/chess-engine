@@ -17,8 +17,8 @@
     Variants:
         1  MINIMAX_TRAD d=4
         2  MINIMAX_NN   d=3
-        3  MCTS_TRAD    (calibrated time, fallback 1.0s)
-        4  MCTS_NN      (calibrated time, fallback 1.0s)
+        3  MCTS_TRAD    (calibrated time from exp1, fallback 2.61s)
+        4  MCTS_NN      (calibrated time from exp1, fallback 2.61s)
 
     Usage:
         .\run_exp6_variant.ps1 -Variant 1
@@ -40,11 +40,28 @@ param(
     [string]$PuzzlesFile = '',
     [int]$Limit = 0,
     [string]$ExperimentTag = '',
-    [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe',
+    [string]$StockfishPath = '',
     [string]$Python = ''
 )
 
-if (-not $Python) { $Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' } }
+if (-not $Python) {
+    if ($IsMacOS -or $IsLinux) {
+        $venvPy = Join-Path $PSScriptRoot '..\..\..\.venv\bin\python'
+        $Python = if (Test-Path -LiteralPath $venvPy) { (Resolve-Path $venvPy).Path } else { 'python3' }
+    } else {
+        $Python = 'python'
+    }
+}
+
+if (-not $StockfishPath) {
+    if ($IsMacOS) {
+        $StockfishPath = '..\stockfish_ai\stockfish\stockfish-macos-m1-apple-silicon'
+    } elseif ($IsLinux) {
+        $StockfishPath = '..\stockfish_ai\stockfish\stockfish-ubuntu-x86-64-avx2'
+    } else {
+        $StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe'
+    }
+}
 
 $ErrorActionPreference = 'Stop'
 
@@ -65,8 +82,8 @@ if ($isMcts -and $MctsTime -le 0) {
         $MctsTime = [double](Get-Content $calibFile -Raw).Trim()
         Write-Host "Using calibrated MCTS time: $MctsTime s" -ForegroundColor Cyan
     } else {
-        $MctsTime = 1.0
-        Write-Warning "No calibration file, defaulting MCTS time to $MctsTime s"
+        $MctsTime = 2.61
+        Write-Warning "No calibration file, defaulting MCTS time to $MctsTime s (documented exp1 calibration result)"
     }
 }
 

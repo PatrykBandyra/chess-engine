@@ -22,17 +22,41 @@ import chess
 import pandas as pd
 
 
+def _mirror_uci(uci: str) -> str:
+    """Mirror a UCI move vertically (rank flip + promotion preserved)."""
+    mv = chess.Move.from_uci(uci)
+    return chess.Move(
+        chess.square_mirror(mv.from_square),
+        chess.square_mirror(mv.to_square),
+        promotion=mv.promotion,
+    ).uci()
+
+
 def run_variant_on_puzzle(variant_type: str, puzzle: dict, engine_dir: Path,
                           python_exe: str, stockfish_path: str,
                           minimax_depth: int, mcts_time: float,
                           puzzle_tag: str, timeout: float = 120.0) -> dict:
-    """Runs main.py on one puzzle. Returns dict with engine_move, duration, log_path."""
+    """Runs main.py on one puzzle. Returns dict with engine_move, duration, log_path.
+
+    main.py's game loop always invokes the white player first, regardless of the
+    FEN's side-to-move. For black-to-move puzzles we mirror the position vertically
+    so the variant always plays as white; the engine's move is mirrored back before
+    comparing with the puzzle's expected moves.
+    """
     out_dir = engine_dir / 'out'
     out_dir.mkdir(exist_ok=True)
 
     fen = puzzle['fen']
     side = puzzle['side_to_move']
-    engine_is_white = (side == 'w')
+    mirrored = (side == 'b')
+    expected_uci = puzzle['best_moves_uci']
+
+    if mirrored:
+        board = chess.Board(fen)
+        fen = board.mirror().fen()
+        expected_uci_for_search = [_mirror_uci(u) for u in expected_uci]
+    else:
+        expected_uci_for_search = expected_uci
 
     safe_tag = f"_exp6_{puzzle_tag}_{abs(hash(fen)) % 100000}"
     fen_file = f'_temp{safe_tag}.fen'
@@ -50,63 +74,95 @@ def run_variant_on_puzzle(variant_type: str, puzzle: dict, engine_dir: Path,
            '-sp', stockfish_path,
            '-adj', '-adjt', '0.1', '-adjm', '5']
 
-    # Engine plays the puzzle side, Stockfish skill 0 plays opponent
-    if engine_is_white:
-        cmd += ['-w', variant_type, '-b', 'STOCKFISH', '-sb', '0', '-dbs', '1']
-        if variant_type.startswith('MINIMAX'):
-            cmd += ['-dw', str(minimax_depth)]
-        if variant_type.startswith('MCTS'):
-            cmd += ['-mtw', str(mcts_time)]
-    else:
-        cmd += ['-b', variant_type, '-w', 'STOCKFISH', '-sw', '0', '-dws', '1']
-        if variant_type.startswith('MINIMAX'):
-            cmd += ['-db', str(minimax_depth)]
-        if variant_type.startswith('MCTS'):
-            cmd += ['-mtb', str(mcts_time)]
+    # Engine always plays as white (mirror handles black-to-move puzzles).
+    cmd += ['-w', variant_type, '-b', 'STOCKFISH', '-sb', '0', '-dbs', '1']
+    if variant_type.startswith('MINIMAX'):
+        cmd += ['-dw', str(minimax_depth)]
+    if variant_type.startswith('MCTS'):
+        cmd += ['-mtw', str(mcts_time)]
 
+    # Run main.py and kill subprocess as soon as move #1 is in the game file.
+    # Tactical puzzles produce a winning eval after the correct move, so the
+    # built-in adjudication (|eval| ≤ 0.1) never triggers; without polling
+    # we'd hit the per-puzzle timeout for every sharp position.
     t0 = time.perf_counter()
     timed_out = False
+    engine_move_search = None
+    game_path = out_dir / game_file
+    poll_interval = 0.15
+
+    proc = subprocess.Popen(cmd, cwd=str(engine_dir),
+                            stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     try:
-        subprocess.run(cmd, cwd=str(engine_dir), timeout=timeout,
-                       capture_output=True, text=True)
-    except subprocess.TimeoutExpired:
-        timed_out = True
+        while True:
+            elapsed = time.perf_counter() - t0
+            if proc.poll() is not None:
+                break
+            if elapsed > timeout:
+                timed_out = True
+                proc.kill()
+                break
+            if game_path.exists():
+                try:
+                    content = game_path.read_text(encoding='utf-8')
+                    for line in content.splitlines():
+                        m = re.match(r'^(\d+):\s*(\S+)\s*$', line.strip())
+                        if m and int(m.group(1)) == 1:
+                            engine_move_search = m.group(2)
+                            break
+                    if engine_move_search:
+                        break
+                except OSError:
+                    pass
+            time.sleep(poll_interval)
+    finally:
+        if proc.poll() is None:
+            proc.kill()
+            try:
+                proc.wait(timeout=2.0)
+            except subprocess.TimeoutExpired:
+                pass
     duration = time.perf_counter() - t0
 
-    # Parse engine move from game file
-    engine_move_uci = None
-    game_path = out_dir / game_file
-    if game_path.exists():
+    # Fallback: if loop exited via process completion (not move detection),
+    # re-read the game file once.
+    if not engine_move_search and game_path.exists():
         try:
             content = game_path.read_text(encoding='utf-8')
             for line in content.splitlines():
                 m = re.match(r'^(\d+):\s*(\S+)\s*$', line.strip())
-                if m:
-                    move_idx = int(m.group(1))
-                    if (engine_is_white and move_idx == 1) or \
-                            (not engine_is_white and move_idx == 2):
-                        engine_move_uci = m.group(2)
-                        break
+                if m and int(m.group(1)) == 1:
+                    engine_move_search = m.group(2)
+                    break
         except Exception as e:
             print(f"  parse_game error: {e}", file=sys.stderr)
 
-    # For Minimax: parse log for ID iteration moves to find min depth where solution appears
+    # For Minimax: parse log for ID iteration moves to find min depth where solution appears.
+    # Moves in the log are in search space (mirrored if puzzle was black-to-move).
     min_depth_to_solve = None
     log_path = out_dir / log_file
     if log_path.exists() and variant_type.startswith('MINIMAX'):
         try:
             log_content = log_path.read_text(encoding='utf-8')
-            # Lines: "ID iteration depth=N; move: <uci>; value: <V>"
             for log_line in log_content.splitlines():
                 m = re.search(r'ID iteration depth=(\d+);\s*move:\s*(\S+);', log_line)
                 if m:
                     d = int(m.group(1))
                     mv = m.group(2)
-                    if mv in puzzle['best_moves_uci']:
+                    if mv in expected_uci_for_search:
                         if min_depth_to_solve is None or d < min_depth_to_solve:
                             min_depth_to_solve = d
         except Exception:
             pass
+
+    # Mirror engine's move back to the puzzle's original coordinate space.
+    if engine_move_search and mirrored:
+        try:
+            engine_move_uci = _mirror_uci(engine_move_search)
+        except (ValueError, chess.InvalidMoveError):
+            engine_move_uci = engine_move_search
+    else:
+        engine_move_uci = engine_move_search
 
     # Clean up temp files
     for f in [fen_file, game_file, log_file, json_file]:

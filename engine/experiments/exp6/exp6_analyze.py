@@ -33,7 +33,10 @@ def main():
 
     exp6_dir = Path(args.exp6_dir) if args.exp6_dir else Path(__file__).resolve().parent
 
-    pattern = f'exp6_variant*{"_" + args.tag if args.tag else ""}*.csv'
+    if args.tag:
+        pattern = f'exp6_variant*_{args.tag}.csv'
+    else:
+        pattern = 'exp6_variant*.csv'
     files = sorted(exp6_dir.glob(pattern))
 
     if not files:
