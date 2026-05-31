@@ -93,7 +93,7 @@ Każdy skrypt:
 1. Czyta skalibrowany czas MCTS z `experiments\exp1\_mcts_calibrated_time.txt` (fallback 2.61s jeśli brak — wynik kalibracji udokumentowany w exp1).
 2. Resolves absolute path do Stockfisha.
 3. Deleguje do helpera `_run_variant_puzzles.py` (per-puzzle subprocess loop).
-4. Zapisuje wyniki do `exp6_variant<N>_<NAZWA>_<yyyyMMdd>.csv`.
+4. Zapisuje wyniki do `engine/out/exp6_puzzles_<yyyyMMdd>/exp6_variant<N>_<NAZWA>_<yyyyMMdd>.csv` (katalog tworzony automatycznie).
 
 **Quick test:** `.\experiments\exp6\run_exp6_variant.ps1 -Variant 1 -Limit 10` (10 pozycji, ~kilka minut).
 
@@ -103,15 +103,17 @@ Każdy skrypt:
 
 ```powershell
 .\experiments\exp6\run_exp6_analyze.ps1
+# albo wskazując konkretny katalog:
+.\experiments\exp6\run_exp6_analyze.ps1 -ExperimentDir engine\out\exp6_puzzles_combined
 # albo z filtrem tagu (jeśli mieszane dni):
 .\experiments\exp6\run_exp6_analyze.ps1 -Tag 20260527
 ```
 
-Wykonuje `exp6_analyze.py` — czyta wszystkie pliki `exp6_variant*.csv` z katalogu eksperymentu, agreguje i generuje wykresy.
+Skrypt auto-wykrywa najnowszy katalog `out/exp6_puzzles_*` (lub bierze podany przez `-ExperimentDir`), wywołuje `exp6_analyze.py` — czyta wszystkie pliki `exp6_variant*.csv` w nim, agreguje i generuje wykresy w tym samym katalogu.
 
 ## Wyjście — pliki CSV
 
-Katalog wyjściowy: **`engine/experiments/exp6/`** (te same miejsce co skrypty — nie `out/`).
+Katalog wyjściowy: **`engine/out/exp6_puzzles_<tag>/`** (per-tag, tworzony automatycznie przez `run_exp6_variant.ps1`).
 
 | Plik | Zawartość |
 |---|---|

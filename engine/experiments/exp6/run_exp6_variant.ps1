@@ -10,7 +10,7 @@
         4. Extract the engine's first move from the game file.
         5. Compare to puzzle's best move(s).
 
-    Output: exp6_variant<N>_<variant_name>_<tag>.csv
+    Output: out/exp6_puzzles_<tag>/exp6_variant<N>_<variant_name>_<tag>.csv
 
     Launch 4 instances in separate terminals for parallel execution.
 
@@ -45,7 +45,9 @@ param(
 )
 
 if (-not $Python) {
-    if ($IsMacOS -or $IsLinux) {
+    if ($env:VIRTUAL_ENV) {
+        $Python = if ($IsMacOS -or $IsLinux) { Join-Path $env:VIRTUAL_ENV 'bin/python' } else { Join-Path $env:VIRTUAL_ENV 'Scripts/python.exe' }
+    } elseif ($IsMacOS -or $IsLinux) {
         $venvPy = Join-Path $PSScriptRoot '..\..\..\.venv\bin\python'
         $Python = if (Test-Path -LiteralPath $venvPy) { (Resolve-Path $venvPy).Path } else { 'python3' }
     } else {
@@ -55,9 +57,9 @@ if (-not $Python) {
 
 if (-not $StockfishPath) {
     if ($IsMacOS) {
-        $StockfishPath = '..\stockfish_ai\stockfish\stockfish-macos-m1-apple-silicon'
+        $StockfishPath = '../stockfish_ai/stockfish/stockfish-macos-m1-apple-silicon'
     } elseif ($IsLinux) {
-        $StockfishPath = '..\stockfish_ai\stockfish\stockfish-ubuntu-x86-64-avx2'
+        $StockfishPath = '../stockfish_ai/stockfish/stockfish-ubuntu-x86-64-avx2'
     } else {
         $StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe'
     }
@@ -131,7 +133,11 @@ if ($Variant -eq 2) {
 }
 
 # Determine where the Python helper will write results
-$resultsFile = Join-Path $exp6Dir "exp6_variant${Variant}_${variantName}_${ExperimentTag}.csv"
+# Outputs live under engine/out/exp6_puzzles_<tag>/ so they are kept separate
+# from the source files in engine/experiments/exp6/.
+$resultsDir = Join-Path $engineDir 'out' | Join-Path -ChildPath "exp6_puzzles_${ExperimentTag}"
+New-Item -ItemType Directory -Path $resultsDir -Force | Out-Null
+$resultsFile = Join-Path $resultsDir "exp6_variant${Variant}_${variantName}_${ExperimentTag}.csv"
 
 # Delegate the per-puzzle loop to a Python helper for robust JSON I/O
 $helperPath = Join-Path $exp6Dir '_run_variant_puzzles.py'
