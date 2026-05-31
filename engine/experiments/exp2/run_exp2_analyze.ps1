@@ -18,7 +18,13 @@ param(
     [string]$Python = ''
 )
 
-if (-not $Python) { $Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' } }
+if (-not $Python) {
+    if ($env:VIRTUAL_ENV) {
+        $Python = if ($IsMacOS -or $IsLinux) { Join-Path $env:VIRTUAL_ENV 'bin/python' } else { Join-Path $env:VIRTUAL_ENV 'Scripts/python.exe' }
+    } else {
+        $Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' }
+    }
+}
 
 $engineDir = (Resolve-Path "$PSScriptRoot\..\..").Path
 Set-Location $engineDir

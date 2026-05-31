@@ -198,3 +198,78 @@ Szacunkowe czasy par (30 gier, ~80 ruchów/gra):
 3. **Adjudykacja jest WŁĄCZONA** — bez tego MCTS vs MCTS może produkować bardzo długie partie
 4. **Każdy plik metryczny waży ~50-200KB** — 180 gier × ~100KB = ~18MB danych
 5. **Quick smoke test:** `.\experiments\exp1\run_exp1_pair.ps1 -Pair 1 -GamesPerPair 2` (4 minuty, sprawdza pipeline)
+
+---
+
+# Wariant exp1b — Round-robin najmocniejszych wykonalnych wariantów
+
+## Motywacja
+
+Bazowy exp1 używa świadomie zaniżonej konfiguracji `MINIMAX d=3` dla **czystego porównania Osi B** (różni się tylko ewaluator). To zostawia lukę: brakuje danych dla pytania **"który z realistycznie najsilniejszych wariantów wygrywa?"**.
+
+**exp1b** używa tych samych skryptów co exp1, ale z parametrami zmaksymalizowanymi pod constraint **≤120 s/ruch**, na podstawie empirycznych pomiarów z exp1/exp2.
+
+## Parametry (maksymalne wykonalne ≤120 s/ruch)
+
+| Wariant | Parametr | Empiryczne (mean / p90 / max) | Uzasadnienie |
+|---|---|---|---|
+| `MINIMAX_TRAD` | **d=5** | 2.2 s / 5.4 s / 62 s | Max głębokość pod constraintem. d=6 prognozowane ~80 s mean (prawdopodobnie p90 >120 s) — nieprzetestowane |
+| `MINIMAX_NN` | **d=3** | 3-6 s / — / — | d=4 pęka constraint (p90=136 s, max=866 s) — niewykonalne |
+| `MCTS_TRAD` | **t=30 s** | 30 s (deterministyczny) | ~11× richer niż calib 2.61 s; ~6× p90 d=5; mieści się między exp3 reference (20 s) a heavy (40 s) |
+| `MCTS_NN` | **t=30 s** | 30 s | j.w. |
+
+## Procedura uruchomienia
+
+Bez żadnych zmian kodowych — skrypty exp1 mają wymagane parametry. Wszystkie 6 par odpalamy z tym samym tagiem `strongest` i jawnymi parametrami:
+
+```powershell
+# Terminal 1:
+.\experiments\exp1\run_exp1_pair.ps1 -Pair 1 -MinimaxDepth 5 -MinimaxDepthNN 3 -MctsTime 30 -ExperimentTag strongest
+# Terminal 2:
+.\experiments\exp1\run_exp1_pair.ps1 -Pair 2 -MinimaxDepth 5 -MinimaxDepthNN 3 -MctsTime 30 -ExperimentTag strongest
+# Terminal 3-6 analogicznie dla -Pair 3..6 z identycznymi pozostałymi flagami
+```
+
+Wszystkie pary piszą do wspólnego katalogu `engine/out/exp1_round_robin_strongest/`.
+
+### Analiza zbiorcza
+
+```powershell
+.\experiments\exp1\run_exp1_analyze.ps1 -ExperimentDir engine\out\exp1_round_robin_strongest
+```
+
+Identyczna pipeline analityczna co bazowy exp1 — produkuje `analysis_elo.csv`, `exp1_pair_significance.csv`, `exp1_axis_summary.csv`, `exp1_wdl_matrix.png`, itd.
+
+## Szacunek kosztu obliczeniowego
+
+Per para (30 gier × ~80 ruchów × dwie strony):
+
+| # | Para | Średni czas/ruch (W+B) | Szac. czas pary |
+|---|---|---|---|
+| 1 | MINIMAX_TRAD d=5 vs MINIMAX_NN d=3 | ~7 s | ~5 h |
+| 2 | MCTS_TRAD 30s vs MCTS_NN 30s | 60 s | **~40 h** ⚠ (bottleneck) |
+| 3 | MINIMAX_TRAD d=5 vs MCTS_TRAD 30s | ~32 s | ~21 h |
+| 4 | MINIMAX_TRAD d=5 vs MCTS_NN 30s | ~32 s | ~21 h |
+| 5 | MINIMAX_NN d=3 vs MCTS_TRAD 30s | ~35 s | ~23 h |
+| 6 | MINIMAX_NN d=3 vs MCTS_NN 30s | ~35 s | ~23 h |
+
+- **6 par równolegle:** ~**40 h wall-clock** (~1.7 dnia), bottleneck = para 2
+- **Sekwencyjnie:** ~133 h (~5.5 dnia)
+- **Strategia:** uruchom pary 1, 3-6 razem (~23 h), parę 2 w tle (~40 h)
+
+## Weryfikacja
+
+1. **Smoke test (5-10 min):**
+   ```powershell
+   .\experiments\exp1\run_exp1_pair.ps1 -Pair 1 -MinimaxDepth 5 -MinimaxDepthNN 3 -MctsTime 30 -ExperimentTag strongest_test -GamesPerPair 2
+   ```
+2. **Po wszystkich 6 parach:** sprawdź że w `out/exp1_round_robin_strongest/` jest dokładnie **180 plików `metrics_*.jsonl`**.
+3. **Sanity check constraintu:** żaden ruch w `analysis_moves.csv` nie powinien mieć `time_s > 120`. Jeśli >5% przypadków przekroczy, rozważyć obniżenie TRAD do d=4.
+4. **Główna walidacja w pracy:** porównanie tablic Elo exp1 vs exp1b — czy ranking się zmienia, o ile wzrasta Elo TRAD przy d=3→d=5 (oczekiwane ~150-300 z exp2), czy MCTS 30 s dogania Minimax d=5.
+
+## Co dyskutować w pracy
+
+- **Spójność z exp1**: oczekiwana ta sama kolejność rankingowa, ale większe różnice Elo (mocniejsze parametry → większy rozjazd siły).
+- **NN wciąż na d=3**: argumentować jako *constraint praktyczny* (Stockfish-oracle eval kosztuje za dużo), nie brak siły algorytmu. Cytować empiryczny rozkład d=4 (mean 67 s, p90 136 s).
+- **MCTS 30 s vs Minimax d=5**: MCTS dostaje ~14× więcej wall-clock niż mediana Minimax d=5 (1 s) — jeśli mimo to przegrywa, mówi to o algorytmie, nie o budżecie.
+- **Limit d=5 dla TRAD**: d=6 teoretycznie możliwy ale empirycznie zbyt drogi (~80 s mean), nie przetestowany w tej pracy.
