@@ -1,0 +1,841 @@
+2026-05-31 14:37:31,713: INFO: MinimaxTrad; WHITE; move_number: 1; starting search; depth: 4
+2026-05-31 14:37:31,719: DEBUG: MinimaxTrad; move_number: 1; ID iteration depth=1; move: g1f3; value: 0.87
+2026-05-31 14:37:31,749: DEBUG: MinimaxTrad; move_number: 1; ID iteration depth=2; move: g1f3; value: 0.00
+2026-05-31 14:37:31,832: DEBUG: MinimaxTrad; move_number: 1; ID iteration depth=3; move: d2d4; value: 0.79
+2026-05-31 14:37:32,061: DEBUG: MinimaxTrad; move_number: 1; ID iteration depth=4; move: g1f3; value: 0.00
+2026-05-31 14:37:32,061: INFO: MinimaxTrad; WHITE; move_number: 1; depth: 4; time: 0.348080s; move: g1f3; value: 0.00
+2026-05-31 14:37:32,061: INFO: move_number: 1; White move: g1f3
+2026-05-31 14:37:32,061: INFO: MinimaxTrad; BLACK; move_number: 1; starting search; depth: 4
+2026-05-31 14:37:32,067: DEBUG: MinimaxTrad; move_number: 1; ID iteration depth=1; move: g8f6; value: 0.00
+2026-05-31 14:37:32,084: DEBUG: MinimaxTrad; move_number: 1; ID iteration depth=2; move: b8c6; value: 0.38
+2026-05-31 14:37:32,132: DEBUG: MinimaxTrad; move_number: 1; ID iteration depth=3; move: b8c6; value: 0.00
+2026-05-31 14:37:32,337: DEBUG: MinimaxTrad; move_number: 1; ID iteration depth=4; move: b8c6; value: 0.71
+2026-05-31 14:37:32,337: INFO: MinimaxTrad; BLACK; move_number: 1; depth: 4; time: 0.275797s; move: b8c6; value: 0.71
+2026-05-31 14:37:32,337: INFO: move_number: 1; Black move: b8c6
+2026-05-31 14:37:32,337: INFO: MinimaxTrad; WHITE; move_number: 2; starting search; depth: 4
+2026-05-31 14:37:32,344: DEBUG: MinimaxTrad; move_number: 2; ID iteration depth=1; move: b1c3; value: 0.87
+2026-05-31 14:37:32,375: DEBUG: MinimaxTrad; move_number: 2; ID iteration depth=2; move: b1c3; value: 0.00
+2026-05-31 14:37:32,444: DEBUG: MinimaxTrad; move_number: 2; ID iteration depth=3; move: d2d4; value: 0.66
+2026-05-31 14:37:32,856: DEBUG: MinimaxTrad; move_number: 2; ID iteration depth=4; move: e2e3; value: -0.19
+2026-05-31 14:37:32,856: INFO: MinimaxTrad; WHITE; move_number: 2; depth: 4; time: 0.519197s; move: e2e3; value: -0.19
+2026-05-31 14:37:32,856: INFO: move_number: 2; White move: e2e3
+2026-05-31 14:37:32,856: INFO: MinimaxTrad; BLACK; move_number: 2; starting search; depth: 4
+2026-05-31 14:37:32,862: DEBUG: MinimaxTrad; move_number: 2; ID iteration depth=1; move: g8f6; value: -0.43
+2026-05-31 14:37:32,887: DEBUG: MinimaxTrad; move_number: 2; ID iteration depth=2; move: g8f6; value: 0.52
+2026-05-31 14:37:32,979: DEBUG: MinimaxTrad; move_number: 2; ID iteration depth=3; move: d7d5; value: -0.19
+2026-05-31 14:37:33,269: DEBUG: MinimaxTrad; move_number: 2; ID iteration depth=4; move: d7d5; value: 0.51
+2026-05-31 14:37:33,270: INFO: MinimaxTrad; BLACK; move_number: 2; depth: 4; time: 0.413103s; move: d7d5; value: 0.51
+2026-05-31 14:37:33,270: INFO: move_number: 2; Black move: d7d5
+2026-05-31 14:37:33,270: INFO: MinimaxTrad; WHITE; move_number: 3; starting search; depth: 4
+2026-05-31 14:37:33,278: DEBUG: MinimaxTrad; move_number: 3; ID iteration depth=1; move: b1c3; value: 0.68
+2026-05-31 14:37:33,317: DEBUG: MinimaxTrad; move_number: 3; ID iteration depth=2; move: b1c3; value: -0.19
+2026-05-31 14:37:33,387: DEBUG: MinimaxTrad; move_number: 3; ID iteration depth=3; move: b1c3; value: 0.31
+2026-05-31 14:37:34,011: DEBUG: MinimaxTrad; move_number: 3; ID iteration depth=4; move: d2d4; value: -0.78
+2026-05-31 14:37:34,011: INFO: MinimaxTrad; WHITE; move_number: 3; depth: 4; time: 0.741036s; move: d2d4; value: -0.78
+2026-05-31 14:37:34,011: INFO: move_number: 3; White move: d2d4
+2026-05-31 14:37:34,011: INFO: MinimaxTrad; BLACK; move_number: 3; starting search; depth: 4
+2026-05-31 14:37:34,021: DEBUG: MinimaxTrad; move_number: 3; ID iteration depth=1; move: g8f6; value: -0.75
+2026-05-31 14:37:34,069: DEBUG: MinimaxTrad; move_number: 3; ID iteration depth=2; move: g8f6; value: 0.12
+2026-05-31 14:37:34,145: DEBUG: MinimaxTrad; move_number: 3; ID iteration depth=3; move: c8f5; value: -0.50
+2026-05-31 14:37:34,567: DEBUG: MinimaxTrad; move_number: 3; ID iteration depth=4; move: d8d6; value: 0.22
+2026-05-31 14:37:34,567: INFO: MinimaxTrad; BLACK; move_number: 3; depth: 4; time: 0.555894s; move: d8d6; value: 0.22
+2026-05-31 14:37:34,567: INFO: move_number: 3; Black move: d8d6
+2026-05-31 14:37:34,567: INFO: MinimaxTrad; WHITE; move_number: 4; starting search; depth: 4
+2026-05-31 14:37:34,578: DEBUG: MinimaxTrad; move_number: 4; ID iteration depth=1; move: b1c3; value: 0.34
+2026-05-31 14:37:34,634: DEBUG: MinimaxTrad; move_number: 4; ID iteration depth=2; move: b1c3; value: -0.41
+2026-05-31 14:37:34,746: DEBUG: MinimaxTrad; move_number: 4; ID iteration depth=3; move: b1c3; value: 0.09
+2026-05-31 14:37:34,904: DEBUG: MinimaxTrad; move_number: 4; ID iteration depth=4; move: b1c3; value: 0.17
+2026-05-31 14:37:34,904: INFO: MinimaxTrad; WHITE; move_number: 4; depth: 4; time: 0.337338s; move: b1c3; value: 0.17
+2026-05-31 14:37:34,905: INFO: move_number: 4; White move: b1c3
+2026-05-31 14:37:34,905: INFO: MinimaxTrad; BLACK; move_number: 4; starting search; depth: 4
+2026-05-31 14:37:34,917: DEBUG: MinimaxTrad; move_number: 4; ID iteration depth=1; move: c8f5; value: 0.00
+2026-05-31 14:37:34,948: DEBUG: MinimaxTrad; move_number: 4; ID iteration depth=2; move: g8f6; value: 0.22
+2026-05-31 14:37:35,055: DEBUG: MinimaxTrad; move_number: 4; ID iteration depth=3; move: g8f6; value: 0.26
+2026-05-31 14:37:35,617: DEBUG: MinimaxTrad; move_number: 4; ID iteration depth=4; move: a7a6; value: 0.22
+2026-05-31 14:37:35,617: INFO: MinimaxTrad; BLACK; move_number: 4; depth: 4; time: 0.712597s; move: a7a6; value: 0.22
+2026-05-31 14:37:35,617: INFO: move_number: 4; Black move: a7a6
+2026-05-31 14:37:35,618: INFO: MinimaxTrad; WHITE; move_number: 5; starting search; depth: 4
+2026-05-31 14:37:35,634: DEBUG: MinimaxTrad; move_number: 5; ID iteration depth=1; move: f3e5; value: 1.03
+2026-05-31 14:37:35,712: DEBUG: MinimaxTrad; move_number: 5; ID iteration depth=2; move: f3e5; value: 0.42
+2026-05-31 14:37:35,816: DEBUG: MinimaxTrad; move_number: 5; ID iteration depth=3; move: f1d3; value: 0.57
+2026-05-31 14:37:36,552: DEBUG: MinimaxTrad; move_number: 5; ID iteration depth=4; move: f1e2; value: 0.04
+2026-05-31 14:37:36,552: INFO: MinimaxTrad; WHITE; move_number: 5; depth: 4; time: 0.934857s; move: f1e2; value: 0.04
+2026-05-31 14:37:36,552: INFO: move_number: 5; White move: f1e2
+2026-05-31 14:37:36,553: INFO: MinimaxTrad; BLACK; move_number: 5; starting search; depth: 4
+2026-05-31 14:37:36,569: DEBUG: MinimaxTrad; move_number: 5; ID iteration depth=1; move: c8f5; value: -0.53
+2026-05-31 14:37:36,665: DEBUG: MinimaxTrad; move_number: 5; ID iteration depth=2; move: g8f6; value: 0.17
+2026-05-31 14:37:36,779: DEBUG: MinimaxTrad; move_number: 5; ID iteration depth=3; move: c8f5; value: -0.11
+2026-05-31 14:37:37,102: DEBUG: MinimaxTrad; move_number: 5; ID iteration depth=4; move: g8f6; value: 0.27
+2026-05-31 14:37:37,102: INFO: MinimaxTrad; BLACK; move_number: 5; depth: 4; time: 0.549516s; move: g8f6; value: 0.27
+2026-05-31 14:37:37,102: INFO: move_number: 5; Black move: g8f6
+2026-05-31 14:37:37,102: INFO: MinimaxTrad; WHITE; move_number: 6; starting search; depth: 4
+2026-05-31 14:37:37,117: DEBUG: MinimaxTrad; move_number: 6; ID iteration depth=1; move: f3g5; value: 0.17
+2026-05-31 14:37:37,151: DEBUG: MinimaxTrad; move_number: 6; ID iteration depth=2; move: f3g5; value: 0.04
+2026-05-31 14:37:37,260: DEBUG: MinimaxTrad; move_number: 6; ID iteration depth=3; move: e2d3; value: 0.27
+2026-05-31 14:37:38,508: DEBUG: MinimaxTrad; move_number: 6; ID iteration depth=4; move: e1f1; value: -0.71
+2026-05-31 14:37:38,508: INFO: MinimaxTrad; WHITE; move_number: 6; depth: 4; time: 1.405634s; move: e1f1; value: -0.71
+2026-05-31 14:37:38,508: INFO: move_number: 6; White move: e1f1
+2026-05-31 14:37:38,508: INFO: MinimaxTrad; BLACK; move_number: 6; starting search; depth: 4
+2026-05-31 14:37:38,524: DEBUG: MinimaxTrad; move_number: 6; ID iteration depth=1; move: c8f5; value: -0.93
+2026-05-31 14:37:38,566: DEBUG: MinimaxTrad; move_number: 6; ID iteration depth=2; move: h7h6; value: -0.71
+2026-05-31 14:37:38,688: DEBUG: MinimaxTrad; move_number: 6; ID iteration depth=3; move: f6e4; value: -0.34
+2026-05-31 14:37:39,207: DEBUG: MinimaxTrad; move_number: 6; ID iteration depth=4; move: h7h6; value: -0.05
+2026-05-31 14:37:39,207: INFO: MinimaxTrad; BLACK; move_number: 6; depth: 4; time: 0.698768s; move: h7h6; value: -0.05
+2026-05-31 14:37:39,207: INFO: move_number: 6; Black move: h7h6
+2026-05-31 14:37:39,207: INFO: MinimaxTrad; WHITE; move_number: 7; starting search; depth: 4
+2026-05-31 14:37:39,224: DEBUG: MinimaxTrad; move_number: 7; ID iteration depth=1; move: e2d3; value: 0.27
+2026-05-31 14:37:39,249: DEBUG: MinimaxTrad; move_number: 7; ID iteration depth=2; move: e2d3; value: 0.31
+2026-05-31 14:37:39,354: DEBUG: MinimaxTrad; move_number: 7; ID iteration depth=3; move: c3a4; value: 0.11
+2026-05-31 14:37:40,209: DEBUG: MinimaxTrad; move_number: 7; ID iteration depth=4; move: a2a3; value: -0.56
+2026-05-31 14:37:40,209: INFO: MinimaxTrad; WHITE; move_number: 7; depth: 4; time: 1.001843s; move: a2a3; value: -0.56
+2026-05-31 14:37:40,209: INFO: move_number: 7; White move: a2a3
+2026-05-31 14:37:40,209: INFO: MinimaxTrad; BLACK; move_number: 7; starting search; depth: 4
+2026-05-31 14:37:40,226: DEBUG: MinimaxTrad; move_number: 7; ID iteration depth=1; move: c8f5; value: -1.03
+2026-05-31 14:37:40,268: DEBUG: MinimaxTrad; move_number: 7; ID iteration depth=2; move: c8g4; value: -1.24
+2026-05-31 14:37:40,487: DEBUG: MinimaxTrad; move_number: 7; ID iteration depth=3; move: f6e4; value: -0.30
+2026-05-31 14:37:40,916: DEBUG: MinimaxTrad; move_number: 7; ID iteration depth=4; move: f6e4; value: 0.23
+2026-05-31 14:37:40,916: INFO: MinimaxTrad; BLACK; move_number: 7; depth: 4; time: 0.706795s; move: f6e4; value: 0.23
+2026-05-31 14:37:40,916: INFO: move_number: 7; Black move: f6e4
+2026-05-31 14:37:40,916: INFO: MinimaxTrad; WHITE; move_number: 8; starting search; depth: 4
+2026-05-31 14:37:40,941: DEBUG: MinimaxTrad; move_number: 8; ID iteration depth=1; move: c3e4; value: -0.30
+2026-05-31 14:37:41,023: DEBUG: MinimaxTrad; move_number: 8; ID iteration depth=2; move: c3a4; value: 3.00
+2026-05-31 14:37:41,166: DEBUG: MinimaxTrad; move_number: 8; ID iteration depth=3; move: c1d2; value: 0.23
+2026-05-31 14:37:41,493: DEBUG: MinimaxTrad; move_number: 8; ID iteration depth=4; move: c3e4; value: 2.06
+2026-05-31 14:37:41,493: INFO: MinimaxTrad; WHITE; move_number: 8; depth: 4; time: 0.576395s; move: c3e4; value: 2.06
+2026-05-31 14:37:41,493: INFO: move_number: 8; White move: c3e4
+2026-05-31 14:37:41,493: INFO: MinimaxTrad; BLACK; move_number: 8; starting search; depth: 4
+2026-05-31 14:37:41,508: DEBUG: MinimaxTrad; move_number: 8; ID iteration depth=1; move: d5e4; value: -0.30
+2026-05-31 14:37:41,523: DEBUG: MinimaxTrad; move_number: 8; ID iteration depth=2; move: d5e4; value: 0.13
+2026-05-31 14:37:41,711: DEBUG: MinimaxTrad; move_number: 8; ID iteration depth=3; move: d5e4; value: 2.06
+2026-05-31 14:37:41,853: DEBUG: MinimaxTrad; move_number: 8; ID iteration depth=4; move: d5e4; value: 2.06
+2026-05-31 14:37:41,853: INFO: MinimaxTrad; BLACK; move_number: 8; depth: 4; time: 0.359888s; move: d5e4; value: 2.06
+2026-05-31 14:37:41,853: INFO: move_number: 8; Black move: d5e4
+2026-05-31 14:37:41,853: INFO: MinimaxTrad; WHITE; move_number: 9; starting search; depth: 4
+2026-05-31 14:37:41,866: DEBUG: MinimaxTrad; move_number: 9; ID iteration depth=1; move: f3d2; value: 0.73
+2026-05-31 14:37:41,902: DEBUG: MinimaxTrad; move_number: 9; ID iteration depth=2; move: f3d2; value: 2.06
+2026-05-31 14:37:41,924: DEBUG: MinimaxTrad; move_number: 9; ID iteration depth=3; move: f3d2; value: 2.06
+2026-05-31 14:37:42,123: DEBUG: MinimaxTrad; move_number: 9; ID iteration depth=4; move: f3d2; value: 0.83
+2026-05-31 14:37:42,123: INFO: MinimaxTrad; WHITE; move_number: 9; depth: 4; time: 0.269920s; move: f3d2; value: 0.83
+2026-05-31 14:37:42,123: INFO: move_number: 9; White move: f3d2
+2026-05-31 14:37:42,123: INFO: MinimaxTrad; BLACK; move_number: 9; starting search; depth: 4
+2026-05-31 14:37:42,142: DEBUG: MinimaxTrad; move_number: 9; ID iteration depth=1; move: d6g6; value: -0.65
+2026-05-31 14:37:42,183: DEBUG: MinimaxTrad; move_number: 9; ID iteration depth=2; move: d6g6; value: -0.39
+2026-05-31 14:37:42,377: DEBUG: MinimaxTrad; move_number: 9; ID iteration depth=3; move: c8f5; value: 0.83
+2026-05-31 14:37:43,051: DEBUG: MinimaxTrad; move_number: 9; ID iteration depth=4; move: d6d8; value: 2.80
+2026-05-31 14:37:43,051: INFO: MinimaxTrad; BLACK; move_number: 9; depth: 4; time: 0.928251s; move: d6d8; value: 2.80
+2026-05-31 14:37:43,051: INFO: move_number: 9; Black move: d6d8
+2026-05-31 14:37:43,052: INFO: MinimaxTrad; WHITE; move_number: 10; starting search; depth: 4
+2026-05-31 14:37:43,063: DEBUG: MinimaxTrad; move_number: 10; ID iteration depth=1; move: d2e4; value: 2.08
+2026-05-31 14:37:43,105: DEBUG: MinimaxTrad; move_number: 10; ID iteration depth=2; move: e2c4; value: 2.96
+2026-05-31 14:37:43,129: DEBUG: MinimaxTrad; move_number: 10; ID iteration depth=3; move: e2c4; value: 2.80
+2026-05-31 14:37:43,846: DEBUG: MinimaxTrad; move_number: 10; ID iteration depth=4; move: d4d5; value: 1.25
+2026-05-31 14:37:43,847: INFO: MinimaxTrad; WHITE; move_number: 10; depth: 4; time: 0.794940s; move: d4d5; value: 1.25
+2026-05-31 14:37:43,847: INFO: move_number: 10; White move: d4d5
+2026-05-31 14:37:43,847: INFO: MinimaxTrad; BLACK; move_number: 10; starting search; depth: 4
+2026-05-31 14:37:43,858: DEBUG: MinimaxTrad; move_number: 10; ID iteration depth=1; move: d8d5; value: -1.27
+2026-05-31 14:37:43,900: DEBUG: MinimaxTrad; move_number: 10; ID iteration depth=2; move: d8d5; value: -0.67
+2026-05-31 14:37:44,075: DEBUG: MinimaxTrad; move_number: 10; ID iteration depth=3; move: c6e5; value: 2.18
+2026-05-31 14:37:44,303: DEBUG: MinimaxTrad; move_number: 10; ID iteration depth=4; move: c6e5; value: 1.91
+2026-05-31 14:37:44,303: INFO: MinimaxTrad; BLACK; move_number: 10; depth: 4; time: 0.456436s; move: c6e5; value: 1.91
+2026-05-31 14:37:44,303: INFO: move_number: 10; Black move: c6e5
+2026-05-31 14:37:44,303: INFO: MinimaxTrad; WHITE; move_number: 11; starting search; depth: 4
+2026-05-31 14:37:44,313: DEBUG: MinimaxTrad; move_number: 11; ID iteration depth=1; move: d2e4; value: 2.11
+2026-05-31 14:37:44,322: DEBUG: MinimaxTrad; move_number: 11; ID iteration depth=2; move: d2e4; value: 2.18
+2026-05-31 14:37:44,509: DEBUG: MinimaxTrad; move_number: 11; ID iteration depth=3; move: c2c4; value: 1.52
+2026-05-31 14:37:45,118: DEBUG: MinimaxTrad; move_number: 11; ID iteration depth=4; move: d2c4; value: 0.67
+2026-05-31 14:37:45,118: INFO: MinimaxTrad; WHITE; move_number: 11; depth: 4; time: 0.814563s; move: d2c4; value: 0.67
+2026-05-31 14:37:45,118: INFO: move_number: 11; White move: d2c4
+2026-05-31 14:37:45,118: INFO: MinimaxTrad; BLACK; move_number: 11; starting search; depth: 4
+2026-05-31 14:37:45,144: DEBUG: MinimaxTrad; move_number: 11; ID iteration depth=1; move: e5g6; value: 1.06
+2026-05-31 14:37:45,185: DEBUG: MinimaxTrad; move_number: 11; ID iteration depth=2; move: e5g6; value: 0.85
+2026-05-31 14:37:45,247: DEBUG: MinimaxTrad; move_number: 11; ID iteration depth=3; move: e5g6; value: 1.12
+2026-05-31 14:37:45,381: DEBUG: MinimaxTrad; move_number: 11; ID iteration depth=4; move: e5c4; value: 0.94
+2026-05-31 14:37:45,381: INFO: MinimaxTrad; BLACK; move_number: 11; depth: 4; time: 0.262908s; move: e5c4; value: 0.94
+2026-05-31 14:37:45,381: INFO: move_number: 11; Black move: e5c4
+2026-05-31 14:37:45,381: INFO: MinimaxTrad; WHITE; move_number: 12; starting search; depth: 4
+2026-05-31 14:37:45,391: DEBUG: MinimaxTrad; move_number: 12; ID iteration depth=1; move: e2c4; value: 1.02
+2026-05-31 14:37:45,400: DEBUG: MinimaxTrad; move_number: 12; ID iteration depth=2; move: e2c4; value: 0.85
+2026-05-31 14:37:45,590: DEBUG: MinimaxTrad; move_number: 12; ID iteration depth=3; move: f1g1; value: 1.29
+2026-05-31 14:37:46,259: DEBUG: MinimaxTrad; move_number: 12; ID iteration depth=4; move: e2c4; value: 0.34
+2026-05-31 14:37:46,260: INFO: MinimaxTrad; WHITE; move_number: 12; depth: 4; time: 0.878274s; move: e2c4; value: 0.34
+2026-05-31 14:37:46,260: INFO: move_number: 12; White move: e2c4
+2026-05-31 14:37:46,260: INFO: MinimaxTrad; BLACK; move_number: 12; starting search; depth: 4
+2026-05-31 14:37:46,270: DEBUG: MinimaxTrad; move_number: 12; ID iteration depth=1; move: b7b5; value: 0.30
+2026-05-31 14:37:46,296: DEBUG: MinimaxTrad; move_number: 12; ID iteration depth=2; move: e7e5; value: 0.25
+2026-05-31 14:37:46,360: DEBUG: MinimaxTrad; move_number: 12; ID iteration depth=3; move: e7e5; value: 0.13
+2026-05-31 14:37:47,096: DEBUG: MinimaxTrad; move_number: 12; ID iteration depth=4; move: b7b5; value: 1.26
+2026-05-31 14:37:47,097: INFO: MinimaxTrad; BLACK; move_number: 12; depth: 4; time: 0.836721s; move: b7b5; value: 1.26
+2026-05-31 14:37:47,097: INFO: move_number: 12; Black move: b7b5
+2026-05-31 14:37:47,097: INFO: MinimaxTrad; WHITE; move_number: 13; starting search; depth: 4
+2026-05-31 14:37:47,108: DEBUG: MinimaxTrad; move_number: 13; ID iteration depth=1; move: c4e2; value: 0.95
+2026-05-31 14:37:47,128: DEBUG: MinimaxTrad; move_number: 13; ID iteration depth=2; move: c4e2; value: 1.02
+2026-05-31 14:37:47,267: DEBUG: MinimaxTrad; move_number: 13; ID iteration depth=3; move: c4a2; value: 0.33
+2026-05-31 14:37:47,533: DEBUG: MinimaxTrad; move_number: 13; ID iteration depth=4; move: c4b3; value: 0.00
+2026-05-31 14:37:47,533: INFO: MinimaxTrad; WHITE; move_number: 13; depth: 4; time: 0.436458s; move: c4b3; value: 0.00
+2026-05-31 14:37:47,533: INFO: move_number: 13; White move: c4b3
+2026-05-31 14:37:47,533: INFO: MinimaxTrad; BLACK; move_number: 13; starting search; depth: 4
+2026-05-31 14:37:47,541: DEBUG: MinimaxTrad; move_number: 13; ID iteration depth=1; move: e7e5; value: 0.12
+2026-05-31 14:37:47,561: DEBUG: MinimaxTrad; move_number: 13; ID iteration depth=2; move: e7e5; value: 0.12
+2026-05-31 14:37:47,621: DEBUG: MinimaxTrad; move_number: 13; ID iteration depth=3; move: e7e5; value: 0.16
+2026-05-31 14:37:48,015: DEBUG: MinimaxTrad; move_number: 13; ID iteration depth=4; move: e7e5; value: 1.14
+2026-05-31 14:37:48,015: INFO: MinimaxTrad; BLACK; move_number: 13; depth: 4; time: 0.481632s; move: e7e5; value: 1.14
+2026-05-31 14:37:48,015: INFO: move_number: 13; Black move: e7e5
+2026-05-31 14:37:48,015: INFO: MinimaxTrad; WHITE; move_number: 14; starting search; depth: 4
+2026-05-31 14:37:48,027: DEBUG: MinimaxTrad; move_number: 14; ID iteration depth=1; move: d1h5; value: 1.03
+2026-05-31 14:37:48,072: DEBUG: MinimaxTrad; move_number: 14; ID iteration depth=2; move: d1h5; value: 1.78
+2026-05-31 14:37:48,162: DEBUG: MinimaxTrad; move_number: 14; ID iteration depth=3; move: c1d2; value: 1.43
+2026-05-31 14:37:49,425: DEBUG: MinimaxTrad; move_number: 14; ID iteration depth=4; move: d5d6; value: 0.54
+2026-05-31 14:37:49,425: INFO: MinimaxTrad; WHITE; move_number: 14; depth: 4; time: 1.409612s; move: d5d6; value: 0.54
+2026-05-31 14:37:49,425: INFO: move_number: 14; White move: d5d6
+2026-05-31 14:37:49,425: INFO: MinimaxTrad; BLACK; move_number: 14; starting search; depth: 4
+2026-05-31 14:37:49,439: DEBUG: MinimaxTrad; move_number: 14; ID iteration depth=1; move: d8d6; value: -1.27
+2026-05-31 14:37:49,599: DEBUG: MinimaxTrad; move_number: 14; ID iteration depth=2; move: c7c6; value: -0.15
+2026-05-31 14:37:49,856: DEBUG: MinimaxTrad; move_number: 14; ID iteration depth=3; move: f8d6; value: 0.35
+2026-05-31 14:37:51,111: DEBUG: MinimaxTrad; move_number: 14; ID iteration depth=4; move: d8d6; value: 0.46
+2026-05-31 14:37:51,111: INFO: MinimaxTrad; BLACK; move_number: 14; depth: 4; time: 1.685789s; move: d8d6; value: 0.46
+2026-05-31 14:37:51,111: INFO: move_number: 14; Black move: d8d6
+2026-05-31 14:37:51,111: INFO: MinimaxTrad; WHITE; move_number: 15; starting search; depth: 4
+2026-05-31 14:37:51,124: DEBUG: MinimaxTrad; move_number: 15; ID iteration depth=1; move: b3d5; value: 1.09
+2026-05-31 14:37:51,161: DEBUG: MinimaxTrad; move_number: 15; ID iteration depth=2; move: d1h5; value: 1.62
+2026-05-31 14:37:51,197: DEBUG: MinimaxTrad; move_number: 15; ID iteration depth=3; move: d1h5; value: 1.62
+2026-05-31 14:37:51,757: DEBUG: MinimaxTrad; move_number: 15; ID iteration depth=4; move: d1d6; value: 1.12
+2026-05-31 14:37:51,757: INFO: MinimaxTrad; WHITE; move_number: 15; depth: 4; time: 0.645388s; move: d1d6; value: 1.12
+2026-05-31 14:37:51,757: INFO: move_number: 15; White move: d1d6
+2026-05-31 14:37:51,757: INFO: MinimaxTrad; BLACK; move_number: 15; starting search; depth: 4
+2026-05-31 14:37:51,767: DEBUG: MinimaxTrad; move_number: 15; ID iteration depth=1; move: f8d6; value: -1.27
+2026-05-31 14:37:51,804: DEBUG: MinimaxTrad; move_number: 15; ID iteration depth=2; move: f8d6; value: 0.16
+2026-05-31 14:37:51,949: DEBUG: MinimaxTrad; move_number: 15; ID iteration depth=3; move: f8d6; value: 3.85
+2026-05-31 14:37:52,194: DEBUG: MinimaxTrad; move_number: 15; ID iteration depth=4; move: f8d6; value: 3.35
+2026-05-31 14:37:52,194: INFO: MinimaxTrad; BLACK; move_number: 15; depth: 4; time: 0.437509s; move: f8d6; value: 3.35
+2026-05-31 14:37:52,194: INFO: move_number: 15; Black move: f8d6
+2026-05-31 14:37:52,195: INFO: MinimaxTrad; WHITE; move_number: 16; starting search; depth: 4
+2026-05-31 14:37:52,204: DEBUG: MinimaxTrad; move_number: 16; ID iteration depth=1; move: b3d5; value: 2.12
+2026-05-31 14:37:52,210: DEBUG: MinimaxTrad; move_number: 16; ID iteration depth=2; move: b3d5; value: 2.12
+2026-05-31 14:37:52,252: DEBUG: MinimaxTrad; move_number: 16; ID iteration depth=3; move: b3d5; value: 3.71
+2026-05-31 14:37:52,463: DEBUG: MinimaxTrad; move_number: 16; ID iteration depth=4; move: b3d5; value: 0.55
+2026-05-31 14:37:52,463: INFO: MinimaxTrad; WHITE; move_number: 16; depth: 4; time: 0.268464s; move: b3d5; value: 0.55
+2026-05-31 14:37:52,463: INFO: move_number: 16; White move: b3d5
+2026-05-31 14:37:52,463: INFO: MinimaxTrad; BLACK; move_number: 16; starting search; depth: 4
+2026-05-31 14:37:52,484: DEBUG: MinimaxTrad; move_number: 16; ID iteration depth=1; move: a8b8; value: -0.09
+2026-05-31 14:37:52,519: DEBUG: MinimaxTrad; move_number: 16; ID iteration depth=2; move: a8b8; value: -0.09
+2026-05-31 14:37:52,568: DEBUG: MinimaxTrad; move_number: 16; ID iteration depth=3; move: a8b8; value: -0.19
+2026-05-31 14:37:52,726: DEBUG: MinimaxTrad; move_number: 16; ID iteration depth=4; move: a8b8; value: -0.09
+2026-05-31 14:37:52,726: INFO: MinimaxTrad; BLACK; move_number: 16; depth: 4; time: 0.263134s; move: a8b8; value: -0.09
+2026-05-31 14:37:52,726: INFO: move_number: 16; Black move: a8b8
+2026-05-31 14:37:52,727: INFO: MinimaxTrad; WHITE; move_number: 17; starting search; depth: 4
+2026-05-31 14:37:52,736: DEBUG: MinimaxTrad; move_number: 17; ID iteration depth=1; move: d5e4; value: -0.09
+2026-05-31 14:37:52,768: DEBUG: MinimaxTrad; move_number: 17; ID iteration depth=2; move: h2h3; value: -0.12
+2026-05-31 14:37:52,841: DEBUG: MinimaxTrad; move_number: 17; ID iteration depth=3; move: h2h3; value: -0.12
+2026-05-31 14:37:53,707: DEBUG: MinimaxTrad; move_number: 17; ID iteration depth=4; move: d5e4; value: -0.92
+2026-05-31 14:37:53,707: INFO: MinimaxTrad; WHITE; move_number: 17; depth: 4; time: 0.980116s; move: d5e4; value: -0.92
+2026-05-31 14:37:53,707: INFO: move_number: 17; White move: d5e4
+2026-05-31 14:37:53,707: INFO: MinimaxTrad; BLACK; move_number: 17; starting search; depth: 4
+2026-05-31 14:37:53,717: DEBUG: MinimaxTrad; move_number: 17; ID iteration depth=1; move: c8g4; value: -0.85
+2026-05-31 14:37:53,768: DEBUG: MinimaxTrad; move_number: 17; ID iteration depth=2; move: c8d7; value: -4.31
+2026-05-31 14:37:53,945: DEBUG: MinimaxTrad; move_number: 17; ID iteration depth=3; move: c8e6; value: -1.01
+2026-05-31 14:37:54,155: DEBUG: MinimaxTrad; move_number: 17; ID iteration depth=4; move: c8e6; value: -0.23
+2026-05-31 14:37:54,156: INFO: MinimaxTrad; BLACK; move_number: 17; depth: 4; time: 0.448687s; move: c8e6; value: -0.23
+2026-05-31 14:37:54,156: INFO: move_number: 17; Black move: c8e6
+2026-05-31 14:37:54,156: INFO: MinimaxTrad; WHITE; move_number: 18; starting search; depth: 4
+2026-05-31 14:37:54,167: DEBUG: MinimaxTrad; move_number: 18; ID iteration depth=1; move: c1d2; value: -0.05
+2026-05-31 14:37:54,197: DEBUG: MinimaxTrad; move_number: 18; ID iteration depth=2; move: c1d2; value: 0.02
+2026-05-31 14:37:54,296: DEBUG: MinimaxTrad; move_number: 18; ID iteration depth=3; move: c1d2; value: -0.05
+2026-05-31 14:37:54,605: DEBUG: MinimaxTrad; move_number: 18; ID iteration depth=4; move: e4c6; value: -0.40
+2026-05-31 14:37:54,605: INFO: MinimaxTrad; WHITE; move_number: 18; depth: 4; time: 0.449586s; move: e4c6; value: -0.40
+2026-05-31 14:37:54,605: INFO: move_number: 18; White move: e4c6
+2026-05-31 14:37:54,606: INFO: MinimaxTrad; BLACK; move_number: 18; starting search; depth: 4
+2026-05-31 14:37:54,606: DEBUG: MinimaxTrad; move_number: 18; ID iteration depth=1; move: e8e7; value: -1.10
+2026-05-31 14:37:54,613: DEBUG: MinimaxTrad; move_number: 18; ID iteration depth=2; move: e8e7; value: -5.66
+2026-05-31 14:37:54,624: DEBUG: MinimaxTrad; move_number: 18; ID iteration depth=3; move: e8e7; value: -0.97
+2026-05-31 14:37:54,866: DEBUG: MinimaxTrad; move_number: 18; ID iteration depth=4; move: e8f8; value: -0.29
+2026-05-31 14:37:54,866: INFO: MinimaxTrad; BLACK; move_number: 18; depth: 4; time: 0.260185s; move: e8f8; value: -0.29
+2026-05-31 14:37:54,866: INFO: move_number: 18; Black move: e8f8
+2026-05-31 14:37:54,866: INFO: MinimaxTrad; WHITE; move_number: 19; starting search; depth: 4
+2026-05-31 14:37:54,873: DEBUG: MinimaxTrad; move_number: 19; ID iteration depth=1; move: c1d2; value: -0.22
+2026-05-31 14:37:54,893: DEBUG: MinimaxTrad; move_number: 19; ID iteration depth=2; move: c1d2; value: -0.40
+2026-05-31 14:37:54,939: DEBUG: MinimaxTrad; move_number: 19; ID iteration depth=3; move: c1d2; value: -0.34
+2026-05-31 14:37:55,683: DEBUG: MinimaxTrad; move_number: 19; ID iteration depth=4; move: e3e4; value: -0.84
+2026-05-31 14:37:55,683: INFO: MinimaxTrad; WHITE; move_number: 19; depth: 4; time: 0.816931s; move: e3e4; value: -0.84
+2026-05-31 14:37:55,683: INFO: move_number: 19; White move: e3e4
+2026-05-31 14:37:55,683: INFO: MinimaxTrad; BLACK; move_number: 19; starting search; depth: 4
+2026-05-31 14:37:55,694: DEBUG: MinimaxTrad; move_number: 19; ID iteration depth=1; move: d6c5; value: -1.18
+2026-05-31 14:37:55,720: DEBUG: MinimaxTrad; move_number: 19; ID iteration depth=2; move: d6c5; value: -1.08
+2026-05-31 14:37:55,802: DEBUG: MinimaxTrad; move_number: 19; ID iteration depth=3; move: d6c5; value: -0.95
+2026-05-31 14:37:56,160: DEBUG: MinimaxTrad; move_number: 19; ID iteration depth=4; move: e6c4; value: -0.58
+2026-05-31 14:37:56,160: INFO: MinimaxTrad; BLACK; move_number: 19; depth: 4; time: 0.477378s; move: e6c4; value: -0.58
+2026-05-31 14:37:56,160: INFO: move_number: 19; Black move: e6c4
+2026-05-31 14:37:56,161: INFO: MinimaxTrad; WHITE; move_number: 20; starting search; depth: 4
+2026-05-31 14:37:56,161: DEBUG: MinimaxTrad; move_number: 20; ID iteration depth=1; move: f1g1; value: -0.38
+2026-05-31 14:37:56,163: DEBUG: MinimaxTrad; move_number: 20; ID iteration depth=2; move: f1g1; value: -0.57
+2026-05-31 14:37:56,174: DEBUG: MinimaxTrad; move_number: 20; ID iteration depth=3; move: f1e1; value: -0.80
+2026-05-31 14:37:56,313: DEBUG: MinimaxTrad; move_number: 20; ID iteration depth=4; move: f1g1; value: -0.94
+2026-05-31 14:37:56,313: INFO: MinimaxTrad; WHITE; move_number: 20; depth: 4; time: 0.152510s; move: f1g1; value: -0.94
+2026-05-31 14:37:56,313: INFO: move_number: 20; White move: f1g1
+2026-05-31 14:37:56,313: INFO: MinimaxTrad; BLACK; move_number: 20; starting search; depth: 4
+2026-05-31 14:37:56,317: DEBUG: MinimaxTrad; move_number: 20; ID iteration depth=1; move: f8g8; value: -0.58
+2026-05-31 14:37:56,327: DEBUG: MinimaxTrad; move_number: 20; ID iteration depth=2; move: d6e7; value: -0.58
+2026-05-31 14:37:56,338: DEBUG: MinimaxTrad; move_number: 20; ID iteration depth=3; move: d6e7; value: -0.58
+2026-05-31 14:37:56,699: DEBUG: MinimaxTrad; move_number: 20; ID iteration depth=4; move: b8b6; value: -0.10
+2026-05-31 14:37:56,699: INFO: MinimaxTrad; BLACK; move_number: 20; depth: 4; time: 0.385404s; move: b8b6; value: -0.10
+2026-05-31 14:37:56,699: INFO: move_number: 20; Black move: b8b6
+2026-05-31 14:37:56,699: INFO: MinimaxTrad; WHITE; move_number: 21; starting search; depth: 4
+2026-05-31 14:37:56,708: DEBUG: MinimaxTrad; move_number: 21; ID iteration depth=1; move: c6d7; value: -0.08
+2026-05-31 14:37:56,727: DEBUG: MinimaxTrad; move_number: 21; ID iteration depth=2; move: c6d5; value: -0.10
+2026-05-31 14:37:56,770: DEBUG: MinimaxTrad; move_number: 21; ID iteration depth=3; move: c6d5; value: -0.31
+2026-05-31 14:37:56,843: DEBUG: MinimaxTrad; move_number: 21; ID iteration depth=4; move: c6d5; value: -0.67
+2026-05-31 14:37:56,843: INFO: MinimaxTrad; WHITE; move_number: 21; depth: 4; time: 0.144272s; move: c6d5; value: -0.67
+2026-05-31 14:37:56,843: INFO: move_number: 21; White move: c6d5
+2026-05-31 14:37:56,843: INFO: MinimaxTrad; BLACK; move_number: 21; starting search; depth: 4
+2026-05-31 14:37:56,853: DEBUG: MinimaxTrad; move_number: 21; ID iteration depth=1; move: d6c5; value: -0.41
+2026-05-31 14:37:56,870: DEBUG: MinimaxTrad; move_number: 21; ID iteration depth=2; move: c4e2; value: -0.77
+2026-05-31 14:37:56,921: DEBUG: MinimaxTrad; move_number: 21; ID iteration depth=3; move: d6c5; value: -0.41
+2026-05-31 14:37:57,312: DEBUG: MinimaxTrad; move_number: 21; ID iteration depth=4; move: d6c5; value: 0.22
+2026-05-31 14:37:57,312: INFO: MinimaxTrad; BLACK; move_number: 21; depth: 4; time: 0.468915s; move: d6c5; value: 0.22
+2026-05-31 14:37:57,312: INFO: move_number: 21; Black move: d6c5
+2026-05-31 14:37:57,312: INFO: MinimaxTrad; WHITE; move_number: 22; starting search; depth: 4
+2026-05-31 14:37:57,327: DEBUG: MinimaxTrad; move_number: 22; ID iteration depth=1; move: b2b4; value: 0.22
+2026-05-31 14:37:57,367: DEBUG: MinimaxTrad; move_number: 22; ID iteration depth=2; move: b2b4; value: 0.22
+2026-05-31 14:37:57,414: DEBUG: MinimaxTrad; move_number: 22; ID iteration depth=3; move: b2b4; value: 0.22
+2026-05-31 14:37:57,629: DEBUG: MinimaxTrad; move_number: 22; ID iteration depth=4; move: c1d2; value: -0.15
+2026-05-31 14:37:57,629: INFO: MinimaxTrad; WHITE; move_number: 22; depth: 4; time: 0.316198s; move: c1d2; value: -0.15
+2026-05-31 14:37:57,629: INFO: move_number: 22; White move: c1d2
+2026-05-31 14:37:57,629: INFO: MinimaxTrad; BLACK; move_number: 22; starting search; depth: 4
+2026-05-31 14:37:57,645: DEBUG: MinimaxTrad; move_number: 22; ID iteration depth=1; move: b6f6; value: -0.46
+2026-05-31 14:37:57,716: DEBUG: MinimaxTrad; move_number: 22; ID iteration depth=2; move: b6f6; value: -0.26
+2026-05-31 14:37:57,828: DEBUG: MinimaxTrad; move_number: 22; ID iteration depth=3; move: b6d6; value: -0.15
+2026-05-31 14:37:58,075: DEBUG: MinimaxTrad; move_number: 22; ID iteration depth=4; move: c4d5; value: -0.58
+2026-05-31 14:37:58,075: INFO: MinimaxTrad; BLACK; move_number: 22; depth: 4; time: 0.446338s; move: c4d5; value: -0.58
+2026-05-31 14:37:58,075: INFO: move_number: 22; Black move: c4d5
+2026-05-31 14:37:58,075: INFO: MinimaxTrad; WHITE; move_number: 23; starting search; depth: 4
+2026-05-31 14:37:58,085: DEBUG: MinimaxTrad; move_number: 23; ID iteration depth=1; move: e4d5; value: 0.02
+2026-05-31 14:37:58,093: DEBUG: MinimaxTrad; move_number: 23; ID iteration depth=2; move: e4d5; value: -0.04
+2026-05-31 14:37:58,218: DEBUG: MinimaxTrad; move_number: 23; ID iteration depth=3; move: e4d5; value: -0.58
+2026-05-31 14:37:58,629: DEBUG: MinimaxTrad; move_number: 23; ID iteration depth=4; move: e4d5; value: -1.10
+2026-05-31 14:37:58,629: INFO: MinimaxTrad; WHITE; move_number: 23; depth: 4; time: 0.553449s; move: e4d5; value: -1.10
+2026-05-31 14:37:58,629: INFO: move_number: 23; White move: e4d5
+2026-05-31 14:37:58,629: INFO: MinimaxTrad; BLACK; move_number: 23; starting search; depth: 4
+2026-05-31 14:37:58,639: DEBUG: MinimaxTrad; move_number: 23; ID iteration depth=1; move: b6g6; value: -0.43
+2026-05-31 14:37:58,687: DEBUG: MinimaxTrad; move_number: 23; ID iteration depth=2; move: b6d6; value: -0.95
+2026-05-31 14:37:58,762: DEBUG: MinimaxTrad; move_number: 23; ID iteration depth=3; move: b6d6; value: -0.95
+2026-05-31 14:37:58,935: DEBUG: MinimaxTrad; move_number: 23; ID iteration depth=4; move: b6d6; value: -1.25
+2026-05-31 14:37:58,935: INFO: MinimaxTrad; BLACK; move_number: 23; depth: 4; time: 0.305999s; move: b6d6; value: -1.25
+2026-05-31 14:37:58,935: INFO: move_number: 23; Black move: b6d6
+2026-05-31 14:37:58,935: INFO: MinimaxTrad; WHITE; move_number: 24; starting search; depth: 4
+2026-05-31 14:37:58,960: DEBUG: MinimaxTrad; move_number: 24; ID iteration depth=1; move: c2c4; value: -0.72
+2026-05-31 14:37:58,991: DEBUG: MinimaxTrad; move_number: 24; ID iteration depth=2; move: c2c4; value: -0.78
+2026-05-31 14:37:59,069: DEBUG: MinimaxTrad; move_number: 24; ID iteration depth=3; move: d2b4; value: -1.25
+2026-05-31 14:37:59,459: DEBUG: MinimaxTrad; move_number: 24; ID iteration depth=4; move: a1e1; value: -0.52
+2026-05-31 14:37:59,459: INFO: MinimaxTrad; WHITE; move_number: 24; depth: 4; time: 0.524069s; move: a1e1; value: -0.52
+2026-05-31 14:37:59,459: INFO: move_number: 24; White move: a1e1
+2026-05-31 14:37:59,460: INFO: MinimaxTrad; BLACK; move_number: 24; starting search; depth: 4
+2026-05-31 14:37:59,469: DEBUG: MinimaxTrad; move_number: 24; ID iteration depth=1; move: d6d5; value: -1.88
+2026-05-31 14:37:59,477: DEBUG: MinimaxTrad; move_number: 24; ID iteration depth=2; move: d6d5; value: -1.75
+2026-05-31 14:37:59,598: DEBUG: MinimaxTrad; move_number: 24; ID iteration depth=3; move: d6d5; value: -0.54
+2026-05-31 14:37:59,916: DEBUG: MinimaxTrad; move_number: 24; ID iteration depth=4; move: f7f6; value: -0.72
+2026-05-31 14:37:59,916: INFO: MinimaxTrad; BLACK; move_number: 24; depth: 4; time: 0.456151s; move: f7f6; value: -0.72
+2026-05-31 14:37:59,916: INFO: move_number: 24; Black move: f7f6
+2026-05-31 14:37:59,916: INFO: MinimaxTrad; WHITE; move_number: 25; starting search; depth: 4
+2026-05-31 14:37:59,943: DEBUG: MinimaxTrad; move_number: 25; ID iteration depth=1; move: c2c4; value: -0.03
+2026-05-31 14:37:59,978: DEBUG: MinimaxTrad; move_number: 25; ID iteration depth=2; move: c2c4; value: -0.03
+2026-05-31 14:38:00,111: DEBUG: MinimaxTrad; move_number: 25; ID iteration depth=3; move: c2c4; value: -1.05
+2026-05-31 14:38:00,465: DEBUG: MinimaxTrad; move_number: 25; ID iteration depth=4; move: c2c4; value: -1.05
+2026-05-31 14:38:00,465: INFO: MinimaxTrad; WHITE; move_number: 25; depth: 4; time: 0.548913s; move: c2c4; value: -1.05
+2026-05-31 14:38:00,465: INFO: move_number: 25; White move: c2c4
+2026-05-31 14:38:00,465: INFO: MinimaxTrad; BLACK; move_number: 25; starting search; depth: 4
+2026-05-31 14:38:00,473: DEBUG: MinimaxTrad; move_number: 25; ID iteration depth=1; move: b5c4; value: -0.72
+2026-05-31 14:38:00,492: DEBUG: MinimaxTrad; move_number: 25; ID iteration depth=2; move: f8f7; value: -1.05
+2026-05-31 14:38:00,574: DEBUG: MinimaxTrad; move_number: 25; ID iteration depth=3; move: b5c4; value: -1.03
+2026-05-31 14:38:00,833: DEBUG: MinimaxTrad; move_number: 25; ID iteration depth=4; move: b5c4; value: -1.55
+2026-05-31 14:38:00,833: INFO: MinimaxTrad; BLACK; move_number: 25; depth: 4; time: 0.368288s; move: b5c4; value: -1.55
+2026-05-31 14:38:00,833: INFO: move_number: 25; Black move: b5c4
+2026-05-31 14:38:00,833: INFO: MinimaxTrad; WHITE; move_number: 26; starting search; depth: 4
+2026-05-31 14:38:00,857: DEBUG: MinimaxTrad; move_number: 26; ID iteration depth=1; move: d2a5; value: -1.03
+2026-05-31 14:38:00,887: DEBUG: MinimaxTrad; move_number: 26; ID iteration depth=2; move: d2a5; value: -1.03
+2026-05-31 14:38:01,013: DEBUG: MinimaxTrad; move_number: 26; ID iteration depth=3; move: d2e3; value: -1.55
+2026-05-31 14:38:01,205: DEBUG: MinimaxTrad; move_number: 26; ID iteration depth=4; move: d2e3; value: -1.55
+2026-05-31 14:38:01,205: INFO: MinimaxTrad; WHITE; move_number: 26; depth: 4; time: 0.371176s; move: d2e3; value: -1.55
+2026-05-31 14:38:01,205: INFO: move_number: 26; White move: d2e3
+2026-05-31 14:38:01,205: INFO: MinimaxTrad; BLACK; move_number: 26; starting search; depth: 4
+2026-05-31 14:38:01,213: DEBUG: MinimaxTrad; move_number: 26; ID iteration depth=1; move: c5e3; value: -1.55
+2026-05-31 14:38:01,220: DEBUG: MinimaxTrad; move_number: 26; ID iteration depth=2; move: c5e3; value: -1.55
+2026-05-31 14:38:01,248: DEBUG: MinimaxTrad; move_number: 26; ID iteration depth=3; move: c5e3; value: -1.55
+2026-05-31 14:38:01,338: DEBUG: MinimaxTrad; move_number: 26; ID iteration depth=4; move: c5e3; value: -1.50
+2026-05-31 14:38:01,338: INFO: MinimaxTrad; BLACK; move_number: 26; depth: 4; time: 0.133174s; move: c5e3; value: -1.50
+2026-05-31 14:38:01,338: INFO: move_number: 26; Black move: c5e3
+2026-05-31 14:38:01,338: INFO: MinimaxTrad; WHITE; move_number: 27; starting search; depth: 4
+2026-05-31 14:38:01,344: DEBUG: MinimaxTrad; move_number: 27; ID iteration depth=1; move: e1e3; value: -1.55
+2026-05-31 14:38:01,348: DEBUG: MinimaxTrad; move_number: 27; ID iteration depth=2; move: e1e3; value: -1.55
+2026-05-31 14:38:01,403: DEBUG: MinimaxTrad; move_number: 27; ID iteration depth=3; move: f2e3; value: -0.84
+2026-05-31 14:38:01,618: DEBUG: MinimaxTrad; move_number: 27; ID iteration depth=4; move: f2e3; value: -2.24
+2026-05-31 14:38:01,619: INFO: MinimaxTrad; WHITE; move_number: 27; depth: 4; time: 0.280461s; move: f2e3; value: -2.24
+2026-05-31 14:38:01,619: INFO: move_number: 27; White move: f2e3
+2026-05-31 14:38:01,619: INFO: MinimaxTrad; BLACK; move_number: 27; starting search; depth: 4
+2026-05-31 14:38:01,624: DEBUG: MinimaxTrad; move_number: 27; ID iteration depth=1; move: d6d5; value: -2.33
+2026-05-31 14:38:01,649: DEBUG: MinimaxTrad; move_number: 27; ID iteration depth=2; move: c4c3; value: -2.24
+2026-05-31 14:38:01,678: DEBUG: MinimaxTrad; move_number: 27; ID iteration depth=3; move: c4c3; value: -2.24
+2026-05-31 14:38:02,043: DEBUG: MinimaxTrad; move_number: 27; ID iteration depth=4; move: f8e7; value: -1.53
+2026-05-31 14:38:02,043: INFO: MinimaxTrad; BLACK; move_number: 27; depth: 4; time: 0.424711s; move: f8e7; value: -1.53
+2026-05-31 14:38:02,044: INFO: move_number: 27; Black move: f8e7
+2026-05-31 14:38:02,044: INFO: MinimaxTrad; WHITE; move_number: 28; starting search; depth: 4
+2026-05-31 14:38:02,050: DEBUG: MinimaxTrad; move_number: 28; ID iteration depth=1; move: e3e4; value: -0.83
+2026-05-31 14:38:02,062: DEBUG: MinimaxTrad; move_number: 28; ID iteration depth=2; move: e3e4; value: -1.08
+2026-05-31 14:38:02,098: DEBUG: MinimaxTrad; move_number: 28; ID iteration depth=3; move: e3e4; value: -1.53
+2026-05-31 14:38:02,228: DEBUG: MinimaxTrad; move_number: 28; ID iteration depth=4; move: e3e4; value: -1.58
+2026-05-31 14:38:02,228: INFO: MinimaxTrad; WHITE; move_number: 28; depth: 4; time: 0.184043s; move: e3e4; value: -1.58
+2026-05-31 14:38:02,228: INFO: move_number: 28; White move: e3e4
+2026-05-31 14:38:02,228: INFO: MinimaxTrad; BLACK; move_number: 28; starting search; depth: 4
+2026-05-31 14:38:02,235: DEBUG: MinimaxTrad; move_number: 28; ID iteration depth=1; move: h8b8; value: -1.34
+2026-05-31 14:38:02,260: DEBUG: MinimaxTrad; move_number: 28; ID iteration depth=2; move: c7c6; value: -1.55
+2026-05-31 14:38:02,319: DEBUG: MinimaxTrad; move_number: 28; ID iteration depth=3; move: d6b6; value: -1.58
+2026-05-31 14:38:02,460: DEBUG: MinimaxTrad; move_number: 28; ID iteration depth=4; move: d6b6; value: -2.23
+2026-05-31 14:38:02,461: INFO: MinimaxTrad; BLACK; move_number: 28; depth: 4; time: 0.232684s; move: d6b6; value: -2.23
+2026-05-31 14:38:02,461: INFO: move_number: 28; Black move: d6b6
+2026-05-31 14:38:02,461: INFO: MinimaxTrad; WHITE; move_number: 29; starting search; depth: 4
+2026-05-31 14:38:02,472: DEBUG: MinimaxTrad; move_number: 29; ID iteration depth=1; move: e1e2; value: -1.20
+2026-05-31 14:38:02,481: DEBUG: MinimaxTrad; move_number: 29; ID iteration depth=2; move: e1e2; value: -1.58
+2026-05-31 14:38:02,592: DEBUG: MinimaxTrad; move_number: 29; ID iteration depth=3; move: e1c1; value: -2.23
+2026-05-31 14:38:02,750: DEBUG: MinimaxTrad; move_number: 29; ID iteration depth=4; move: g1f2; value: -2.50
+2026-05-31 14:38:02,750: INFO: MinimaxTrad; WHITE; move_number: 29; depth: 4; time: 0.289587s; move: g1f2; value: -2.50
+2026-05-31 14:38:02,750: INFO: move_number: 29; White move: g1f2
+2026-05-31 14:38:02,751: INFO: MinimaxTrad; BLACK; move_number: 29; starting search; depth: 4
+2026-05-31 14:38:02,761: DEBUG: MinimaxTrad; move_number: 29; ID iteration depth=1; move: b6b2; value: -2.23
+2026-05-31 14:38:02,776: DEBUG: MinimaxTrad; move_number: 29; ID iteration depth=2; move: b6b2; value: -2.50
+2026-05-31 14:38:02,828: DEBUG: MinimaxTrad; move_number: 29; ID iteration depth=3; move: b6b2; value: -2.50
+2026-05-31 14:38:03,207: DEBUG: MinimaxTrad; move_number: 29; ID iteration depth=4; move: b6b2; value: -3.42
+2026-05-31 14:38:03,207: INFO: MinimaxTrad; BLACK; move_number: 29; depth: 4; time: 0.456667s; move: b6b2; value: -3.42
+2026-05-31 14:38:03,207: INFO: move_number: 29; Black move: b6b2
+2026-05-31 14:38:03,207: INFO: MinimaxTrad; WHITE; move_number: 30; starting search; depth: 4
+2026-05-31 14:38:03,209: DEBUG: MinimaxTrad; move_number: 30; ID iteration depth=1; move: e1e2; value: -2.50
+2026-05-31 14:38:03,212: DEBUG: MinimaxTrad; move_number: 30; ID iteration depth=2; move: e1e2; value: -2.50
+2026-05-31 14:38:03,218: DEBUG: MinimaxTrad; move_number: 30; ID iteration depth=3; move: e1e2; value: -2.50
+2026-05-31 14:38:03,508: DEBUG: MinimaxTrad; move_number: 30; ID iteration depth=4; move: f2f3; value: -3.42
+2026-05-31 14:38:03,509: INFO: MinimaxTrad; WHITE; move_number: 30; depth: 4; time: 0.301259s; move: f2f3; value: -3.42
+2026-05-31 14:38:03,509: INFO: move_number: 30; White move: f2f3
+2026-05-31 14:38:03,509: INFO: MinimaxTrad; BLACK; move_number: 30; starting search; depth: 4
+2026-05-31 14:38:03,516: DEBUG: MinimaxTrad; move_number: 30; ID iteration depth=1; move: h8b8; value: -3.41
+2026-05-31 14:38:03,525: DEBUG: MinimaxTrad; move_number: 30; ID iteration depth=2; move: e7d6; value: -3.42
+2026-05-31 14:38:03,556: DEBUG: MinimaxTrad; move_number: 30; ID iteration depth=3; move: e7d6; value: -3.42
+2026-05-31 14:38:03,886: DEBUG: MinimaxTrad; move_number: 30; ID iteration depth=4; move: h8b8; value: -3.30
+2026-05-31 14:38:03,886: INFO: MinimaxTrad; BLACK; move_number: 30; depth: 4; time: 0.376884s; move: h8b8; value: -3.30
+2026-05-31 14:38:03,886: INFO: move_number: 30; Black move: h8b8
+2026-05-31 14:38:03,886: INFO: MinimaxTrad; WHITE; move_number: 31; starting search; depth: 4
+2026-05-31 14:38:03,898: DEBUG: MinimaxTrad; move_number: 31; ID iteration depth=1; move: e1c1; value: -3.11
+2026-05-31 14:38:03,924: DEBUG: MinimaxTrad; move_number: 31; ID iteration depth=2; move: e1e3; value: -2.84
+2026-05-31 14:38:03,989: DEBUG: MinimaxTrad; move_number: 31; ID iteration depth=3; move: e1e3; value: -2.89
+2026-05-31 14:38:04,249: DEBUG: MinimaxTrad; move_number: 31; ID iteration depth=4; move: e1e3; value: -3.25
+2026-05-31 14:38:04,250: INFO: MinimaxTrad; WHITE; move_number: 31; depth: 4; time: 0.363655s; move: e1e3; value: -3.25
+2026-05-31 14:38:04,250: INFO: move_number: 31; White move: e1e3
+2026-05-31 14:38:04,250: INFO: MinimaxTrad; BLACK; move_number: 31; starting search; depth: 4
+2026-05-31 14:38:04,262: DEBUG: MinimaxTrad; move_number: 31; ID iteration depth=1; move: e7d6; value: -3.73
+2026-05-31 14:38:04,295: DEBUG: MinimaxTrad; move_number: 31; ID iteration depth=2; move: e7d6; value: -3.30
+2026-05-31 14:38:04,406: DEBUG: MinimaxTrad; move_number: 31; ID iteration depth=3; move: b2b3; value: -3.10
+2026-05-31 14:38:05,106: DEBUG: MinimaxTrad; move_number: 31; ID iteration depth=4; move: f6f5; value: -2.96
+2026-05-31 14:38:05,106: INFO: MinimaxTrad; BLACK; move_number: 31; depth: 4; time: 0.856201s; move: f6f5; value: -2.96
+2026-05-31 14:38:05,106: INFO: move_number: 31; Black move: f6f5
+2026-05-31 14:38:05,106: INFO: MinimaxTrad; WHITE; move_number: 32; starting search; depth: 4
+2026-05-31 14:38:05,115: DEBUG: MinimaxTrad; move_number: 32; ID iteration depth=1; move: e4f5; value: -2.31
+2026-05-31 14:38:05,125: DEBUG: MinimaxTrad; move_number: 32; ID iteration depth=2; move: e4f5; value: -1.83
+2026-05-31 14:38:05,203: DEBUG: MinimaxTrad; move_number: 32; ID iteration depth=3; move: h1g1; value: -2.02
+2026-05-31 14:38:06,432: DEBUG: MinimaxTrad; move_number: 32; ID iteration depth=4; move: h1c1; value: -2.73
+2026-05-31 14:38:06,432: INFO: MinimaxTrad; WHITE; move_number: 32; depth: 4; time: 1.325546s; move: h1c1; value: -2.73
+2026-05-31 14:38:06,432: INFO: move_number: 32; White move: h1c1
+2026-05-31 14:38:06,432: INFO: MinimaxTrad; BLACK; move_number: 32; starting search; depth: 4
+2026-05-31 14:38:06,459: DEBUG: MinimaxTrad; move_number: 32; ID iteration depth=1; move: f5f4; value: -3.67
+2026-05-31 14:38:06,546: DEBUG: MinimaxTrad; move_number: 32; ID iteration depth=2; move: f5e4; value: -2.98
+2026-05-31 14:38:06,746: DEBUG: MinimaxTrad; move_number: 32; ID iteration depth=3; move: f5e4; value: -2.73
+2026-05-31 14:38:07,387: DEBUG: MinimaxTrad; move_number: 32; ID iteration depth=4; move: f5e4; value: -2.63
+2026-05-31 14:38:07,388: INFO: MinimaxTrad; BLACK; move_number: 32; depth: 4; time: 0.955541s; move: f5e4; value: -2.63
+2026-05-31 14:38:07,388: INFO: move_number: 32; Black move: f5e4
+2026-05-31 14:38:07,388: INFO: MinimaxTrad; WHITE; move_number: 33; starting search; depth: 4
+2026-05-31 14:38:07,391: DEBUG: MinimaxTrad; move_number: 33; ID iteration depth=1; move: f3e4; value: -2.73
+2026-05-31 14:38:07,392: DEBUG: MinimaxTrad; move_number: 33; ID iteration depth=2; move: e3e4; value: -2.73
+2026-05-31 14:38:07,398: DEBUG: MinimaxTrad; move_number: 33; ID iteration depth=3; move: e3e4; value: -2.73
+2026-05-31 14:38:07,733: DEBUG: MinimaxTrad; move_number: 33; ID iteration depth=4; move: e3e4; value: -2.63
+2026-05-31 14:38:07,733: INFO: MinimaxTrad; WHITE; move_number: 33; depth: 4; time: 0.345096s; move: e3e4; value: -2.63
+2026-05-31 14:38:07,733: INFO: move_number: 33; White move: e3e4
+2026-05-31 14:38:07,733: INFO: MinimaxTrad; BLACK; move_number: 33; starting search; depth: 4
+2026-05-31 14:38:07,752: DEBUG: MinimaxTrad; move_number: 33; ID iteration depth=1; move: b8b3; value: -2.63
+2026-05-31 14:38:07,761: DEBUG: MinimaxTrad; move_number: 33; ID iteration depth=2; move: b8b3; value: -2.63
+2026-05-31 14:38:07,775: DEBUG: MinimaxTrad; move_number: 33; ID iteration depth=3; move: b8b3; value: -2.63
+2026-05-31 14:38:08,980: DEBUG: MinimaxTrad; move_number: 33; ID iteration depth=4; move: b8f8; value: -2.68
+2026-05-31 14:38:08,980: INFO: MinimaxTrad; BLACK; move_number: 33; depth: 4; time: 1.247411s; move: b8f8; value: -2.68
+2026-05-31 14:38:08,980: INFO: move_number: 33; Black move: b8f8
+2026-05-31 14:38:08,981: INFO: MinimaxTrad; WHITE; move_number: 34; starting search; depth: 4
+2026-05-31 14:38:08,982: DEBUG: MinimaxTrad; move_number: 34; ID iteration depth=1; move: f3g3; value: -2.63
+2026-05-31 14:38:08,986: DEBUG: MinimaxTrad; move_number: 34; ID iteration depth=2; move: f3g3; value: -2.63
+2026-05-31 14:38:09,029: DEBUG: MinimaxTrad; move_number: 34; ID iteration depth=3; move: f3g3; value: -2.38
+2026-05-31 14:38:09,856: DEBUG: MinimaxTrad; move_number: 34; ID iteration depth=4; move: f3e3; value: -2.93
+2026-05-31 14:38:09,856: INFO: MinimaxTrad; WHITE; move_number: 34; depth: 4; time: 0.875725s; move: f3e3; value: -2.93
+2026-05-31 14:38:09,856: INFO: move_number: 34; White move: f3e3
+2026-05-31 14:38:09,857: INFO: MinimaxTrad; BLACK; move_number: 34; starting search; depth: 4
+2026-05-31 14:38:09,860: DEBUG: MinimaxTrad; move_number: 34; ID iteration depth=1; move: b2b3; value: -2.68
+2026-05-31 14:38:09,864: DEBUG: MinimaxTrad; move_number: 34; ID iteration depth=2; move: b2b3; value: -2.68
+2026-05-31 14:38:09,867: DEBUG: MinimaxTrad; move_number: 34; ID iteration depth=3; move: b2b3; value: -2.68
+2026-05-31 14:38:10,516: DEBUG: MinimaxTrad; move_number: 34; ID iteration depth=4; move: b2b3; value: -2.72
+2026-05-31 14:38:10,516: INFO: MinimaxTrad; BLACK; move_number: 34; depth: 4; time: 0.659082s; move: b2b3; value: -2.72
+2026-05-31 14:38:10,516: INFO: move_number: 34; Black move: b2b3
+2026-05-31 14:38:10,516: INFO: MinimaxTrad; WHITE; move_number: 35; starting search; depth: 4
+2026-05-31 14:38:10,519: DEBUG: MinimaxTrad; move_number: 35; ID iteration depth=1; move: e3e2; value: -2.93
+2026-05-31 14:38:10,520: DEBUG: MinimaxTrad; move_number: 35; ID iteration depth=2; move: e3e2; value: -2.93
+2026-05-31 14:38:10,524: DEBUG: MinimaxTrad; move_number: 35; ID iteration depth=3; move: e3e2; value: -2.93
+2026-05-31 14:38:10,724: DEBUG: MinimaxTrad; move_number: 35; ID iteration depth=4; move: e3e2; value: -2.93
+2026-05-31 14:38:10,724: INFO: MinimaxTrad; WHITE; move_number: 35; depth: 4; time: 0.208717s; move: e3e2; value: -2.93
+2026-05-31 14:38:10,725: INFO: move_number: 35; White move: e3e2
+2026-05-31 14:38:10,725: INFO: MinimaxTrad; BLACK; move_number: 35; starting search; depth: 4
+2026-05-31 14:38:10,731: DEBUG: MinimaxTrad; move_number: 35; ID iteration depth=1; move: c4c3; value: -2.95
+2026-05-31 14:38:10,736: DEBUG: MinimaxTrad; move_number: 35; ID iteration depth=2; move: c4c3; value: -2.72
+2026-05-31 14:38:10,749: DEBUG: MinimaxTrad; move_number: 35; ID iteration depth=3; move: c4c3; value: -2.72
+2026-05-31 14:38:11,236: DEBUG: MinimaxTrad; move_number: 35; ID iteration depth=4; move: b3b2; value: -2.72
+2026-05-31 14:38:11,236: INFO: MinimaxTrad; BLACK; move_number: 35; depth: 4; time: 0.511468s; move: b3b2; value: -2.72
+2026-05-31 14:38:11,236: INFO: move_number: 35; Black move: b3b2
+2026-05-31 14:38:11,236: INFO: MinimaxTrad; WHITE; move_number: 36; starting search; depth: 4
+2026-05-31 14:38:11,237: DEBUG: MinimaxTrad; move_number: 36; ID iteration depth=1; move: e2e3; value: -2.93
+2026-05-31 14:38:11,238: DEBUG: MinimaxTrad; move_number: 36; ID iteration depth=2; move: e2e3; value: -2.93
+2026-05-31 14:38:11,238: DEBUG: MinimaxTrad; move_number: 36; ID iteration depth=3; move: e2e3; value: -2.93
+2026-05-31 14:38:11,276: DEBUG: MinimaxTrad; move_number: 36; ID iteration depth=4; move: e2e3; value: -2.93
+2026-05-31 14:38:11,277: INFO: MinimaxTrad; WHITE; move_number: 36; depth: 4; time: 0.040242s; move: e2e3; value: -2.93
+2026-05-31 14:38:11,277: INFO: move_number: 36; White move: e2e3
+2026-05-31 14:38:11,277: INFO: MinimaxTrad; BLACK; move_number: 36; starting search; depth: 4
+2026-05-31 14:38:11,281: DEBUG: MinimaxTrad; move_number: 36; ID iteration depth=1; move: b2b3; value: -2.72
+2026-05-31 14:38:11,285: DEBUG: MinimaxTrad; move_number: 36; ID iteration depth=2; move: b2b3; value: -2.72
+2026-05-31 14:38:11,289: DEBUG: MinimaxTrad; move_number: 36; ID iteration depth=3; move: b2b3; value: -2.72
+2026-05-31 14:38:11,348: DEBUG: MinimaxTrad; move_number: 36; ID iteration depth=4; move: b2b3; value: -2.72
+2026-05-31 14:38:11,349: INFO: MinimaxTrad; BLACK; move_number: 36; depth: 4; time: 0.071711s; move: b2b3; value: -2.72
+2026-05-31 14:38:11,349: INFO: move_number: 36; Black move: b2b3
+2026-05-31 14:38:11,349: INFO: MinimaxTrad; WHITE; move_number: 37; starting search; depth: 4
+2026-05-31 14:38:11,349: DEBUG: MinimaxTrad; move_number: 37; ID iteration depth=1; move: e3e2; value: -2.93
+2026-05-31 14:38:11,350: DEBUG: MinimaxTrad; move_number: 37; ID iteration depth=2; move: e3e2; value: -2.93
+2026-05-31 14:38:11,350: DEBUG: MinimaxTrad; move_number: 37; ID iteration depth=3; move: e3e2; value: -2.93
+2026-05-31 14:38:11,351: DEBUG: MinimaxTrad; move_number: 37; ID iteration depth=4; move: e3e2; value: -2.93
+2026-05-31 14:38:11,351: INFO: MinimaxTrad; WHITE; move_number: 37; depth: 4; time: 0.002237s; move: e3e2; value: -2.93
+2026-05-31 14:38:11,351: INFO: move_number: 37; White move: e3e2
+2026-05-31 14:38:11,351: INFO: MinimaxTrad; BLACK; move_number: 37; starting search; depth: 4
+2026-05-31 14:38:11,422: DEBUG: MinimaxTrad; move_number: 37; ID iteration depth=1; move: c4c3; value: -2.95
+2026-05-31 14:38:11,428: DEBUG: MinimaxTrad; move_number: 37; ID iteration depth=2; move: c4c3; value: -2.72
+2026-05-31 14:38:11,436: DEBUG: MinimaxTrad; move_number: 37; ID iteration depth=3; move: c4c3; value: -2.72
+2026-05-31 14:38:11,628: DEBUG: MinimaxTrad; move_number: 37; ID iteration depth=4; move: c4c3; value: -2.72
+2026-05-31 14:38:11,628: INFO: MinimaxTrad; BLACK; move_number: 37; depth: 4; time: 0.277058s; move: c4c3; value: -2.72
+2026-05-31 14:38:11,628: INFO: move_number: 37; Black move: c4c3
+2026-05-31 14:38:11,628: INFO: MinimaxTrad; WHITE; move_number: 38; starting search; depth: 4
+2026-05-31 14:38:11,649: DEBUG: MinimaxTrad; move_number: 38; ID iteration depth=1; move: e2d3; value: -2.44
+2026-05-31 14:38:11,725: DEBUG: MinimaxTrad; move_number: 38; ID iteration depth=2; move: e4e5; value: -2.72
+2026-05-31 14:38:11,886: DEBUG: MinimaxTrad; move_number: 38; ID iteration depth=3; move: e4g4; value: -2.50
+2026-05-31 14:38:12,384: DEBUG: MinimaxTrad; move_number: 38; ID iteration depth=4; move: e4g4; value: -2.68
+2026-05-31 14:38:12,384: INFO: MinimaxTrad; WHITE; move_number: 38; depth: 4; time: 0.755136s; move: e4g4; value: -2.68
+2026-05-31 14:38:12,384: INFO: move_number: 38; White move: e4g4
+2026-05-31 14:38:12,384: INFO: MinimaxTrad; BLACK; move_number: 38; starting search; depth: 4
+2026-05-31 14:38:12,412: DEBUG: MinimaxTrad; move_number: 38; ID iteration depth=1; move: g7g5; value: -3.23
+2026-05-31 14:38:12,470: DEBUG: MinimaxTrad; move_number: 38; ID iteration depth=2; move: g7g5; value: -3.67
+2026-05-31 14:38:12,561: DEBUG: MinimaxTrad; move_number: 38; ID iteration depth=3; move: g7g5; value: -3.82
+2026-05-31 14:38:13,563: DEBUG: MinimaxTrad; move_number: 38; ID iteration depth=4; move: g7g5; value: -2.99
+2026-05-31 14:38:13,563: INFO: MinimaxTrad; BLACK; move_number: 38; depth: 4; time: 1.178909s; move: g7g5; value: -2.99
+2026-05-31 14:38:13,563: INFO: move_number: 38; Black move: g7g5
+2026-05-31 14:38:13,563: INFO: MinimaxTrad; WHITE; move_number: 39; starting search; depth: 4
+2026-05-31 14:38:13,581: DEBUG: MinimaxTrad; move_number: 39; ID iteration depth=1; move: g4c4; value: -2.82
+2026-05-31 14:38:13,648: DEBUG: MinimaxTrad; move_number: 39; ID iteration depth=2; move: e2d3; value: -2.68
+2026-05-31 14:38:13,799: DEBUG: MinimaxTrad; move_number: 39; ID iteration depth=3; move: a3a4; value: -2.62
+2026-05-31 14:38:14,448: DEBUG: MinimaxTrad; move_number: 39; ID iteration depth=4; move: g4g3; value: -2.64
+2026-05-31 14:38:14,448: INFO: MinimaxTrad; WHITE; move_number: 39; depth: 4; time: 0.884643s; move: g4g3; value: -2.64
+2026-05-31 14:38:14,448: INFO: move_number: 39; White move: g4g3
+2026-05-31 14:38:14,448: INFO: MinimaxTrad; BLACK; move_number: 39; starting search; depth: 4
+2026-05-31 14:38:14,463: DEBUG: MinimaxTrad; move_number: 39; ID iteration depth=1; move: b3b2; value: -3.87
+2026-05-31 14:38:14,552: DEBUG: MinimaxTrad; move_number: 39; ID iteration depth=2; move: b3b2; value: -2.99
+2026-05-31 14:38:14,694: DEBUG: MinimaxTrad; move_number: 39; ID iteration depth=3; move: c7c6; value: -2.64
+2026-05-31 14:38:15,077: DEBUG: MinimaxTrad; move_number: 39; ID iteration depth=4; move: b3b2; value: -3.06
+2026-05-31 14:38:15,077: INFO: MinimaxTrad; BLACK; move_number: 39; depth: 4; time: 0.629285s; move: b3b2; value: -3.06
+2026-05-31 14:38:15,077: INFO: move_number: 39; Black move: b3b2
+2026-05-31 14:38:15,077: INFO: MinimaxTrad; WHITE; move_number: 40; starting search; depth: 4
+2026-05-31 14:38:15,079: DEBUG: MinimaxTrad; move_number: 40; ID iteration depth=1; move: e2d3; value: -3.87
+2026-05-31 14:38:15,094: DEBUG: MinimaxTrad; move_number: 40; ID iteration depth=2; move: e2e1; value: -2.03
+2026-05-31 14:38:15,131: DEBUG: MinimaxTrad; move_number: 40; ID iteration depth=3; move: e2e1; value: -2.42
+2026-05-31 14:38:15,530: DEBUG: MinimaxTrad; move_number: 40; ID iteration depth=4; move: e2e3; value: -2.52
+2026-05-31 14:38:15,530: INFO: MinimaxTrad; WHITE; move_number: 40; depth: 4; time: 0.452763s; move: e2e3; value: -2.52
+2026-05-31 14:38:15,530: INFO: move_number: 40; White move: e2e3
+2026-05-31 14:38:15,530: INFO: MinimaxTrad; BLACK; move_number: 40; starting search; depth: 4
+2026-05-31 14:38:15,554: DEBUG: MinimaxTrad; move_number: 40; ID iteration depth=1; move: c3c2; value: -4.02
+2026-05-31 14:38:15,587: DEBUG: MinimaxTrad; move_number: 40; ID iteration depth=2; move: c3c2; value: -3.61
+2026-05-31 14:38:15,797: DEBUG: MinimaxTrad; move_number: 40; ID iteration depth=3; move: e7d6; value: -3.10
+2026-05-31 14:38:16,259: DEBUG: MinimaxTrad; move_number: 40; ID iteration depth=4; move: c3c2; value: -2.60
+2026-05-31 14:38:16,259: INFO: MinimaxTrad; BLACK; move_number: 40; depth: 4; time: 0.729097s; move: c3c2; value: -2.60
+2026-05-31 14:38:16,259: INFO: move_number: 40; Black move: c3c2
+2026-05-31 14:38:16,260: INFO: MinimaxTrad; WHITE; move_number: 41; starting search; depth: 4
+2026-05-31 14:38:16,270: DEBUG: MinimaxTrad; move_number: 41; ID iteration depth=1; move: g3f3; value: -3.22
+2026-05-31 14:38:16,323: DEBUG: MinimaxTrad; move_number: 41; ID iteration depth=2; move: e3e4; value: -2.52
+2026-05-31 14:38:16,367: DEBUG: MinimaxTrad; move_number: 41; ID iteration depth=3; move: e3e4; value: -2.19
+2026-05-31 14:38:16,848: DEBUG: MinimaxTrad; move_number: 41; ID iteration depth=4; move: e3d3; value: -2.42
+2026-05-31 14:38:16,848: INFO: MinimaxTrad; WHITE; move_number: 41; depth: 4; time: 0.588365s; move: e3d3; value: -2.42
+2026-05-31 14:38:16,848: INFO: move_number: 41; White move: e3d3
+2026-05-31 14:38:16,848: INFO: MinimaxTrad; BLACK; move_number: 41; starting search; depth: 4
+2026-05-31 14:38:16,865: DEBUG: MinimaxTrad; move_number: 41; ID iteration depth=1; move: f8f2; value: -4.09
+2026-05-31 14:38:16,897: DEBUG: MinimaxTrad; move_number: 41; ID iteration depth=2; move: f8f2; value: -3.75
+2026-05-31 14:38:17,239: DEBUG: MinimaxTrad; move_number: 41; ID iteration depth=3; move: b2b3; value: -2.42
+2026-05-31 14:38:17,788: DEBUG: MinimaxTrad; move_number: 41; ID iteration depth=4; move: b2b3; value: -2.68
+2026-05-31 14:38:17,788: INFO: MinimaxTrad; BLACK; move_number: 41; depth: 4; time: 0.939580s; move: b2b3; value: -2.68
+2026-05-31 14:38:17,788: INFO: move_number: 41; Black move: b2b3
+2026-05-31 14:38:17,788: INFO: MinimaxTrad; WHITE; move_number: 42; starting search; depth: 4
+2026-05-31 14:38:17,789: DEBUG: MinimaxTrad; move_number: 42; ID iteration depth=1; move: d3c2; value: -2.42
+2026-05-31 14:38:17,791: DEBUG: MinimaxTrad; move_number: 42; ID iteration depth=2; move: d3c2; value: -2.42
+2026-05-31 14:38:17,794: DEBUG: MinimaxTrad; move_number: 42; ID iteration depth=3; move: d3c2; value: -2.42
+2026-05-31 14:38:17,942: DEBUG: MinimaxTrad; move_number: 42; ID iteration depth=4; move: d3e4; value: -2.68
+2026-05-31 14:38:17,942: INFO: MinimaxTrad; WHITE; move_number: 42; depth: 4; time: 0.154559s; move: d3e4; value: -2.68
+2026-05-31 14:38:17,942: INFO: move_number: 42; White move: d3e4
+2026-05-31 14:38:17,943: INFO: MinimaxTrad; BLACK; move_number: 42; starting search; depth: 4
+2026-05-31 14:38:17,947: DEBUG: MinimaxTrad; move_number: 42; ID iteration depth=1; move: b3g3; value: -3.45
+2026-05-31 14:38:17,957: DEBUG: MinimaxTrad; move_number: 42; ID iteration depth=2; move: b3g3; value: -2.68
+2026-05-31 14:38:17,962: DEBUG: MinimaxTrad; move_number: 42; ID iteration depth=3; move: b3g3; value: -2.68
+2026-05-31 14:38:18,184: DEBUG: MinimaxTrad; move_number: 42; ID iteration depth=4; move: f8f4; value: -6.18
+2026-05-31 14:38:18,184: INFO: MinimaxTrad; BLACK; move_number: 42; depth: 4; time: 0.241226s; move: f8f4; value: -6.18
+2026-05-31 14:38:18,184: INFO: move_number: 42; Black move: f8f4
+2026-05-31 14:38:18,184: INFO: MinimaxTrad; WHITE; move_number: 43; starting search; depth: 4
+2026-05-31 14:38:18,185: DEBUG: MinimaxTrad; move_number: 43; ID iteration depth=1; move: e4e5; value: -1.99
+2026-05-31 14:38:18,188: DEBUG: MinimaxTrad; move_number: 43; ID iteration depth=2; move: e4e5; value: -1.99
+2026-05-31 14:38:18,198: DEBUG: MinimaxTrad; move_number: 43; ID iteration depth=3; move: e4e5; value: -1.99
+2026-05-31 14:38:18,297: DEBUG: MinimaxTrad; move_number: 43; ID iteration depth=4; move: e4e5; value: -6.18
+2026-05-31 14:38:18,297: INFO: MinimaxTrad; WHITE; move_number: 43; depth: 4; time: 0.112769s; move: e4e5; value: -6.18
+2026-05-31 14:38:18,297: INFO: move_number: 43; White move: e4e5
+2026-05-31 14:38:18,297: INFO: MinimaxTrad; BLACK; move_number: 43; starting search; depth: 4
+2026-05-31 14:38:18,302: DEBUG: MinimaxTrad; move_number: 43; ID iteration depth=1; move: b3b1; value: -3.18
+2026-05-31 14:38:18,312: DEBUG: MinimaxTrad; move_number: 43; ID iteration depth=2; move: b3b1; value: -6.18
+2026-05-31 14:38:18,326: DEBUG: MinimaxTrad; move_number: 43; ID iteration depth=3; move: b3b1; value: -6.18
+2026-05-31 14:38:18,394: DEBUG: MinimaxTrad; move_number: 43; ID iteration depth=4; move: b3b1; value: -6.18
+2026-05-31 14:38:18,395: INFO: MinimaxTrad; BLACK; move_number: 43; depth: 4; time: 0.097440s; move: b3b1; value: -6.18
+2026-05-31 14:38:18,395: INFO: move_number: 43; Black move: b3b1
+2026-05-31 14:38:18,395: INFO: MinimaxTrad; WHITE; move_number: 44; starting search; depth: 4
+2026-05-31 14:38:18,411: DEBUG: MinimaxTrad; move_number: 44; ID iteration depth=1; move: g3g5; value: -5.31
+2026-05-31 14:38:18,431: DEBUG: MinimaxTrad; move_number: 44; ID iteration depth=2; move: g3g5; value: -5.31
+2026-05-31 14:38:18,474: DEBUG: MinimaxTrad; move_number: 44; ID iteration depth=3; move: g3g5; value: -5.31
+2026-05-31 14:38:18,825: DEBUG: MinimaxTrad; move_number: 44; ID iteration depth=4; move: g3c3; value: -6.15
+2026-05-31 14:38:18,825: INFO: MinimaxTrad; WHITE; move_number: 44; depth: 4; time: 0.430115s; move: g3c3; value: -6.15
+2026-05-31 14:38:18,825: INFO: move_number: 44; White move: g3c3
+2026-05-31 14:38:18,825: INFO: MinimaxTrad; BLACK; move_number: 44; starting search; depth: 4
+2026-05-31 14:38:18,837: DEBUG: MinimaxTrad; move_number: 44; ID iteration depth=1; move: b1c1; value: -6.62
+2026-05-31 14:38:18,850: DEBUG: MinimaxTrad; move_number: 44; ID iteration depth=2; move: b1c1; value: -6.62
+2026-05-31 14:38:18,868: DEBUG: MinimaxTrad; move_number: 44; ID iteration depth=3; move: b1c1; value: -6.15
+2026-05-31 14:38:19,150: DEBUG: MinimaxTrad; move_number: 44; ID iteration depth=4; move: b1c1; value: -12.33
+2026-05-31 14:38:19,150: INFO: MinimaxTrad; BLACK; move_number: 44; depth: 4; time: 0.325372s; move: b1c1; value: -12.33
+2026-05-31 14:38:19,150: INFO: move_number: 44; Black move: b1c1
+2026-05-31 14:38:19,151: INFO: MinimaxTrad; WHITE; move_number: 45; starting search; depth: 4
+2026-05-31 14:38:19,154: DEBUG: MinimaxTrad; move_number: 45; ID iteration depth=1; move: c3c7; value: -6.15
+2026-05-31 14:38:19,158: DEBUG: MinimaxTrad; move_number: 45; ID iteration depth=2; move: c3c7; value: -6.15
+2026-05-31 14:38:19,229: DEBUG: MinimaxTrad; move_number: 45; ID iteration depth=3; move: c3c7; value: -12.33
+2026-05-31 14:38:19,329: DEBUG: MinimaxTrad; move_number: 45; ID iteration depth=4; move: c3c7; value: -8.04
+2026-05-31 14:38:19,329: INFO: MinimaxTrad; WHITE; move_number: 45; depth: 4; time: 0.178340s; move: c3c7; value: -8.04
+2026-05-31 14:38:19,329: INFO: move_number: 45; White move: c3c7
+2026-05-31 14:38:19,329: INFO: MinimaxTrad; BLACK; move_number: 45; starting search; depth: 4
+2026-05-31 14:38:19,330: DEBUG: MinimaxTrad; move_number: 45; ID iteration depth=1; move: e7d8; value: -6.65
+2026-05-31 14:38:19,333: DEBUG: MinimaxTrad; move_number: 45; ID iteration depth=2; move: e7d8; value: -6.65
+2026-05-31 14:38:19,335: DEBUG: MinimaxTrad; move_number: 45; ID iteration depth=3; move: e7d8; value: -12.33
+2026-05-31 14:38:19,409: DEBUG: MinimaxTrad; move_number: 45; ID iteration depth=4; move: e7d8; value: -8.04
+2026-05-31 14:38:19,409: INFO: MinimaxTrad; BLACK; move_number: 45; depth: 4; time: 0.079891s; move: e7d8; value: -8.04
+2026-05-31 14:38:19,409: INFO: move_number: 45; Black move: e7d8
+2026-05-31 14:38:19,409: INFO: MinimaxTrad; WHITE; move_number: 46; starting search; depth: 4
+2026-05-31 14:38:19,413: DEBUG: MinimaxTrad; move_number: 46; ID iteration depth=1; move: d5d6; value: -5.26
+2026-05-31 14:38:19,440: DEBUG: MinimaxTrad; move_number: 46; ID iteration depth=2; move: e5d6; value: -8.04
+2026-05-31 14:38:19,446: DEBUG: MinimaxTrad; move_number: 46; ID iteration depth=3; move: e5d6; value: -8.04
+2026-05-31 14:38:19,540: DEBUG: MinimaxTrad; move_number: 46; ID iteration depth=4; move: e5d6; value: -8.04
+2026-05-31 14:38:19,541: INFO: MinimaxTrad; WHITE; move_number: 46; depth: 4; time: 0.131456s; move: e5d6; value: -8.04
+2026-05-31 14:38:19,541: INFO: move_number: 46; White move: e5d6
+2026-05-31 14:38:19,541: INFO: MinimaxTrad; BLACK; move_number: 46; starting search; depth: 4
+2026-05-31 14:38:19,548: DEBUG: MinimaxTrad; move_number: 46; ID iteration depth=1; move: f4f6; value: -8.04
+2026-05-31 14:38:19,555: DEBUG: MinimaxTrad; move_number: 46; ID iteration depth=2; move: f4f6; value: -8.04
+2026-05-31 14:38:19,611: DEBUG: MinimaxTrad; move_number: 46; ID iteration depth=3; move: f4f6; value: -8.04
+2026-05-31 14:38:19,750: DEBUG: MinimaxTrad; move_number: 46; ID iteration depth=4; move: f4f6; value: -14.24
+2026-05-31 14:38:19,750: INFO: MinimaxTrad; BLACK; move_number: 46; depth: 4; time: 0.209136s; move: f4f6; value: -14.24
+2026-05-31 14:38:19,750: INFO: move_number: 46; Black move: f4f6
+2026-05-31 14:38:19,750: INFO: MinimaxTrad; WHITE; move_number: 47; starting search; depth: 4
+2026-05-31 14:38:19,751: DEBUG: MinimaxTrad; move_number: 47; ID iteration depth=1; move: d6e5; value: -6.59
+2026-05-31 14:38:19,754: DEBUG: MinimaxTrad; move_number: 47; ID iteration depth=2; move: d6e5; value: -8.04
+2026-05-31 14:38:19,756: DEBUG: MinimaxTrad; move_number: 47; ID iteration depth=3; move: d6e5; value: -8.04
+2026-05-31 14:38:19,897: DEBUG: MinimaxTrad; move_number: 47; ID iteration depth=4; move: d6e5; value: -14.24
+2026-05-31 14:38:19,897: INFO: MinimaxTrad; WHITE; move_number: 47; depth: 4; time: 0.146924s; move: d6e5; value: -14.24
+2026-05-31 14:38:19,897: INFO: move_number: 47; White move: d6e5
+2026-05-31 14:38:19,897: INFO: MinimaxTrad; BLACK; move_number: 47; starting search; depth: 4
+2026-05-31 14:38:19,900: DEBUG: MinimaxTrad; move_number: 47; ID iteration depth=1; move: d8c7; value: -14.24
+2026-05-31 14:38:19,902: DEBUG: MinimaxTrad; move_number: 47; ID iteration depth=2; move: d8c7; value: -14.24
+2026-05-31 14:38:19,904: DEBUG: MinimaxTrad; move_number: 47; ID iteration depth=3; move: d8c7; value: -14.24
+2026-05-31 14:38:19,998: DEBUG: MinimaxTrad; move_number: 47; ID iteration depth=4; move: c1e1; value: -14.26
+2026-05-31 14:38:19,998: INFO: MinimaxTrad; BLACK; move_number: 47; depth: 4; time: 0.100412s; move: c1e1; value: -14.26
+2026-05-31 14:38:19,998: INFO: move_number: 47; Black move: c1e1
+2026-05-31 14:38:19,998: INFO: MinimaxTrad; WHITE; move_number: 48; starting search; depth: 4
+2026-05-31 14:38:19,999: DEBUG: MinimaxTrad; move_number: 48; ID iteration depth=1; move: e5f6; value: -8.54
+2026-05-31 14:38:20,000: DEBUG: MinimaxTrad; move_number: 48; ID iteration depth=2; move: e5f6; value: -9.94
+2026-05-31 14:38:20,001: DEBUG: MinimaxTrad; move_number: 48; ID iteration depth=3; move: e5f6; value: -9.94
+2026-05-31 14:38:20,095: DEBUG: MinimaxTrad; move_number: 48; ID iteration depth=4; move: e5f6; value: -14.26
+2026-05-31 14:38:20,095: INFO: MinimaxTrad; WHITE; move_number: 48; depth: 4; time: 0.097145s; move: e5f6; value: -14.26
+2026-05-31 14:38:20,095: INFO: move_number: 48; White move: e5f6
+2026-05-31 14:38:20,095: INFO: MinimaxTrad; BLACK; move_number: 48; starting search; depth: 4
+2026-05-31 14:38:20,100: DEBUG: MinimaxTrad; move_number: 48; ID iteration depth=1; move: d8c7; value: -14.26
+2026-05-31 14:38:20,104: DEBUG: MinimaxTrad; move_number: 48; ID iteration depth=2; move: d8c7; value: -14.26
+2026-05-31 14:38:20,107: DEBUG: MinimaxTrad; move_number: 48; ID iteration depth=3; move: d8c7; value: -14.26
+2026-05-31 14:38:20,160: DEBUG: MinimaxTrad; move_number: 48; ID iteration depth=4; move: d8c7; value: -14.26
+2026-05-31 14:38:20,160: INFO: MinimaxTrad; BLACK; move_number: 48; depth: 4; time: 0.064915s; move: d8c7; value: -14.26
+2026-05-31 14:38:20,160: INFO: move_number: 48; Black move: d8c7
+2026-05-31 14:38:20,160: INFO: MinimaxTrad; WHITE; move_number: 49; starting search; depth: 4
+2026-05-31 14:38:20,162: DEBUG: MinimaxTrad; move_number: 49; ID iteration depth=1; move: f6g7; value: -14.26
+2026-05-31 14:38:20,165: DEBUG: MinimaxTrad; move_number: 49; ID iteration depth=2; move: f6g7; value: -14.26
+2026-05-31 14:38:20,195: DEBUG: MinimaxTrad; move_number: 49; ID iteration depth=3; move: f6g7; value: -14.26
+2026-05-31 14:38:20,448: DEBUG: MinimaxTrad; move_number: 49; ID iteration depth=4; move: f6g7; value: -15.03
+2026-05-31 14:38:20,448: INFO: MinimaxTrad; WHITE; move_number: 49; depth: 4; time: 0.287849s; move: f6g7; value: -15.03
+2026-05-31 14:38:20,448: INFO: move_number: 49; White move: f6g7
+2026-05-31 14:38:20,448: INFO: MinimaxTrad; BLACK; move_number: 49; starting search; depth: 4
+2026-05-31 14:38:20,455: DEBUG: MinimaxTrad; move_number: 49; ID iteration depth=1; move: c2c1q; value: -14.26
+2026-05-31 14:38:20,515: DEBUG: MinimaxTrad; move_number: 49; ID iteration depth=2; move: c7d6; value: -14.87
+2026-05-31 14:38:20,669: DEBUG: MinimaxTrad; move_number: 49; ID iteration depth=3; move: e1e2; value: -14.94
+2026-05-31 14:38:21,116: DEBUG: MinimaxTrad; move_number: 49; ID iteration depth=4; move: c7d6; value: -15.82
+2026-05-31 14:38:21,116: INFO: MinimaxTrad; BLACK; move_number: 49; depth: 4; time: 0.667437s; move: c7d6; value: -15.82
+2026-05-31 14:38:21,116: INFO: move_number: 49; Black move: c7d6
+2026-05-31 14:38:21,116: INFO: MinimaxTrad; WHITE; move_number: 50; starting search; depth: 4
+2026-05-31 14:38:21,118: DEBUG: MinimaxTrad; move_number: 50; ID iteration depth=1; move: g7h6; value: -14.87
+2026-05-31 14:38:21,120: DEBUG: MinimaxTrad; move_number: 50; ID iteration depth=2; move: g7h6; value: -14.87
+2026-05-31 14:38:21,211: DEBUG: MinimaxTrad; move_number: 50; ID iteration depth=3; move: g7h6; value: -15.82
+2026-05-31 14:38:21,397: DEBUG: MinimaxTrad; move_number: 50; ID iteration depth=4; move: g7h6; value: -16.15
+2026-05-31 14:38:21,397: INFO: MinimaxTrad; WHITE; move_number: 50; depth: 4; time: 0.281258s; move: g7h6; value: -16.15
+2026-05-31 14:38:21,397: INFO: move_number: 50; White move: g7h6
+2026-05-31 14:38:21,397: INFO: MinimaxTrad; BLACK; move_number: 50; starting search; depth: 4
+2026-05-31 14:38:21,402: DEBUG: MinimaxTrad; move_number: 50; ID iteration depth=1; move: c2c1q; value: -14.87
+2026-05-31 14:38:21,453: DEBUG: MinimaxTrad; move_number: 50; ID iteration depth=2; move: c2c1q; value: -15.82
+2026-05-31 14:38:21,536: DEBUG: MinimaxTrad; move_number: 50; ID iteration depth=3; move: c2c1q; value: -16.15
+2026-05-31 14:38:21,876: DEBUG: MinimaxTrad; move_number: 50; ID iteration depth=4; move: c2c1q; value: -16.56
+2026-05-31 14:38:21,876: INFO: MinimaxTrad; BLACK; move_number: 50; depth: 4; time: 0.478892s; move: c2c1q; value: -16.56
+2026-05-31 14:38:21,876: INFO: move_number: 50; Black move: c2c1q
+2026-05-31 14:38:21,876: INFO: MinimaxTrad; WHITE; move_number: 51; starting search; depth: 4
+2026-05-31 14:38:21,879: DEBUG: MinimaxTrad; move_number: 51; ID iteration depth=1; move: h6g6; value: -16.07
+2026-05-31 14:38:21,883: DEBUG: MinimaxTrad; move_number: 51; ID iteration depth=2; move: a3a4; value: -16.15
+2026-05-31 14:38:21,997: DEBUG: MinimaxTrad; move_number: 51; ID iteration depth=3; move: g2g4; value: -16.12
+2026-05-31 14:38:22,794: DEBUG: MinimaxTrad; move_number: 51; ID iteration depth=4; move: h6h5; value: -16.78
+2026-05-31 14:38:22,795: INFO: MinimaxTrad; WHITE; move_number: 51; depth: 4; time: 0.918070s; move: h6h5; value: -16.78
+2026-05-31 14:38:22,795: INFO: move_number: 51; White move: h6h5
+2026-05-31 14:38:22,795: INFO: MinimaxTrad; BLACK; move_number: 51; starting search; depth: 4
+2026-05-31 14:38:22,808: DEBUG: MinimaxTrad; move_number: 51; ID iteration depth=1; move: c1b2; value: -16.65
+2026-05-31 14:38:22,900: DEBUG: MinimaxTrad; move_number: 51; ID iteration depth=2; move: e1e2; value: -16.74
+2026-05-31 14:38:23,189: DEBUG: MinimaxTrad; move_number: 51; ID iteration depth=3; move: d6d5; value: -16.78
+2026-05-31 14:38:25,007: DEBUG: MinimaxTrad; move_number: 51; ID iteration depth=4; move: e1e2; value: -17.52
+2026-05-31 14:38:25,008: INFO: MinimaxTrad; BLACK; move_number: 51; depth: 4; time: 2.212778s; move: e1e2; value: -17.52
+2026-05-31 14:38:25,008: INFO: move_number: 51; Black move: e1e2
+2026-05-31 14:38:25,008: INFO: MinimaxTrad; WHITE; move_number: 52; starting search; depth: 4
+2026-05-31 14:38:25,019: DEBUG: MinimaxTrad; move_number: 52; ID iteration depth=1; move: h5g6; value: -16.74
+2026-05-31 14:38:25,038: DEBUG: MinimaxTrad; move_number: 52; ID iteration depth=2; move: h5g6; value: -16.74
+2026-05-31 14:38:25,215: DEBUG: MinimaxTrad; move_number: 52; ID iteration depth=3; move: h5g6; value: -17.37
+2026-05-31 14:38:25,543: DEBUG: MinimaxTrad; move_number: 52; ID iteration depth=4; move: h2h3; value: -17.78
+2026-05-31 14:38:25,544: INFO: MinimaxTrad; WHITE; move_number: 52; depth: 4; time: 0.535977s; move: h2h3; value: -17.78
+2026-05-31 14:38:25,544: INFO: move_number: 52; White move: h2h3
+2026-05-31 14:38:25,544: INFO: MinimaxTrad; BLACK; move_number: 52; starting search; depth: 4
+2026-05-31 14:38:25,552: DEBUG: MinimaxTrad; move_number: 52; ID iteration depth=1; move: d6d5; value: -17.52
+2026-05-31 14:38:25,632: DEBUG: MinimaxTrad; move_number: 52; ID iteration depth=2; move: e2g2; value: -17.78
+2026-05-31 14:38:25,821: DEBUG: MinimaxTrad; move_number: 52; ID iteration depth=3; move: e2g2; value: -17.78
+2026-05-31 14:38:26,650: DEBUG: MinimaxTrad; move_number: 52; ID iteration depth=4; move: e2g2; value: -18.05
+2026-05-31 14:38:26,650: INFO: MinimaxTrad; BLACK; move_number: 52; depth: 4; time: 1.106039s; move: e2g2; value: -18.05
+2026-05-31 14:38:26,650: INFO: move_number: 52; Black move: e2g2
+2026-05-31 14:38:26,650: INFO: MinimaxTrad; WHITE; move_number: 53; starting search; depth: 4
+2026-05-31 14:38:26,651: DEBUG: MinimaxTrad; move_number: 53; ID iteration depth=1; move: h5g6; value: -17.78
+2026-05-31 14:38:26,653: DEBUG: MinimaxTrad; move_number: 53; ID iteration depth=2; move: h5g6; value: -17.78
+2026-05-31 14:38:26,696: DEBUG: MinimaxTrad; move_number: 53; ID iteration depth=3; move: a3a4; value: -17.95
+2026-05-31 14:38:26,851: DEBUG: MinimaxTrad; move_number: 53; ID iteration depth=4; move: a3a4; value: -18.25
+2026-05-31 14:38:26,851: INFO: MinimaxTrad; WHITE; move_number: 53; depth: 4; time: 0.200851s; move: a3a4; value: -18.25
+2026-05-31 14:38:26,851: INFO: move_number: 53; White move: a3a4
+2026-05-31 14:38:26,851: INFO: MinimaxTrad; BLACK; move_number: 53; starting search; depth: 4
+2026-05-31 14:38:26,857: DEBUG: MinimaxTrad; move_number: 53; ID iteration depth=1; move: g2f2; value: -18.05
+2026-05-31 14:38:26,898: DEBUG: MinimaxTrad; move_number: 53; ID iteration depth=2; move: c1c3; value: -18.23
+2026-05-31 14:38:27,035: DEBUG: MinimaxTrad; move_number: 53; ID iteration depth=3; move: g2f2; value: -18.25
+2026-05-31 14:38:27,894: DEBUG: MinimaxTrad; move_number: 53; ID iteration depth=4; move: c1a3; value: -18.65
+2026-05-31 14:38:27,894: INFO: MinimaxTrad; BLACK; move_number: 53; depth: 4; time: 1.042683s; move: c1a3; value: -18.65
+2026-05-31 14:38:27,894: INFO: move_number: 53; Black move: c1a3
+2026-05-31 14:38:27,894: INFO: MinimaxTrad; WHITE; move_number: 54; starting search; depth: 4
+2026-05-31 14:38:27,899: DEBUG: MinimaxTrad; move_number: 54; ID iteration depth=1; move: h5g6; value: -17.72
+2026-05-31 14:38:27,905: DEBUG: MinimaxTrad; move_number: 54; ID iteration depth=2; move: h5g6; value: -17.72
+2026-05-31 14:38:27,924: DEBUG: MinimaxTrad; move_number: 54; ID iteration depth=3; move: h5g6; value: -18.20
+2026-05-31 14:38:28,158: DEBUG: MinimaxTrad; move_number: 54; ID iteration depth=4; move: h5g6; value: -18.70
+2026-05-31 14:38:28,158: INFO: MinimaxTrad; WHITE; move_number: 54; depth: 4; time: 0.264072s; move: h5g6; value: -18.70
+2026-05-31 14:38:28,158: INFO: move_number: 54; White move: h5g6
+2026-05-31 14:38:28,158: INFO: MinimaxTrad; BLACK; move_number: 54; starting search; depth: 4
+2026-05-31 14:38:28,164: DEBUG: MinimaxTrad; move_number: 54; ID iteration depth=1; move: a3a4; value: -18.65
+2026-05-31 14:38:28,194: DEBUG: MinimaxTrad; move_number: 54; ID iteration depth=2; move: a3a4; value: -18.65
+2026-05-31 14:38:28,302: DEBUG: MinimaxTrad; move_number: 54; ID iteration depth=3; move: a3h3; value: -18.99
+2026-05-31 14:38:28,904: DEBUG: MinimaxTrad; move_number: 54; ID iteration depth=4; move: a3h3; value: -19.22
+2026-05-31 14:38:28,905: INFO: MinimaxTrad; BLACK; move_number: 54; depth: 4; time: 0.746162s; move: a3h3; value: -19.22
+2026-05-31 14:38:28,905: INFO: move_number: 54; Black move: a3h3
+2026-05-31 14:38:28,905: INFO: MinimaxTrad; WHITE; move_number: 55; starting search; depth: 4
+2026-05-31 14:38:28,907: DEBUG: MinimaxTrad; move_number: 55; ID iteration depth=1; move: g6f6; value: -18.70
+2026-05-31 14:38:28,908: DEBUG: MinimaxTrad; move_number: 55; ID iteration depth=2; move: a4a5; value: -18.70
+2026-05-31 14:38:28,993: DEBUG: MinimaxTrad; move_number: 55; ID iteration depth=3; move: g6g7; value: -19.22
+2026-05-31 14:38:29,508: DEBUG: MinimaxTrad; move_number: 55; ID iteration depth=4; move: a4a5; value: -19.44
+2026-05-31 14:38:29,508: INFO: MinimaxTrad; WHITE; move_number: 55; depth: 4; time: 0.603310s; move: a4a5; value: -19.44
+2026-05-31 14:38:29,508: INFO: move_number: 55; White move: a4a5
+2026-05-31 14:38:29,508: INFO: MinimaxTrad; BLACK; move_number: 55; starting search; depth: 4
+2026-05-31 14:38:29,516: DEBUG: MinimaxTrad; move_number: 55; ID iteration depth=1; move: h3d3; value: -19.23
+2026-05-31 14:38:29,541: DEBUG: MinimaxTrad; move_number: 55; ID iteration depth=2; move: h3d3; value: -19.23
+2026-05-31 14:38:29,743: DEBUG: MinimaxTrad; move_number: 55; ID iteration depth=3; move: h3d3; value: -19.44
+2026-05-31 14:38:30,664: DEBUG: MinimaxTrad; move_number: 55; ID iteration depth=4; move: h3d3; value: -19.68
+2026-05-31 14:38:30,664: INFO: MinimaxTrad; BLACK; move_number: 55; depth: 4; time: 1.156186s; move: h3d3; value: -19.68
+2026-05-31 14:38:30,665: INFO: move_number: 55; Black move: h3d3
+2026-05-31 14:38:30,665: INFO: MinimaxTrad; WHITE; move_number: 56; starting search; depth: 4
+2026-05-31 14:38:30,667: DEBUG: MinimaxTrad; move_number: 56; ID iteration depth=1; move: g6f6; value: -19.20
+2026-05-31 14:38:30,669: DEBUG: MinimaxTrad; move_number: 56; ID iteration depth=2; move: g6g7; value: -19.44
+2026-05-31 14:38:30,677: DEBUG: MinimaxTrad; move_number: 56; ID iteration depth=3; move: g6h6; value: -19.44
+2026-05-31 14:38:31,009: DEBUG: MinimaxTrad; move_number: 56; ID iteration depth=4; move: g6g7; value: -19.68
+2026-05-31 14:38:31,009: INFO: MinimaxTrad; WHITE; move_number: 56; depth: 4; time: 0.344849s; move: g6g7; value: -19.68
+2026-05-31 14:38:31,010: INFO: move_number: 56; White move: g6g7
+2026-05-31 14:38:31,010: INFO: MinimaxTrad; BLACK; move_number: 56; starting search; depth: 4
+2026-05-31 14:38:31,012: DEBUG: MinimaxTrad; move_number: 56; ID iteration depth=1; move: g2f2; value: -19.68
+2026-05-31 14:38:31,014: DEBUG: MinimaxTrad; move_number: 56; ID iteration depth=2; move: g2f2; value: -19.68
+2026-05-31 14:38:31,016: DEBUG: MinimaxTrad; move_number: 56; ID iteration depth=3; move: g2f2; value: -19.68
+2026-05-31 14:38:31,708: DEBUG: MinimaxTrad; move_number: 56; ID iteration depth=4; move: d3d5; value: -20.20
+2026-05-31 14:38:31,708: INFO: MinimaxTrad; BLACK; move_number: 56; depth: 4; time: 0.698440s; move: d3d5; value: -20.20
+2026-05-31 14:38:31,708: INFO: move_number: 56; Black move: d3d5
+2026-05-31 14:38:31,708: INFO: MinimaxTrad; WHITE; move_number: 57; starting search; depth: 4
+2026-05-31 14:38:31,710: DEBUG: MinimaxTrad; move_number: 57; ID iteration depth=1; move: g7f8; value: -19.62
+2026-05-31 14:38:31,711: DEBUG: MinimaxTrad; move_number: 57; ID iteration depth=2; move: g7f8; value: -19.62
+2026-05-31 14:38:31,766: DEBUG: MinimaxTrad; move_number: 57; ID iteration depth=3; move: g7h8; value: -20.20
+2026-05-31 14:38:32,058: DEBUG: MinimaxTrad; move_number: 57; ID iteration depth=4; move: g7h8; value: -20.36
+2026-05-31 14:38:32,058: INFO: MinimaxTrad; WHITE; move_number: 57; depth: 4; time: 0.349716s; move: g7h8; value: -20.36
+2026-05-31 14:38:32,058: INFO: move_number: 57; White move: g7h8
+2026-05-31 14:38:32,058: INFO: MinimaxTrad; BLACK; move_number: 57; starting search; depth: 4
+2026-05-31 14:38:32,063: DEBUG: MinimaxTrad; move_number: 57; ID iteration depth=1; move: g2h2; value: -20.20
+2026-05-31 14:38:32,082: DEBUG: MinimaxTrad; move_number: 57; ID iteration depth=2; move: g2h2; value: -20.20
+2026-05-31 14:38:32,253: DEBUG: MinimaxTrad; move_number: 57; ID iteration depth=3; move: g2h2; value: -20.36
+2026-05-31 14:38:33,336: DEBUG: MinimaxTrad; move_number: 57; ID iteration depth=4; move: g2h2; value: -999993.00
+2026-05-31 14:38:33,336: INFO: MinimaxTrad; BLACK; move_number: 57; depth: 4; time: 1.277931s; move: g2h2; value: -999993.00
+2026-05-31 14:38:33,336: INFO: move_number: 57; Black move: g2h2
+2026-05-31 14:38:33,336: INFO: MinimaxTrad; WHITE; move_number: 58; starting search; depth: 4
+2026-05-31 14:38:33,337: DEBUG: MinimaxTrad; move_number: 58; ID iteration depth=1; move: h8g7; value: -20.36
+2026-05-31 14:38:33,338: DEBUG: MinimaxTrad; move_number: 58; ID iteration depth=2; move: h8g7; value: -20.36
+2026-05-31 14:38:33,339: DEBUG: MinimaxTrad; move_number: 58; ID iteration depth=3; move: h8g7; value: -20.36
+2026-05-31 14:38:33,576: DEBUG: MinimaxTrad; move_number: 58; ID iteration depth=4; move: h8g7; value: -20.54
+2026-05-31 14:38:33,576: INFO: MinimaxTrad; WHITE; move_number: 58; depth: 4; time: 0.239860s; move: h8g7; value: -20.54
+2026-05-31 14:38:33,576: INFO: move_number: 58; White move: h8g7
+2026-05-31 14:38:33,576: INFO: MinimaxTrad; BLACK; move_number: 58; starting search; depth: 4
+2026-05-31 14:38:33,583: DEBUG: MinimaxTrad; move_number: 58; ID iteration depth=1; move: g5g4; value: -20.25
+2026-05-31 14:38:33,605: DEBUG: MinimaxTrad; move_number: 58; ID iteration depth=2; move: d5f5; value: -20.44
+2026-05-31 14:38:33,610: DEBUG: MinimaxTrad; move_number: 58; ID iteration depth=3; move: d5e6; value: -999995.00
+2026-05-31 14:38:35,254: DEBUG: MinimaxTrad; move_number: 58; ID iteration depth=4; move: d5e6; value: -999995.00
+2026-05-31 14:38:35,254: INFO: MinimaxTrad; BLACK; move_number: 58; depth: 4; time: 1.677770s; move: d5e6; value: -999995.00
+2026-05-31 14:38:35,254: INFO: move_number: 58; Black move: d5e6
+2026-05-31 14:38:35,254: INFO: MinimaxTrad; WHITE; move_number: 59; starting search; depth: 4
+2026-05-31 14:38:35,255: DEBUG: MinimaxTrad; move_number: 59; ID iteration depth=1; move: g7f8; value: -19.36
+2026-05-31 14:38:35,263: DEBUG: MinimaxTrad; move_number: 59; ID iteration depth=2; move: g7f8; value: -20.09
+2026-05-31 14:38:35,293: DEBUG: MinimaxTrad; move_number: 59; ID iteration depth=3; move: g7f8; value: -999996.00
+2026-05-31 14:38:35,535: DEBUG: MinimaxTrad; move_number: 59; ID iteration depth=4; move: g7f8; value: -999996.00
+2026-05-31 14:38:35,535: INFO: MinimaxTrad; WHITE; move_number: 59; depth: 4; time: 0.280436s; move: g7f8; value: -999996.00
+2026-05-31 14:38:35,535: INFO: move_number: 59; White move: g7f8
+2026-05-31 14:38:35,535: INFO: MinimaxTrad; BLACK; move_number: 59; starting search; depth: 4
+2026-05-31 14:38:35,547: DEBUG: MinimaxTrad; move_number: 59; ID iteration depth=1; move: e6f5; value: -20.09
+2026-05-31 14:38:35,605: DEBUG: MinimaxTrad; move_number: 59; ID iteration depth=2; move: e6f6; value: -999997.00
+2026-05-31 14:38:35,765: DEBUG: MinimaxTrad; move_number: 59; ID iteration depth=3; move: e6f6; value: -999997.00
+2026-05-31 14:38:36,995: DEBUG: MinimaxTrad; move_number: 59; ID iteration depth=4; move: e6f6; value: -999997.00
+2026-05-31 14:38:36,995: INFO: MinimaxTrad; BLACK; move_number: 59; depth: 4; time: 1.459973s; move: e6f6; value: -999997.00
+2026-05-31 14:38:36,995: INFO: move_number: 59; Black move: e6f6
+2026-05-31 14:38:36,995: INFO: MinimaxTrad; WHITE; move_number: 60; starting search; depth: 4
+2026-05-31 14:38:36,996: DEBUG: MinimaxTrad; move_number: 60; ID iteration depth=1; move: f8e8; value: -19.27
+2026-05-31 14:38:36,998: DEBUG: MinimaxTrad; move_number: 60; ID iteration depth=2; move: f8e8; value: -999998.00
+2026-05-31 14:38:36,999: DEBUG: MinimaxTrad; move_number: 60; ID iteration depth=3; move: f8e8; value: -999998.00
+2026-05-31 14:38:37,086: DEBUG: MinimaxTrad; move_number: 60; ID iteration depth=4; move: f8e8; value: -999998.00
+2026-05-31 14:38:37,087: INFO: MinimaxTrad; WHITE; move_number: 60; depth: 4; time: 0.091292s; move: f8e8; value: -999998.00
+2026-05-31 14:38:37,087: INFO: move_number: 60; White move: f8e8
+2026-05-31 14:38:37,087: INFO: MinimaxTrad; BLACK; move_number: 60; starting search; depth: 4
+2026-05-31 14:38:37,091: DEBUG: MinimaxTrad; move_number: 60; ID iteration depth=1; move: h2h8; value: -999999.00
+2026-05-31 14:38:37,105: DEBUG: MinimaxTrad; move_number: 60; ID iteration depth=2; move: h2h8; value: -999999.00
+2026-05-31 14:38:37,152: DEBUG: MinimaxTrad; move_number: 60; ID iteration depth=3; move: h2h8; value: -999999.00
+2026-05-31 14:38:37,612: DEBUG: MinimaxTrad; move_number: 60; ID iteration depth=4; move: h2h8; value: -999999.00
+2026-05-31 14:38:37,613: INFO: MinimaxTrad; BLACK; move_number: 60; depth: 4; time: 0.525731s; move: h2h8; value: -999999.00
+2026-05-31 14:38:37,613: INFO: move_number: 60; Black move: h2h8
+2026-05-31 14:38:37,613: INFO: GAME OVER - Black wins by checkmate

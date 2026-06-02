@@ -38,9 +38,19 @@ param(
     [int]$MinimaxDepth = 4,
     [double]$McTsTime = 20.0,
     [string]$ExperimentTag = '',
-    [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe',
+    [string]$StockfishPath = '',
     [switch]$Gui
 )
+
+if (-not $StockfishPath) {
+    if ($IsMacOS) {
+        $StockfishPath = '../stockfish_ai/stockfish/stockfish-macos-m1-apple-silicon'
+    } elseif ($IsLinux) {
+        $StockfishPath = '../stockfish_ai/stockfish/stockfish-ubuntu-x86-64-avx2'
+    } else {
+        $StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe'
+    }
+}
 
 $ErrorActionPreference = 'Stop'
 

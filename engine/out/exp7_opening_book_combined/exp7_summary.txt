@@ -1,0 +1,16 @@
+Experiment 7 — Opening book impact
+============================================================
+
+Per-condition summary:
+         engine book                    label  games  white_wins  draws  black_wins  white_score  avg_total_moves  avg_last_book_ply  max_last_book_ply  avg_opening_time_white  avg_opening_time_black
+      mcts_trad  off       mcts_trad_book_off     40          10     30           0        0.625            150.5               0.00                  0                 201.228                 201.429
+      mcts_trad   on        mcts_trad_book_on     40           6     33           1        0.562             98.6              26.85                 30                   1.005                   3.044
+minimax_trad_d4  off minimax_trad_d4_book_off     40           0      0          40        0.000            120.0               0.00                  0                   7.343                   5.971
+minimax_trad_d4   on  minimax_trad_d4_book_on     40          10     20          10        0.500            104.7              25.55                 30                   0.123                   0.243
+
+Statistical tests:
+         engine             test  p_value    chi2  statistic  b_off_wins_on_loses  c_off_loses_on_wins  n_pairs                    note  df
+      mcts_trad   chi-square 2x3   0.3425  2.1429        NaN                  NaN                  NaN      NaN                     NaN 2.0
+      mcts_trad McNemar (paired)   0.4545     NaN        NaN                 10.0                  6.0     40.0 exact binomial (b+c<25) NaN
+minimax_trad_d4   chi-square 2x3   0.0000 48.0000        NaN                  NaN                  NaN      NaN                     NaN 2.0
+minimax_trad_d4 McNemar (paired)   0.0020     NaN        NaN                  0.0                 10.0     40.0 exact binomial (b+c<25) NaN

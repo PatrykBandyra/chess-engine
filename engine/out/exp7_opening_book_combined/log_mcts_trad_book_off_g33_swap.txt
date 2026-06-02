@@ -1,0 +1,541 @@
+2026-06-01 18:49:10,112: INFO: MCTSTrad; WHITE; move_number: 1; starting search; time_budget: 20.000000s
+2026-06-01 18:49:30,128: INFO: MCTSTrad; WHITE; move_number: 1; time: 20.015560s; move: g1f3; value: 0.5263; new_visits: 24640; total_visits: 24640; iterations: 54144; reused: 0; policy: robust; proven_root: none; proven_root_stm: none; top3: [g1f3:vt=24640,vn=24640,q=0.526,p=0.050, d2d4:vt=17738,vn=17738,q=0.531,p=0.050, e2e3:vt=3316,vn=3316,q=0.520,p=0.050]
+2026-06-01 18:49:30,128: INFO: move_number: 1; White move: g1f3
+2026-06-01 18:49:30,128: INFO: MCTSTrad; BLACK; move_number: 1; starting search; time_budget: 20.000000s
+2026-06-01 18:49:50,191: INFO: MCTSTrad; BLACK; move_number: 1; time: 20.061971s; move: g8f6; value: 0.4765; new_visits: 37552; total_visits: 37552; iterations: 42496; reused: 0; policy: robust; proven_root: none; proven_root_stm: none; top3: [g8f6:vt=37552,vn=37552,q=0.476,p=0.050, d7d5:vt=1067,vn=1067,q=0.424,p=0.050, e7e6:vt=812,vn=812,q=0.422,p=0.050]
+2026-06-01 18:49:50,191: INFO: move_number: 1; Black move: g8f6
+2026-06-01 18:49:50,191: INFO: MCTSTrad; WHITE; move_number: 2; starting search; time_budget: 20.000000s
+2026-06-01 18:50:10,197: INFO: MCTSTrad; WHITE; move_number: 2; time: 20.005550s; move: d2d4; value: 0.5287; new_visits: 35719; total_visits: 42433; iterations: 38528; reused: 20288; policy: robust; proven_root: none; proven_root_stm: none; top3: [d2d4:vt=42433,vn=35719,q=0.529,p=0.045, e2e4:vt=2826,vn=40,q=0.516,p=0.045, d2d3:vt=2120,vn=18,q=0.514,p=0.045]
+2026-06-01 18:50:10,197: INFO: move_number: 2; White move: d2d4
+2026-06-01 18:50:10,197: INFO: MCTSTrad; BLACK; move_number: 2; starting search; time_budget: 20.000000s
+2026-06-01 18:50:30,528: INFO: MCTSTrad; BLACK; move_number: 2; time: 20.329993s; move: d7d5; value: 0.4807; new_visits: 34352; total_visits: 54351; iterations: 35456; reused: 22351; policy: robust; proven_root: none; proven_root_stm: none; top3: [d7d5:vt=54351,vn=34352,q=0.481,p=0.045, d7d6:vt=391,vn=192,q=0.421,p=0.045, e7e6:vt=369,vn=23,q=0.418,p=0.045]
+2026-06-01 18:50:30,528: INFO: move_number: 2; Black move: d7d5
+2026-06-01 18:50:30,528: INFO: MCTSTrad; WHITE; move_number: 3; starting search; time_budget: 20.000000s
+2026-06-01 18:50:50,577: INFO: MCTSTrad; WHITE; move_number: 3; time: 20.048979s; move: d1d3; value: 0.5207; new_visits: 14197; total_visits: 14427; iterations: 28800; reused: 39512; policy: robust; proven_root: none; proven_root_stm: none; top3: [d1d3:vt=14427,vn=14197,q=0.521,p=0.034, c1e3:vt=13552,vn=4485,q=0.521,p=0.034, b1c3:vt=9838,vn=348,q=0.520,p=0.034]
+2026-06-01 18:50:50,577: INFO: move_number: 3; White move: d1d3
+2026-06-01 18:50:50,577: INFO: MCTSTrad; BLACK; move_number: 3; starting search; time_budget: 20.000000s
+2026-06-01 18:51:10,837: INFO: MCTSTrad; BLACK; move_number: 3; time: 20.259462s; move: b8c6; value: 0.4613; new_visits: 11696; total_visits: 17810; iterations: 12416; reused: 12889; policy: robust; proven_root: none; proven_root_stm: none; top3: [b8c6:vt=17810,vn=11696,q=0.461,p=0.034, e7e6:vt=3121,vn=0,q=0.443,p=0.034, c7c5:vt=604,vn=0,q=0.436,p=0.034]
+2026-06-01 18:51:10,837: INFO: move_number: 3; Black move: b8c6
+2026-06-01 18:51:10,838: INFO: MCTSTrad; WHITE; move_number: 4; starting search; time_budget: 20.000000s
+2026-06-01 18:51:31,040: INFO: MCTSTrad; WHITE; move_number: 4; time: 20.201719s; move: b1c3; value: 0.5545; new_visits: 13013; total_visits: 19487; iterations: 13184; reused: 7650; policy: robust; proven_root: none; proven_root_stm: none; top3: [b1c3:vt=19487,vn=13013,q=0.554,p=0.019, d3h7:vt=128,vn=39,q=0.028,p=0.233, f3e5:vt=100,vn=3,q=0.452,p=0.019]
+2026-06-01 18:51:31,040: INFO: move_number: 4; White move: b1c3
+2026-06-01 18:51:31,040: INFO: MCTSTrad; BLACK; move_number: 4; starting search; time_budget: 20.000000s
+2026-06-01 18:51:51,087: INFO: MCTSTrad; BLACK; move_number: 4; time: 20.046355s; move: c8g4; value: 0.5008; new_visits: 10123; total_visits: 22889; iterations: 10240; reused: 16511; policy: robust; proven_root: none; proven_root_stm: none; top3: [c8g4:vt=22889,vn=10123,q=0.501,p=0.024, c6d4:vt=1136,vn=25,q=0.386,p=0.296, c6b4:vt=334,vn=4,q=0.437,p=0.024]
+2026-06-01 18:51:51,087: INFO: move_number: 4; Black move: c8g4
+2026-06-01 18:51:51,087: INFO: MCTSTrad; WHITE; move_number: 5; starting search; time_budget: 20.000000s
+2026-06-01 18:52:11,156: INFO: MCTSTrad; WHITE; move_number: 5; time: 20.068461s; move: c1f4; value: 0.5056; new_visits: 9725; total_visits: 20632; iterations: 9984; reused: 15651; policy: robust; proven_root: none; proven_root_stm: none; top3: [c1f4:vt=20632,vn=9725,q=0.506,p=0.016, f3e5:vt=1931,vn=0,q=0.479,p=0.016, c1g5:vt=344,vn=0,q=0.474,p=0.016]
+2026-06-01 18:52:11,156: INFO: move_number: 5; White move: c1f4
+2026-06-01 18:52:11,156: INFO: MCTSTrad; BLACK; move_number: 5; starting search; time_budget: 20.000000s
+2026-06-01 18:52:31,236: INFO: MCTSTrad; BLACK; move_number: 5; time: 20.079385s; move: e7e6; value: 0.5503; new_visits: 9717; total_visits: 21067; iterations: 9728; reused: 17955; policy: robust; proven_root: none; proven_root_stm: none; top3: [e7e6:vt=21067,vn=9717,q=0.550,p=0.018, g4f3:vt=3481,vn=0,q=0.409,p=0.216, c6d4:vt=900,vn=0,q=0.380,p=0.216]
+2026-06-01 18:52:31,236: INFO: move_number: 5; Black move: e7e6
+2026-06-01 18:52:31,236: INFO: MCTSTrad; WHITE; move_number: 6; starting search; time_budget: 20.000000s
+2026-06-01 18:52:51,333: INFO: MCTSTrad; WHITE; move_number: 6; time: 20.096734s; move: c3b5; value: 0.4738; new_visits: 8960; total_visits: 18912; iterations: 9472; reused: 14027; policy: robust; proven_root: none; proven_root_stm: none; top3: [c3b5:vt=18912,vn=8960,q=0.474,p=0.013, d3b5:vt=691,vn=25,q=0.456,p=0.013, f3e5:vt=562,vn=158,q=0.455,p=0.013]
+2026-06-01 18:52:51,333: INFO: move_number: 6; White move: c3b5
+2026-06-01 18:52:51,334: INFO: MCTSTrad; BLACK; move_number: 6; starting search; time_budget: 20.000000s
+2026-06-01 18:53:11,434: INFO: MCTSTrad; BLACK; move_number: 6; time: 20.100139s; move: f8d6; value: 0.5431; new_visits: 9523; total_visits: 25261; iterations: 9856; reused: 16500; policy: robust; proven_root: none; proven_root_stm: none; top3: [f8d6:vt=25261,vn=9523,q=0.543,p=0.016, g4f3:vt=302,vn=162,q=0.331,p=0.197, a8c8:vt=176,vn=0,q=0.422,p=0.016]
+2026-06-01 18:53:11,434: INFO: move_number: 6; Black move: f8d6
+2026-06-01 18:53:11,434: INFO: MCTSTrad; WHITE; move_number: 7; starting search; time_budget: 20.000000s
+2026-06-01 18:53:31,656: INFO: MCTSTrad; WHITE; move_number: 7; time: 20.221086s; move: b5d6; value: 0.4620; new_visits: 10321; total_visits: 25897; iterations: 10496; reused: 18065; policy: robust; proven_root: none; proven_root_stm: none; top3: [b5d6:vt=25897,vn=10321,q=0.462,p=0.148, f4d6:vt=1179,vn=16,q=0.444,p=0.064, d3e3:vt=225,vn=2,q=0.444,p=0.012]
+2026-06-01 18:53:31,656: INFO: move_number: 7; White move: b5d6
+2026-06-01 18:53:31,656: INFO: MCTSTrad; BLACK; move_number: 7; starting search; time_budget: 20.000000s
+2026-06-01 18:53:51,770: INFO: MCTSTrad; BLACK; move_number: 7; time: 20.113631s; move: c7d6; value: 0.5476; new_visits: 11827; total_visits: 34061; iterations: 11904; reused: 22662; policy: robust; proven_root: none; proven_root_stm: none; top3: [c7d6:vt=34061,vn=11827,q=0.548,p=0.445, d8d6:vt=422,vn=64,q=0.161,p=0.445, e8f8:vt=28,vn=4,q=0.078,p=0.037]
+2026-06-01 18:53:51,770: INFO: move_number: 7; Black move: c7d6
+2026-06-01 18:53:51,770: INFO: MCTSTrad; WHITE; move_number: 8; starting search; time_budget: 20.000000s
+2026-06-01 18:54:11,799: INFO: MCTSTrad; WHITE; move_number: 8; time: 20.027961s; move: d3b5; value: 0.4595; new_visits: 490; total_visits: 13343; iterations: 11648; reused: 25452; policy: robust; proven_root: none; proven_root_stm: none; top3: [d3b5:vt=13343,vn=490,q=0.459,p=0.015, a1d1:vt=4419,vn=3390,q=0.459,p=0.015, f4g5:vt=3094,vn=96,q=0.458,p=0.015]
+2026-06-01 18:54:11,799: INFO: move_number: 8; White move: d3b5
+2026-06-01 18:54:11,799: INFO: MCTSTrad; BLACK; move_number: 8; starting search; time_budget: 20.000000s
+2026-06-01 18:54:32,547: INFO: MCTSTrad; BLACK; move_number: 8; time: 20.747355s; move: a8c8; value: 0.5918; new_visits: 8270; total_visits: 18146; iterations: 8320; reused: 13050; policy: robust; proven_root: none; proven_root_stm: none; top3: [a8c8:vt=18146,vn=8270,q=0.592,p=0.022, g4f3:vt=1568,vn=0,q=0.490,p=0.273, d8e7:vt=218,vn=0,q=0.498,p=0.022]
+2026-06-01 18:54:32,547: INFO: move_number: 8; Black move: a8c8
+2026-06-01 18:54:32,547: INFO: MCTSTrad; WHITE; move_number: 9; starting search; time_budget: 20.000000s
+2026-06-01 18:54:52,849: INFO: MCTSTrad; WHITE; move_number: 9; time: 20.299902s; move: a1d1; value: 0.4205; new_visits: 1238; total_visits: 6251; iterations: 8320; reused: 10169; policy: robust; proven_root: none; proven_root_stm: none; top3: [a1d1:vt=6251,vn=1238,q=0.421,p=0.015, h1g1:vt=2040,vn=1803,q=0.419,p=0.015, c2c3:vt=866,vn=680,q=0.471,p=0.015]
+2026-06-01 18:54:52,849: INFO: move_number: 9; White move: a1d1
+2026-06-01 18:54:52,849: INFO: MCTSTrad; BLACK; move_number: 9; starting search; time_budget: 20.000000s
+2026-06-01 18:55:13,067: INFO: MCTSTrad; BLACK; move_number: 9; time: 20.215062s; move: d8c7; value: 0.6235; new_visits: 9515; total_visits: 13860; iterations: 9728; reused: 6251; policy: robust; proven_root: none; proven_root_stm: none; top3: [d8c7:vt=13860,vn=9515,q=0.623,p=0.023, g4f3:vt=693,vn=0,q=0.485,p=0.279, d8e7:vt=230,vn=0,q=0.516,p=0.023]
+2026-06-01 18:55:13,067: INFO: move_number: 9; Black move: d8c7
+2026-06-01 18:55:13,068: INFO: MCTSTrad; WHITE; move_number: 10; starting search; time_budget: 20.000000s
+2026-06-01 18:55:33,342: INFO: MCTSTrad; WHITE; move_number: 10; time: 20.273113s; move: b5a4; value: 0.4697; new_visits: 5152; total_visits: 5348; iterations: 10112; reused: 4345; policy: robust; proven_root: none; proven_root_stm: none; top3: [b5a4:vt=5348,vn=5152,q=0.470,p=0.015, h2h4:vt=1781,vn=1500,q=0.351,p=0.015, h2h3:vt=1431,vn=582,q=0.350,p=0.015]
+2026-06-01 18:55:33,342: INFO: move_number: 10; White move: b5a4
+2026-06-01 18:55:33,342: INFO: MCTSTrad; BLACK; move_number: 10; starting search; time_budget: 20.000000s
+2026-06-01 18:55:53,692: INFO: MCTSTrad; BLACK; move_number: 10; time: 20.348798s; move: e8e7; value: 0.5945; new_visits: 4562; total_visits: 4714; iterations: 9728; reused: 4751; policy: robust; proven_root: none; proven_root_stm: none; top3: [e8e7:vt=4714,vn=4562,q=0.595,p=0.021, f6h5:vt=3606,vn=3368,q=0.547,p=0.021, g4f3:vt=1892,vn=275,q=0.521,p=0.261]
+2026-06-01 18:55:53,692: INFO: move_number: 10; Black move: e8e7
+2026-06-01 18:55:53,692: INFO: MCTSTrad; WHITE; move_number: 11; starting search; time_budget: 20.000000s
+2026-06-01 18:56:13,769: INFO: MCTSTrad; WHITE; move_number: 11; time: 20.076859s; move: a4a3; value: 0.4682; new_visits: 5840; total_visits: 5889; iterations: 7424; reused: 284; policy: robust; proven_root: none; proven_root_stm: none; top3: [a4a3:vt=5889,vn=5840,q=0.468,p=0.017, h1g1:vt=243,vn=235,q=0.422,p=0.017, c2c3:vt=181,vn=174,q=0.419,p=0.017]
+2026-06-01 18:56:13,769: INFO: move_number: 11; White move: a4a3
+2026-06-01 18:56:13,769: INFO: MCTSTrad; BLACK; move_number: 11; starting search; time_budget: 20.000000s
+2026-06-01 18:56:34,077: INFO: MCTSTrad; BLACK; move_number: 11; time: 20.306742s; move: g4f3; value: 0.5197; new_visits: 4258; total_visits: 5745; iterations: 7680; reused: 2935; policy: robust; proven_root: none; proven_root_stm: none; top3: [g4f3:vt=5745,vn=4258,q=0.520,p=0.180, f6h5:vt=1277,vn=1245,q=0.523,p=0.015, h7h6:vt=378,vn=303,q=0.517,p=0.015]
+2026-06-01 18:56:34,077: INFO: move_number: 11; Black move: g4f3
+2026-06-01 18:56:34,077: INFO: MCTSTrad; WHITE; move_number: 12; starting search; time_budget: 20.000000s
+2026-06-01 18:56:54,086: INFO: MCTSTrad; WHITE; move_number: 12; time: 20.008426s; move: e2f3; value: 0.5144; new_visits: 9783; total_visits: 12571; iterations: 9984; reused: 3408; policy: robust; proven_root: none; proven_root_stm: none; top3: [e2f3:vt=12571,vn=9783,q=0.514,p=0.067, g2f3:vt=310,vn=0,q=0.415,p=0.067, f4d6:vt=82,vn=37,q=0.078,p=0.155]
+2026-06-01 18:56:54,086: INFO: move_number: 12; White move: e2f3
+2026-06-01 18:56:54,086: INFO: MCTSTrad; BLACK; move_number: 12; starting search; time_budget: 20.000000s
+2026-06-01 18:57:14,131: INFO: MCTSTrad; BLACK; move_number: 12; time: 20.044857s; move: h8d8; value: 0.4823; new_visits: 7909; total_visits: 8129; iterations: 11008; reused: 5079; policy: robust; proven_root: none; proven_root_stm: none; top3: [h8d8:vt=8129,vn=7909,q=0.482,p=0.019, f6h5:vt=2669,vn=840,q=0.480,p=0.019, c6d4:vt=733,vn=465,q=0.404,p=0.227]
+2026-06-01 18:57:14,131: INFO: move_number: 12; Black move: h8d8
+2026-06-01 18:57:14,132: INFO: MCTSTrad; WHITE; move_number: 13; starting search; time_budget: 20.000000s
+2026-06-01 18:57:34,280: INFO: MCTSTrad; WHITE; move_number: 13; time: 20.148055s; move: c2c3; value: 0.5839; new_visits: 13653; total_visits: 18190; iterations: 13824; reused: 6257; policy: robust; proven_root: none; proven_root_stm: none; top3: [c2c3:vt=18190,vn=13653,q=0.584,p=0.015, f1b5:vt=461,vn=0,q=0.456,p=0.015, c2c4:vt=429,vn=0,q=0.456,p=0.015]
+2026-06-01 18:57:34,280: INFO: move_number: 13; White move: c2c3
+2026-06-01 18:57:34,280: INFO: MCTSTrad; BLACK; move_number: 13; starting search; time_budget: 20.000000s
+2026-06-01 18:57:54,331: INFO: MCTSTrad; BLACK; move_number: 13; time: 20.050735s; move: e7f8; value: 0.4269; new_visits: 7224; total_visits: 7897; iterations: 13696; reused: 6389; policy: robust; proven_root: none; proven_root_stm: none; top3: [e7f8:vt=7897,vn=7224,q=0.427,p=0.022, f6h5:vt=3957,vn=1306,q=0.426,p=0.022, a7a6:vt=1517,vn=1225,q=0.448,p=0.022]
+2026-06-01 18:57:54,332: INFO: move_number: 13; Black move: e7f8
+2026-06-01 18:57:54,332: INFO: MCTSTrad; WHITE; move_number: 14; starting search; time_budget: 20.000000s
+2026-06-01 18:58:14,465: INFO: MCTSTrad; WHITE; move_number: 14; time: 20.133007s; move: f1d3; value: 0.6229; new_visits: 12887; total_visits: 18286; iterations: 13056; reused: 7477; policy: robust; proven_root: none; proven_root_stm: none; top3: [f1d3:vt=18286,vn=12887,q=0.623,p=0.016, g2g4:vt=184,vn=0,q=0.464,p=0.016, h2h4:vt=144,vn=0,q=0.461,p=0.016]
+2026-06-01 18:58:14,465: INFO: move_number: 14; White move: f1d3
+2026-06-01 18:58:14,465: INFO: MCTSTrad; BLACK; move_number: 14; starting search; time_budget: 20.000000s
+2026-06-01 18:58:34,483: INFO: MCTSTrad; BLACK; move_number: 14; time: 20.017594s; move: a7a6; value: 0.3901; new_visits: 9163; total_visits: 10519; iterations: 13184; reused: 5814; policy: robust; proven_root: none; proven_root_stm: none; top3: [a7a6:vt=10519,vn=9163,q=0.390,p=0.023, h7h6:vt=1885,vn=846,q=0.406,p=0.023, a7a5:vt=1206,vn=1006,q=0.385,p=0.023]
+2026-06-01 18:58:34,484: INFO: move_number: 14; Black move: a7a6
+2026-06-01 18:58:34,484: INFO: MCTSTrad; WHITE; move_number: 15; starting search; time_budget: 20.000000s
+2026-06-01 18:58:54,623: INFO: MCTSTrad; WHITE; move_number: 15; time: 20.139382s; move: e1g1; value: 0.6314; new_visits: 12771; total_visits: 19321; iterations: 12928; reused: 10453; policy: robust; proven_root: none; proven_root_stm: none; top3: [e1g1:vt=19321,vn=12771,q=0.631,p=0.013, e1e2:vt=231,vn=0,q=0.520,p=0.013, b2b4:vt=221,vn=0,q=0.519,p=0.013]
+2026-06-01 18:58:54,624: INFO: move_number: 15; White move: e1g1
+2026-06-01 18:58:54,624: INFO: MCTSTrad; BLACK; move_number: 15; starting search; time_budget: 20.000000s
+2026-06-01 18:59:14,788: INFO: MCTSTrad; BLACK; move_number: 15; time: 20.163447s; move: h7h6; value: 0.3962; new_visits: 11959; total_visits: 13105; iterations: 12800; reused: 6616; policy: robust; proven_root: none; proven_root_stm: none; top3: [h7h6:vt=13105,vn=11959,q=0.396,p=0.023, d8d7:vt=1171,vn=81,q=0.338,p=0.023, f8e7:vt=572,vn=7,q=0.335,p=0.023]
+2026-06-01 18:59:14,788: INFO: move_number: 15; Black move: h7h6
+2026-06-01 18:59:14,788: INFO: MCTSTrad; WHITE; move_number: 16; starting search; time_budget: 20.000000s
+2026-06-01 18:59:34,882: INFO: MCTSTrad; WHITE; move_number: 16; time: 20.093671s; move: f1e1; value: 0.6994; new_visits: 14222; total_visits: 21176; iterations: 14336; reused: 13010; policy: robust; proven_root: none; proven_root_stm: none; top3: [f1e1:vt=21176,vn=14222,q=0.699,p=0.013, f4e5:vt=506,vn=0,q=0.528,p=0.013, d1e1:vt=431,vn=0,q=0.527,p=0.013]
+2026-06-01 18:59:34,882: INFO: move_number: 16; White move: f1e1
+2026-06-01 18:59:34,882: INFO: MCTSTrad; BLACK; move_number: 16; starting search; time_budget: 20.000000s
+2026-06-01 18:59:54,922: INFO: MCTSTrad; BLACK; move_number: 16; time: 20.039305s; move: f6h5; value: 0.3131; new_visits: 6457; total_visits: 7065; iterations: 14592; reused: 7048; policy: robust; proven_root: none; proven_root_stm: none; top3: [f6h5:vt=7065,vn=6457,q=0.313,p=0.023, f8e7:vt=2643,vn=1224,q=0.317,p=0.023, d8d7:vt=1673,vn=1395,q=0.310,p=0.023]
+2026-06-01 18:59:54,922: INFO: move_number: 16; Black move: f6h5
+2026-06-01 18:59:54,922: INFO: MCTSTrad; WHITE; move_number: 17; starting search; time_budget: 20.000000s
+2026-06-01 19:00:15,060: INFO: MCTSTrad; WHITE; move_number: 17; time: 20.137207s; move: f4e3; value: 0.6700; new_visits: 17953; total_visits: 23668; iterations: 18560; reused: 7056; policy: robust; proven_root: none; proven_root_stm: none; top3: [f4e3:vt=23668,vn=17953,q=0.670,p=0.012, f4e5:vt=420,vn=0,q=0.559,p=0.012, f4d2:vt=364,vn=0,q=0.559,p=0.012]
+2026-06-01 19:00:15,060: INFO: move_number: 17; White move: f4e3
+2026-06-01 19:00:15,060: INFO: MCTSTrad; BLACK; move_number: 17; starting search; time_budget: 20.000000s
+2026-06-01 19:00:35,215: INFO: MCTSTrad; BLACK; move_number: 17; time: 20.154232s; move: h5f6; value: 0.3505; new_visits: 18796; total_visits: 19901; iterations: 19072; reused: 5724; policy: robust; proven_root: none; proven_root_stm: none; top3: [h5f6:vt=19901,vn=18796,q=0.351,p=0.024, c6d4:vt=474,vn=85,q=0.154,p=0.296, f8g8:vt=304,vn=0,q=0.278,p=0.024]
+2026-06-01 19:00:35,215: INFO: move_number: 17; Black move: h5f6
+2026-06-01 19:00:35,215: INFO: MCTSTrad; WHITE; move_number: 18; starting search; time_budget: 20.000000s
+2026-06-01 19:00:55,329: INFO: MCTSTrad; WHITE; move_number: 18; time: 20.113215s; move: b2b4; value: 0.6549; new_visits: 17020; total_visits: 31342; iterations: 17280; reused: 18825; policy: robust; proven_root: none; proven_root_stm: none; top3: [b2b4:vt=31342,vn=17020,q=0.655,p=0.016, e3f4:vt=305,vn=0,q=0.581,p=0.016, g2g4:vt=251,vn=0,q=0.579,p=0.016]
+2026-06-01 19:00:55,329: INFO: move_number: 18; White move: b2b4
+2026-06-01 19:00:55,329: INFO: MCTSTrad; BLACK; move_number: 18; starting search; time_budget: 20.000000s
+2026-06-01 19:01:15,461: INFO: MCTSTrad; BLACK; move_number: 18; time: 20.131657s; move: c6a7; value: 0.3592; new_visits: 16049; total_visits: 22994; iterations: 17024; reused: 15386; policy: robust; proven_root: none; proven_root_stm: none; top3: [c6a7:vt=22994,vn=16049,q=0.359,p=0.018, c6e7:vt=2261,vn=245,q=0.324,p=0.018, c6b8:vt=1865,vn=37,q=0.323,p=0.018]
+2026-06-01 19:01:15,461: INFO: move_number: 18; Black move: c6a7
+2026-06-01 19:01:15,461: INFO: MCTSTrad; WHITE; move_number: 19; starting search; time_budget: 20.000000s
+2026-06-01 19:01:35,511: INFO: MCTSTrad; WHITE; move_number: 19; time: 20.049467s; move: d1c1; value: 0.6725; new_visits: 13076; total_visits: 34014; iterations: 13312; reused: 21934; policy: robust; proven_root: none; proven_root_stm: none; top3: [d1c1:vt=34014,vn=13076,q=0.673,p=0.014, d3a6:vt=299,vn=66,q=0.455,p=0.173, e3h6:vt=211,vn=112,q=0.366,p=0.173]
+2026-06-01 19:01:35,511: INFO: move_number: 19; White move: d1c1
+2026-06-01 19:01:35,511: INFO: MCTSTrad; BLACK; move_number: 19; starting search; time_budget: 20.000000s
+2026-06-01 19:01:55,598: INFO: MCTSTrad; BLACK; move_number: 19; time: 20.085884s; move: a7b5; value: 0.3341; new_visits: 11868; total_visits: 31589; iterations: 13056; reused: 21996; policy: robust; proven_root: none; proven_root_stm: none; top3: [a7b5:vt=31589,vn=11868,q=0.334,p=0.023, c7c3:vt=416,vn=112,q=0.080,p=0.282, a7c6:vt=224,vn=97,q=0.296,p=0.023]
+2026-06-01 19:01:55,598: INFO: move_number: 19; Black move: a7b5
+2026-06-01 19:01:55,598: INFO: MCTSTrad; WHITE; move_number: 20; starting search; time_budget: 20.000000s
+2026-06-01 19:02:15,684: INFO: MCTSTrad; WHITE; move_number: 20; time: 20.085347s; move: a3b2; value: 0.6907; new_visits: 11043; total_visits: 27235; iterations: 11136; reused: 30681; policy: robust; proven_root: none; proven_root_stm: none; top3: [a3b2:vt=27235,vn=11043,q=0.691,p=0.015, d3b5:vt=13747,vn=0,q=0.641,p=0.180, a3b3:vt=249,vn=0,q=0.627,p=0.015]
+2026-06-01 19:02:15,684: INFO: move_number: 20; White move: a3b2
+2026-06-01 19:02:15,684: INFO: MCTSTrad; BLACK; move_number: 20; starting search; time_budget: 20.000000s
+2026-06-01 19:02:35,878: INFO: MCTSTrad; BLACK; move_number: 20; time: 20.193880s; move: c7c6; value: 0.3265; new_visits: 10130; total_visits: 17812; iterations: 10624; reused: 17097; policy: robust; proven_root: none; proven_root_stm: none; top3: [c7c6:vt=17812,vn=10130,q=0.327,p=0.015, b5c3:vt=6894,vn=0,q=0.294,p=0.183, c7c3:vt=603,vn=59,q=0.215,p=0.183]
+2026-06-01 19:02:35,878: INFO: move_number: 20; Black move: c7c6
+2026-06-01 19:02:35,879: INFO: MCTSTrad; WHITE; move_number: 21; starting search; time_budget: 20.000000s
+2026-06-01 19:02:55,888: INFO: MCTSTrad; WHITE; move_number: 21; time: 20.008876s; move: f3f4; value: 0.7218; new_visits: 8881; total_visits: 23302; iterations: 8960; reused: 17326; policy: robust; proven_root: none; proven_root_stm: none; top3: [f3f4:vt=23302,vn=8881,q=0.722,p=0.017, e3d2:vt=502,vn=0,q=0.591,p=0.017, d3b5:vt=445,vn=0,q=0.560,p=0.202]
+2026-06-01 19:02:55,888: INFO: move_number: 21; White move: f3f4
+2026-06-01 19:02:55,888: INFO: MCTSTrad; BLACK; move_number: 21; starting search; time_budget: 20.000000s
+2026-06-01 19:03:16,035: INFO: MCTSTrad; BLACK; move_number: 21; time: 20.146049s; move: f8g8; value: 0.2867; new_visits: 5855; total_visits: 12229; iterations: 9728; reused: 14875; policy: robust; proven_root: none; proven_root_stm: none; top3: [f8g8:vt=12229,vn=5855,q=0.287,p=0.015, b5c3:vt=7829,vn=1295,q=0.279,p=0.183, c6c3:vt=567,vn=375,q=0.185,p=0.183]
+2026-06-01 19:03:16,035: INFO: move_number: 21; Black move: f8g8
+2026-06-01 19:03:16,035: INFO: MCTSTrad; WHITE; move_number: 22; starting search; time_budget: 20.000000s
+2026-06-01 19:03:36,293: INFO: MCTSTrad; WHITE; move_number: 22; time: 20.257407s; move: f4f5; value: 0.7570; new_visits: 8397; total_visits: 18148; iterations: 8448; reused: 11638; policy: robust; proven_root: none; proven_root_stm: none; top3: [f4f5:vt=18148,vn=8397,q=0.757,p=0.020, d3b5:vt=440,vn=0,q=0.574,p=0.245, a2a3:vt=257,vn=0,q=0.647,p=0.020]
+2026-06-01 19:03:36,293: INFO: move_number: 22; White move: f4f5
+2026-06-01 19:03:36,293: INFO: MCTSTrad; BLACK; move_number: 22; starting search; time_budget: 20.000000s
+2026-06-01 19:03:56,488: INFO: MCTSTrad; BLACK; move_number: 22; time: 20.195131s; move: b5c3; value: 0.2513; new_visits: 2639; total_visits: 11041; iterations: 8576; reused: 10336; policy: robust; proven_root: none; proven_root_stm: none; top3: [b5c3:vt=11041,vn=2639,q=0.251,p=0.155, e6f5:vt=4897,vn=4358,q=0.246,p=0.155, d8e8:vt=884,vn=822,q=0.251,p=0.013]
+2026-06-01 19:03:56,488: INFO: move_number: 22; Black move: b5c3
+2026-06-01 19:03:56,489: INFO: MCTSTrad; WHITE; move_number: 23; starting search; time_budget: 20.000000s
+2026-06-01 19:04:16,528: INFO: MCTSTrad; WHITE; move_number: 23; time: 20.039111s; move: f5e6; value: 0.7906; new_visits: 8212; total_visits: 17988; iterations: 8576; reused: 10435; policy: robust; proven_root: none; proven_root_stm: none; top3: [f5e6:vt=17988,vn=8212,q=0.791,p=0.127, e3d2:vt=78,vn=0,q=0.638,p=0.010, b2c2:vt=72,vn=0,q=0.636,p=0.010]
+2026-06-01 19:04:16,528: INFO: move_number: 23; White move: f5e6
+2026-06-01 19:04:16,528: INFO: MCTSTrad; BLACK; move_number: 23; starting search; time_budget: 20.000000s
+2026-06-01 19:04:36,756: INFO: MCTSTrad; BLACK; move_number: 23; time: 20.226861s; move: f7e6; value: 0.2181; new_visits: 7085; total_visits: 15150; iterations: 8832; reused: 10379; policy: robust; proven_root: none; proven_root_stm: none; top3: [f7e6:vt=15150,vn=7085,q=0.218,p=0.200, f6e4:vt=845,vn=519,q=0.235,p=0.016, c3a2:vt=303,vn=108,q=0.040,p=0.200]
+2026-06-01 19:04:36,756: INFO: move_number: 23; Black move: f7e6
+2026-06-01 19:04:36,756: INFO: MCTSTrad; WHITE; move_number: 24; starting search; time_budget: 20.000000s
+2026-06-01 19:04:56,967: INFO: MCTSTrad; WHITE; move_number: 24; time: 20.210886s; move: e3d2; value: 0.8035; new_visits: 9972; total_visits: 22405; iterations: 10112; reused: 14319; policy: robust; proven_root: none; proven_root_stm: none; top3: [e3d2:vt=22405,vn=9972,q=0.804,p=0.011, e3h6:vt=128,vn=68,q=0.469,p=0.137, b2b3:vt=119,vn=0,q=0.641,p=0.011]
+2026-06-01 19:04:56,967: INFO: move_number: 24; White move: e3d2
+2026-06-01 19:04:56,968: INFO: MCTSTrad; BLACK; move_number: 24; starting search; time_budget: 20.000000s
+2026-06-01 19:05:17,901: INFO: MCTSTrad; BLACK; move_number: 24; time: 20.933167s; move: c3a4; value: 0.2165; new_visits: 9861; total_visits: 20080; iterations: 10368; reused: 13258; policy: robust; proven_root: none; proven_root_stm: none; top3: [c3a4:vt=20080,vn=9861,q=0.217,p=0.020, f6e4:vt=1642,vn=120,q=0.193,p=0.020, c3a2:vt=463,vn=85,q=0.053,p=0.240]
+2026-06-01 19:05:17,901: INFO: move_number: 24; Black move: c3a4
+2026-06-01 19:05:17,901: INFO: MCTSTrad; WHITE; move_number: 25; starting search; time_budget: 20.000000s
+2026-06-01 19:05:38,073: INFO: MCTSTrad; WHITE; move_number: 25; time: 20.171534s; move: b2b3; value: 0.8030; new_visits: 9883; total_visits: 27954; iterations: 9984; reused: 18861; policy: robust; proven_root: none; proven_root_stm: none; top3: [b2b3:vt=27954,vn=9883,q=0.803,p=0.011, b2a3:vt=136,vn=0,q=0.735,p=0.011, b2b1:vt=120,vn=0,q=0.738,p=0.011]
+2026-06-01 19:05:38,073: INFO: move_number: 25; White move: b2b3
+2026-06-01 19:05:38,074: INFO: MCTSTrad; BLACK; move_number: 25; starting search; time_budget: 20.000000s
+2026-06-01 19:05:58,080: INFO: MCTSTrad; BLACK; move_number: 25; time: 20.006159s; move: c6d7; value: 0.2094; new_visits: 9207; total_visits: 19108; iterations: 9472; reused: 19274; policy: robust; proven_root: none; proven_root_stm: none; top3: [c6d7:vt=19108,vn=9207,q=0.209,p=0.021, c6e8:vt=5011,vn=0,q=0.194,p=0.021, c6c1:vt=2784,vn=0,q=0.173,p=0.258]
+2026-06-01 19:05:58,080: INFO: move_number: 25; Black move: c6d7
+2026-06-01 19:05:58,081: INFO: MCTSTrad; WHITE; move_number: 26; starting search; time_budget: 20.000000s
+2026-06-01 19:06:18,091: INFO: MCTSTrad; WHITE; move_number: 26; time: 20.009559s; move: b4b5; value: 0.8180; new_visits: 9664; total_visits: 25408; iterations: 9728; reused: 18363; policy: robust; proven_root: none; proven_root_stm: none; top3: [b4b5:vt=25408,vn=9664,q=0.818,p=0.008, c1c8:vt=227,vn=8,q=0.669,p=0.100, d3g6:vt=145,vn=0,q=0.719,p=0.008]
+2026-06-01 19:06:18,091: INFO: move_number: 26; White move: b4b5
+2026-06-01 19:06:18,091: INFO: MCTSTrad; BLACK; move_number: 26; starting search; time_budget: 20.000000s
+2026-06-01 19:06:38,322: INFO: MCTSTrad; BLACK; move_number: 26; time: 20.230330s; move: c8c1; value: 0.1900; new_visits: 8788; total_visits: 23300; iterations: 9984; reused: 16485; policy: robust; proven_root: none; proven_root_stm: none; top3: [c8c1:vt=23300,vn=8788,q=0.190,p=0.175, a6b5:vt=724,vn=332,q=0.114,p=0.175, d7b5:vt=489,vn=108,q=0.077,p=0.175]
+2026-06-01 19:06:38,322: INFO: move_number: 26; Black move: c8c1
+2026-06-01 19:06:38,322: INFO: MCTSTrad; WHITE; move_number: 27; starting search; time_budget: 20.000000s
+2026-06-01 19:06:58,603: INFO: MCTSTrad; WHITE; move_number: 27; time: 20.280848s; move: d2c1; value: 0.8232; new_visits: 10495; total_visits: 31765; iterations: 10624; reused: 22622; policy: robust; proven_root: none; proven_root_stm: none; top3: [d2c1:vt=31765,vn=10495,q=0.823,p=0.110, e1c1:vt=1062,vn=0,q=0.765,p=0.110, b3a4:vt=116,vn=68,q=0.479,p=0.110]
+2026-06-01 19:06:58,603: INFO: move_number: 27; White move: d2c1
+2026-06-01 19:06:58,603: INFO: MCTSTrad; BLACK; move_number: 27; starting search; time_budget: 20.000000s
+2026-06-01 19:07:18,793: INFO: MCTSTrad; BLACK; move_number: 27; time: 20.189370s; move: f6e4; value: 0.1854; new_visits: 2667; total_visits: 19591; iterations: 10240; reused: 21945; policy: robust; proven_root: none; proven_root_stm: none; top3: [f6e4:vt=19591,vn=2667,q=0.185,p=0.019, d8a8:vt=5102,vn=4999,q=0.187,p=0.019, f6h7:vt=1271,vn=815,q=0.181,p=0.019]
+2026-06-01 19:07:18,793: INFO: move_number: 27; Black move: f6e4
+2026-06-01 19:07:18,793: INFO: MCTSTrad; WHITE; move_number: 28; starting search; time_budget: 20.000000s
+2026-06-01 19:07:38,844: INFO: MCTSTrad; WHITE; move_number: 28; time: 20.050692s; move: b3a4; value: 0.8366; new_visits: 9473; total_visits: 26929; iterations: 9600; reused: 19591; policy: robust; proven_root: none; proven_root_stm: none; top3: [b3a4:vt=26929,vn=9473,q=0.837,p=0.115, f2f3:vt=523,vn=0,q=0.776,p=0.009, b5a6:vt=365,vn=7,q=0.730,p=0.115]
+2026-06-01 19:07:38,845: INFO: move_number: 28; White move: b3a4
+2026-06-01 19:07:38,845: INFO: MCTSTrad; BLACK; move_number: 28; starting search; time_budget: 20.000000s
+2026-06-01 19:07:58,860: INFO: MCTSTrad; BLACK; move_number: 28; time: 20.014512s; move: d8f8; value: 0.1754; new_visits: 5650; total_visits: 9634; iterations: 10496; reused: 17456; policy: robust; proven_root: none; proven_root_stm: none; top3: [d8f8:vt=9634,vn=5650,q=0.175,p=0.016, e4f2:vt=5287,vn=1251,q=0.159,p=0.192, a6b5:vt=2643,vn=583,q=0.148,p=0.192]
+2026-06-01 19:07:58,860: INFO: move_number: 28; Black move: d8f8
+2026-06-01 19:07:58,860: INFO: MCTSTrad; WHITE; move_number: 29; starting search; time_budget: 20.000000s
+2026-06-01 19:08:18,878: INFO: MCTSTrad; WHITE; move_number: 29; time: 20.017692s; move: f2f3; value: 0.8240; new_visits: 5499; total_visits: 11354; iterations: 10496; reused: 8612; policy: robust; proven_root: none; proven_root_stm: none; top3: [f2f3:vt=11354,vn=5499,q=0.824,p=0.011, d3e4:vt=4392,vn=3946,q=0.816,p=0.131, a4b3:vt=853,vn=409,q=0.820,p=0.011]
+2026-06-01 19:08:18,878: INFO: move_number: 29; White move: f2f3
+2026-06-01 19:08:18,879: INFO: MCTSTrad; BLACK; move_number: 29; starting search; time_budget: 20.000000s
+2026-06-01 19:08:38,927: INFO: MCTSTrad; BLACK; move_number: 29; time: 20.047838s; move: e4c3; value: 0.2321; new_visits: 14237; total_visits: 16852; iterations: 16128; reused: 6873; policy: robust; proven_root: none; proven_root_stm: none; top3: [e4c3:vt=16852,vn=14237,q=0.232,p=0.015, f8f3:vt=2008,vn=171,q=0.147,p=0.178, e4c5:vt=508,vn=464,q=0.159,p=0.015]
+2026-06-01 19:08:38,927: INFO: move_number: 29; Black move: e4c3
+2026-06-01 19:08:38,927: INFO: MCTSTrad; WHITE; move_number: 30; starting search; time_budget: 20.000000s
+2026-06-01 19:08:59,049: INFO: MCTSTrad; WHITE; move_number: 30; time: 20.122050s; move: a4c2; value: 0.7932; new_visits: 17856; total_visits: 22432; iterations: 18176; reused: 5205; policy: robust; proven_root: none; proven_root_stm: none; top3: [a4c2:vt=22432,vn=17856,q=0.793,p=0.011, a4a5:vt=279,vn=14,q=0.763,p=0.011, a4b4:vt=90,vn=77,q=0.750,p=0.011]
+2026-06-01 19:08:59,050: INFO: move_number: 30; White move: a4c2
+2026-06-01 19:08:59,050: INFO: MCTSTrad; BLACK; move_number: 30; starting search; time_budget: 20.000000s
+2026-06-01 19:09:19,093: INFO: MCTSTrad; BLACK; move_number: 30; time: 20.042607s; move: c3b5; value: 0.2020; new_visits: 16234; total_visits: 31009; iterations: 17280; reused: 16045; policy: robust; proven_root: none; proven_root_stm: none; top3: [c3b5:vt=31009,vn=16234,q=0.202,p=0.132, a6b5:vt=475,vn=253,q=0.099,p=0.132, c3a2:vt=411,vn=205,q=0.083,p=0.132]
+2026-06-01 19:09:19,093: INFO: move_number: 30; Black move: c3b5
+2026-06-01 19:09:19,093: INFO: MCTSTrad; WHITE; move_number: 31; starting search; time_budget: 20.000000s
+2026-06-01 19:09:39,261: INFO: MCTSTrad; WHITE; move_number: 31; time: 20.167065s; move: c1b2; value: 0.8024; new_visits: 16502; total_visits: 31274; iterations: 16768; reused: 20828; policy: robust; proven_root: none; proven_root_stm: none; top3: [c1b2:vt=31274,vn=16502,q=0.802,p=0.012, d3b5:vt=4736,vn=0,q=0.770,p=0.148, c1h6:vt=318,vn=117,q=0.622,p=0.148]
+2026-06-01 19:09:39,261: INFO: move_number: 31; White move: c1b2
+2026-06-01 19:09:39,261: INFO: MCTSTrad; BLACK; move_number: 31; starting search; time_budget: 20.000000s
+2026-06-01 19:09:59,297: INFO: MCTSTrad; BLACK; move_number: 31; time: 20.036026s; move: f8c8; value: 0.2178; new_visits: 21838; total_visits: 32858; iterations: 22016; reused: 24878; policy: robust; proven_root: none; proven_root_stm: none; top3: [f8c8:vt=32858,vn=21838,q=0.218,p=0.019, b5d4:vt=7743,vn=0,q=0.182,p=0.233, f8f3:vt=765,vn=67,q=0.086,p=0.233]
+2026-06-01 19:09:59,297: INFO: move_number: 31; Black move: f8c8
+2026-06-01 19:09:59,298: INFO: MCTSTrad; WHITE; move_number: 32; starting search; time_budget: 20.000000s
+2026-06-01 19:10:19,773: INFO: MCTSTrad; WHITE; move_number: 32; time: 20.475489s; move: c2e2; value: 0.8042; new_visits: 29454; total_visits: 44684; iterations: 29952; reused: 17415; policy: robust; proven_root: none; proven_root_stm: none; top3: [c2e2:vt=44684,vn=29454,q=0.804,p=0.015, d3b5:vt=678,vn=35,q=0.750,p=0.079, c2b3:vt=259,vn=0,q=0.765,p=0.015]
+2026-06-01 19:10:19,774: INFO: move_number: 32; White move: c2e2
+2026-06-01 19:10:19,774: INFO: MCTSTrad; BLACK; move_number: 32; starting search; time_budget: 20.000000s
+2026-06-01 19:10:39,872: INFO: MCTSTrad; BLACK; move_number: 32; time: 20.097999s; move: b5c3; value: 0.1963; new_visits: 28502; total_visits: 53988; iterations: 34688; reused: 30378; policy: robust; proven_root: none; proven_root_stm: none; top3: [b5c3:vt=53988,vn=28502,q=0.196,p=0.023, b5d4:vt=5371,vn=4022,q=0.171,p=0.282, c8e8:vt=756,vn=0,q=0.180,p=0.023]
+2026-06-01 19:10:39,872: INFO: move_number: 32; Black move: b5c3
+2026-06-01 19:10:39,872: INFO: MCTSTrad; WHITE; move_number: 33; starting search; time_budget: 20.000000s
+2026-06-01 19:10:59,911: INFO: MCTSTrad; WHITE; move_number: 33; time: 20.038200s; move: e2e6; value: 0.8256; new_visits: 42606; total_visits: 69442; iterations: 42752; reused: 38549; policy: robust; proven_root: none; proven_root_stm: none; top3: [e2e6:vt=69442,vn=42606,q=0.826,p=0.210, b2c3:vt=10794,vn=0,q=0.783,p=0.091, e2e3:vt=246,vn=0,q=0.770,p=0.017]
+2026-06-01 19:10:59,911: INFO: move_number: 33; White move: e2e6
+2026-06-01 19:10:59,911: INFO: MCTSTrad; BLACK; move_number: 33; starting search; time_budget: 20.000000s
+2026-06-01 19:11:20,500: INFO: MCTSTrad; BLACK; move_number: 33; time: 20.588193s; move: d7e6; value: 0.1705; new_visits: 41641; total_visits: 83203; iterations: 41984; reused: 42215; policy: robust; proven_root: none; proven_root_stm: none; top3: [d7e6:vt=83203,vn=41641,q=0.170,p=0.802, d7f7:vt=344,vn=122,q=0.065,p=0.066, g8f8:vt=331,vn=108,q=0.060,p=0.066]
+2026-06-01 19:11:20,500: INFO: move_number: 33; Black move: d7e6
+2026-06-01 19:11:20,500: INFO: MCTSTrad; WHITE; move_number: 34; starting search; time_budget: 20.000000s
+2026-06-01 19:11:40,575: INFO: MCTSTrad; WHITE; move_number: 34; time: 20.074075s; move: e1e6; value: 0.8427; new_visits: 42875; total_visits: 110971; iterations: 43008; reused: 68572; policy: robust; proven_root: none; proven_root_stm: none; top3: [e1e6:vt=110971,vn=42875,q=0.843,p=0.171, b2c3:vt=196,vn=48,q=0.259,p=0.171, d3a6:vt=66,vn=0,q=0.075,p=0.171,pv=0.0]
+2026-06-01 19:11:40,575: INFO: move_number: 34; White move: e1e6
+2026-06-01 19:11:40,575: INFO: MCTSTrad; BLACK; move_number: 34; starting search; time_budget: 20.000000s
+2026-06-01 19:12:00,606: INFO: MCTSTrad; BLACK; move_number: 34; time: 20.030582s; move: c3a2; value: 0.1577; new_visits: 24866; total_visits: 39985; iterations: 40832; reused: 82671; policy: robust; proven_root: none; proven_root_stm: none; top3: [c3a2:vt=39985,vn=24866,q=0.158,p=0.315, c3a4:vt=22156,vn=4656,q=0.160,p=0.026, c3d1:vt=21106,vn=4211,q=0.160,p=0.026]
+2026-06-01 19:12:00,606: INFO: move_number: 34; Black move: c3a2
+2026-06-01 19:12:00,606: INFO: MCTSTrad; WHITE; move_number: 35; starting search; time_budget: 20.000000s
+2026-06-01 19:12:20,660: INFO: MCTSTrad; WHITE; move_number: 35; time: 20.053499s; move: d3g6; value: 0.8453; new_visits: 36963; total_visits: 62528; iterations: 37632; reused: 27788; policy: robust; proven_root: none; proven_root_stm: none; top3: [d3g6:vt=62528,vn=36963,q=0.845,p=0.014, e6d6:vt=820,vn=111,q=0.740,p=0.168, d3a6:vt=441,vn=127,q=0.650,p=0.168]
+2026-06-01 19:12:20,660: INFO: move_number: 35; White move: d3g6
+2026-06-01 19:12:20,660: INFO: MCTSTrad; BLACK; move_number: 35; starting search; time_budget: 20.000000s
+2026-06-01 19:12:40,703: INFO: MCTSTrad; BLACK; move_number: 35; time: 20.042450s; move: c8d8; value: 0.1728; new_visits: 36890; total_visits: 37582; iterations: 41728; reused: 37593; policy: robust; proven_root: none; proven_root_stm: none; top3: [c8d8:vt=37582,vn=36890,q=0.173,p=0.031, a2b4:vt=33214,vn=2510,q=0.150,p=0.031, b7b5:vt=2386,vn=1881,q=0.145,p=0.031]
+2026-06-01 19:12:40,703: INFO: move_number: 35; Black move: c8d8
+2026-06-01 19:12:40,704: INFO: MCTSTrad; WHITE; move_number: 36; starting search; time_budget: 20.000000s
+2026-06-01 19:13:00,708: INFO: MCTSTrad; WHITE; move_number: 36; time: 20.003876s; move: b2a3; value: 0.8295; new_visits: 46878; total_visits: 66541; iterations: 47616; reused: 20901; policy: robust; proven_root: none; proven_root_stm: none; top3: [b2a3:vt=66541,vn=46878,q=0.829,p=0.021, e6e8:vt=253,vn=203,q=0.681,p=0.072, g6b1:vt=202,vn=36,q=0.776,p=0.021]
+2026-06-01 19:13:00,708: INFO: move_number: 36; White move: b2a3
+2026-06-01 19:13:00,708: INFO: MCTSTrad; BLACK; move_number: 36; starting search; time_budget: 20.000000s
+2026-06-01 19:13:20,742: INFO: MCTSTrad; BLACK; move_number: 36; time: 20.033766s; move: b7b5; value: 0.1612; new_visits: 16782; total_visits: 47617; iterations: 43648; reused: 36109; policy: robust; proven_root: none; proven_root_stm: none; top3: [b7b5:vt=47617,vn=16782,q=0.161,p=0.067, a2c3:vt=22297,vn=21758,q=0.195,p=0.067, a6a5:vt=4731,vn=4158,q=0.153,p=0.067]
+2026-06-01 19:13:20,742: INFO: move_number: 36; Black move: b7b5
+2026-06-01 19:13:20,743: INFO: MCTSTrad; WHITE; move_number: 37; starting search; time_budget: 20.000000s
+2026-06-01 19:13:40,788: INFO: MCTSTrad; WHITE; move_number: 37; time: 20.044650s; move: a3d6; value: 0.8432; new_visits: 52977; total_visits: 98236; iterations: 53632; reused: 47617; policy: robust; proven_root: none; proven_root_stm: none; top3: [a3d6:vt=98236,vn=52977,q=0.843,p=0.200, e6d6:vt=1614,vn=224,q=0.765,p=0.200, e6e8:vt=152,vn=92,q=0.606,p=0.057]
+2026-06-01 19:13:40,788: INFO: move_number: 37; White move: a3d6
+2026-06-01 19:13:40,788: INFO: MCTSTrad; BLACK; move_number: 37; starting search; time_budget: 20.000000s
+2026-06-01 19:14:00,813: INFO: MCTSTrad; BLACK; move_number: 37; time: 20.024559s; move: d8c8; value: 0.1619; new_visits: 52552; total_visits: 60587; iterations: 53120; reused: 45259; policy: robust; proven_root: none; proven_root_stm: none; top3: [d8c8:vt=60587,vn=52552,q=0.162,p=0.040, a6a5:vt=20527,vn=0,q=0.155,p=0.040, d8a8:vt=13724,vn=0,q=0.151,p=0.040]
+2026-06-01 19:14:00,813: INFO: move_number: 37; Black move: d8c8
+2026-06-01 19:14:00,813: INFO: MCTSTrad; WHITE; move_number: 38; starting search; time_budget: 20.000000s
+2026-06-01 19:14:21,933: INFO: MCTSTrad; WHITE; move_number: 38; time: 21.119619s; move: e6e5; value: 0.8507; new_visits: 42008; total_visits: 72709; iterations: 44416; reused: 60444; policy: robust; proven_root: none; proven_root_stm: none; top3: [e6e5:vt=72709,vn=42008,q=0.851,p=0.015, d6e7:vt=18586,vn=0,q=0.843,p=0.015, d6g3:vt=5766,vn=0,q=0.823,p=0.015]
+2026-06-01 19:14:21,933: INFO: move_number: 38; White move: e6e5
+2026-06-01 19:14:21,933: INFO: MCTSTrad; BLACK; move_number: 38; starting search; time_budget: 20.000000s
+2026-06-01 19:14:43,906: INFO: MCTSTrad; BLACK; move_number: 38; time: 22.004769s; move: c8d8; value: 0.1525; new_visits: 46905; total_visits: 72206; iterations: 48896; reused: 30842; policy: robust; proven_root: none; proven_root_stm: none; top3: [c8d8:vt=72206,vn=46905,q=0.152,p=0.033, c8c1:vt=2920,vn=920,q=0.075,p=0.404, b5b4:vt=749,vn=80,q=0.128,p=0.033]
+2026-06-01 19:14:43,907: INFO: move_number: 38; Black move: c8d8
+2026-06-01 19:14:43,907: INFO: MCTSTrad; WHITE; move_number: 39; starting search; time_budget: 20.000000s
+2026-06-01 19:15:03,904: INFO: MCTSTrad; WHITE; move_number: 39; time: 20.005455s; move: d6c7; value: 0.8598; new_visits: 40358; total_visits: 95842; iterations: 40832; reused: 65577; policy: robust; proven_root: none; proven_root_stm: none; top3: [d6c7:vt=95842,vn=40358,q=0.860,p=0.019, d6e7:vt=7294,vn=0,q=0.847,p=0.019, g1f2:vt=553,vn=0,q=0.834,p=0.019]
+2026-06-01 19:15:03,904: INFO: move_number: 39; White move: d6c7
+2026-06-01 19:15:03,904: INFO: MCTSTrad; BLACK; move_number: 39; starting search; time_budget: 20.000000s
+2026-06-01 19:15:23,929: INFO: MCTSTrad; BLACK; move_number: 39; time: 20.026290s; move: d8c8; value: 0.1432; new_visits: 34838; total_visits: 88364; iterations: 36736; reused: 62074; policy: robust; proven_root: none; proven_root_stm: none; top3: [d8c8:vt=88364,vn=34838,q=0.143,p=0.067, d8a8:vt=5881,vn=964,q=0.136,p=0.067, d8f8:vt=656,vn=135,q=0.080,p=0.067]
+2026-06-01 19:15:23,929: INFO: move_number: 39; Black move: d8c8
+2026-06-01 19:15:23,929: INFO: MCTSTrad; WHITE; move_number: 40; starting search; time_budget: 20.000000s
+2026-06-01 19:15:43,953: INFO: MCTSTrad; WHITE; move_number: 40; time: 20.024497s; move: c7a5; value: 0.8669; new_visits: 36945; total_visits: 114476; iterations: 37632; reused: 85493; policy: robust; proven_root: none; proven_root_stm: none; top3: [c7a5:vt=114476,vn=36945,q=0.867,p=0.019, c7d6:vt=5661,vn=0,q=0.852,p=0.019, e5d5:vt=975,vn=260,q=0.697,p=0.236]
+2026-06-01 19:15:43,953: INFO: move_number: 40; White move: c7a5
+2026-06-01 19:15:43,953: INFO: MCTSTrad; BLACK; move_number: 40; starting search; time_budget: 20.000000s
+2026-06-01 19:16:03,999: INFO: MCTSTrad; BLACK; move_number: 40; time: 20.045786s; move: b5b4; value: 0.1382; new_visits: 35584; total_visits: 107654; iterations: 37120; reused: 80283; policy: robust; proven_root: none; proven_root_stm: none; top3: [b5b4:vt=107654,vn=35584,q=0.138,p=0.033, c8c1:vt=4401,vn=756,q=0.075,p=0.404, a2b4:vt=789,vn=92,q=0.109,p=0.033]
+2026-06-01 19:16:03,999: INFO: move_number: 40; Black move: b5b4
+2026-06-01 19:16:04,000: INFO: MCTSTrad; WHITE; move_number: 41; starting search; time_budget: 20.000000s
+2026-06-01 19:16:24,013: INFO: MCTSTrad; WHITE; move_number: 41; time: 20.013172s; move: g1f2; value: 0.8653; new_visits: 37296; total_visits: 107880; iterations: 38656; reused: 104736; policy: robust; proven_root: none; proven_root_stm: none; top3: [g1f2:vt=107880,vn=37296,q=0.865,p=0.016, e5d5:vt=16789,vn=454,q=0.856,p=0.197, g6d3:vt=9724,vn=0,q=0.856,p=0.016]
+2026-06-01 19:16:24,013: INFO: move_number: 41; White move: g1f2
+2026-06-01 19:16:24,013: INFO: MCTSTrad; BLACK; move_number: 41; starting search; time_budget: 20.000000s
+2026-06-01 19:16:44,059: INFO: MCTSTrad; BLACK; move_number: 41; time: 20.045738s; move: c8b8; value: 0.1365; new_visits: 40946; total_visits: 106163; iterations: 43520; reused: 73475; policy: robust; proven_root: none; proven_root_stm: none; top3: [c8b8:vt=106163,vn=40946,q=0.137,p=0.034, c8c2:vt=2957,vn=497,q=0.040,p=0.417, b4b3:vt=2666,vn=1798,q=0.128,p=0.034]
+2026-06-01 19:16:44,059: INFO: move_number: 41; Black move: c8b8
+2026-06-01 19:16:44,059: INFO: MCTSTrad; WHITE; move_number: 42; starting search; time_budget: 20.000000s
+2026-06-01 19:17:04,107: INFO: MCTSTrad; WHITE; move_number: 42; time: 20.047600s; move: g6d3; value: 0.8736; new_visits: 32849; total_visits: 113326; iterations: 33920; reused: 97418; policy: robust; proven_root: none; proven_root_stm: none; top3: [g6d3:vt=113326,vn=32849,q=0.874,p=0.015, e5d5:vt=7876,vn=271,q=0.852,p=0.188, a5c7:vt=4003,vn=3,q=0.864,p=0.015]
+2026-06-01 19:17:04,107: INFO: move_number: 42; White move: g6d3
+2026-06-01 19:17:04,107: INFO: MCTSTrad; BLACK; move_number: 42; starting search; time_budget: 20.000000s
+2026-06-01 19:17:26,159: INFO: MCTSTrad; BLACK; move_number: 42; time: 22.051719s; move: g8f7; value: 0.1296; new_visits: 4650; total_visits: 45404; iterations: 36992; reused: 88857; policy: robust; proven_root: none; proven_root_stm: none; top3: [g8f7:vt=45404,vn=4650,q=0.130,p=0.059, b8a8:vt=33176,vn=6414,q=0.129,p=0.059, b4b3:vt=21442,vn=20795,q=0.183,p=0.059]
+2026-06-01 19:17:26,159: INFO: move_number: 42; Black move: g8f7
+2026-06-01 19:17:26,160: INFO: MCTSTrad; WHITE; move_number: 43; starting search; time_budget: 20.000000s
+2026-06-01 19:17:46,173: INFO: MCTSTrad; WHITE; move_number: 43; time: 20.012798s; move: e5d5; value: 0.9010; new_visits: 40003; total_visits: 55174; iterations: 40192; reused: 45404; policy: robust; proven_root: none; proven_root_stm: none; top3: [e5d5:vt=55174,vn=40003,q=0.901,p=0.156, f2e3:vt=18047,vn=0,q=0.866,p=0.013, d3e2:vt=1901,vn=0,q=0.862,p=0.013]
+2026-06-01 19:17:46,173: INFO: move_number: 43; White move: e5d5
+2026-06-01 19:17:46,173: INFO: MCTSTrad; BLACK; move_number: 43; starting search; time_budget: 20.000000s
+2026-06-01 19:18:06,222: INFO: MCTSTrad; BLACK; move_number: 43; time: 20.048996s; move: f7e8; value: 0.1047; new_visits: 7775; total_visits: 8241; iterations: 29696; reused: 15171; policy: robust; proven_root: none; proven_root_stm: none; top3: [f7e8:vt=8241,vn=7775,q=0.105,p=0.045, f7e6:vt=6663,vn=1671,q=0.104,p=0.045, g7g5:vt=5867,vn=5193,q=0.104,p=0.045]
+2026-06-01 19:18:06,222: INFO: move_number: 43; Black move: f7e8
+2026-06-01 19:18:06,222: INFO: MCTSTrad; WHITE; move_number: 44; starting search; time_budget: 20.000000s
+2026-06-01 19:18:26,243: INFO: MCTSTrad; WHITE; move_number: 44; time: 20.020487s; move: a5c7; value: 0.9075; new_visits: 28885; total_visits: 34740; iterations: 38528; reused: 8241; policy: robust; proven_root: none; proven_root_stm: none; top3: [a5c7:vt=34740,vn=28885,q=0.907,p=0.015, d3a6:vt=6897,vn=6516,q=0.894,p=0.181, d3c4:vt=1952,vn=1899,q=0.902,p=0.015]
+2026-06-01 19:18:26,243: INFO: move_number: 44; White move: a5c7
+2026-06-01 19:18:26,243: INFO: MCTSTrad; BLACK; move_number: 44; starting search; time_budget: 20.000000s
+2026-06-01 19:18:46,340: INFO: MCTSTrad; BLACK; move_number: 44; time: 20.096080s; move: b8a8; value: 0.1068; new_visits: 25295; total_visits: 25820; iterations: 35328; reused: 5855; policy: robust; proven_root: none; proven_root_stm: none; top3: [b8a8:vt=25820,vn=25295,q=0.107,p=0.062, b8b7:vt=7808,vn=5652,q=0.092,p=0.062, b8b5:vt=2148,vn=1371,q=0.086,p=0.062]
+2026-06-01 19:18:46,340: INFO: move_number: 44; Black move: b8a8
+2026-06-01 19:18:46,340: INFO: MCTSTrad; WHITE; move_number: 45; starting search; time_budget: 20.000000s
+2026-06-01 19:19:06,433: INFO: MCTSTrad; WHITE; move_number: 45; time: 20.092859s; move: d5a5; value: 0.9080; new_visits: 31747; total_visits: 48316; iterations: 32640; reused: 19727; policy: robust; proven_root: none; proven_root_stm: none; top3: [d5a5:vt=48316,vn=31747,q=0.908,p=0.016, d3a6:vt=883,vn=191,q=0.805,p=0.199, d3e4:vt=299,vn=9,q=0.876,p=0.016]
+2026-06-01 19:19:06,433: INFO: move_number: 45; White move: d5a5
+2026-06-01 19:19:06,433: INFO: MCTSTrad; BLACK; move_number: 45; starting search; time_budget: 20.000000s
+2026-06-01 19:19:26,458: INFO: MCTSTrad; BLACK; move_number: 45; time: 20.023911s; move: b4b3; value: 0.0997; new_visits: 26223; total_visits: 30280; iterations: 30464; reused: 22343; policy: robust; proven_root: none; proven_root_stm: none; top3: [b4b3:vt=30280,vn=26223,q=0.100,p=0.071, a2c1:vt=15453,vn=1756,q=0.096,p=0.071, e8d7:vt=950,vn=291,q=0.066,p=0.071]
+2026-06-01 19:19:26,458: INFO: move_number: 45; Black move: b4b3
+2026-06-01 19:19:26,458: INFO: MCTSTrad; WHITE; move_number: 46; starting search; time_budget: 20.000000s
+2026-06-01 19:19:46,490: INFO: MCTSTrad; WHITE; move_number: 46; time: 20.032348s; move: c7e5; value: 0.9119; new_visits: 27272; total_visits: 48689; iterations: 28288; reused: 26109; policy: robust; proven_root: none; proven_root_stm: none; top3: [c7e5:vt=48689,vn=27272,q=0.912,p=0.012, d3a6:vt=835,vn=373,q=0.828,p=0.149, a5a6:vt=730,vn=147,q=0.817,p=0.149]
+2026-06-01 19:19:46,490: INFO: move_number: 46; White move: c7e5
+2026-06-01 19:19:46,491: INFO: MCTSTrad; BLACK; move_number: 46; starting search; time_budget: 20.000000s
+2026-06-01 19:20:06,569: INFO: MCTSTrad; BLACK; move_number: 46; time: 20.078294s; move: e8f7; value: 0.0988; new_visits: 21623; total_visits: 22405; iterations: 27136; reused: 25470; policy: robust; proven_root: none; proven_root_stm: none; top3: [e8f7:vt=22405,vn=21623,q=0.099,p=0.062, b3b2:vt=14995,vn=2612,q=0.089,p=0.062, a2b4:vt=3965,vn=174,q=0.085,p=0.062]
+2026-06-01 19:20:06,569: INFO: move_number: 46; Black move: e8f7
+2026-06-01 19:20:06,569: INFO: MCTSTrad; WHITE; move_number: 47; starting search; time_budget: 20.000000s
+2026-06-01 19:20:27,063: INFO: MCTSTrad; WHITE; move_number: 47; time: 20.493380s; move: d3c4; value: 0.9085; new_visits: 9709; total_visits: 23872; iterations: 27520; reused: 18492; policy: robust; proven_root: none; proven_root_stm: none; top3: [d3c4:vt=23872,vn=9709,q=0.908,p=0.040, f2e3:vt=16578,vn=16496,q=0.911,p=0.012, a5a6:vt=1707,vn=344,q=0.875,p=0.140]
+2026-06-01 19:20:27,063: INFO: move_number: 47; White move: d3c4
+2026-06-01 19:20:27,063: INFO: MCTSTrad; BLACK; move_number: 47; starting search; time_budget: 20.000000s
+2026-06-01 19:20:47,113: INFO: MCTSTrad; BLACK; move_number: 47; time: 20.049687s; move: f7f8; value: 0.0904; new_visits: 18514; total_visits: 26976; iterations: 28928; reused: 14213; policy: robust; proven_root: none; proven_root_stm: none; top3: [f7f8:vt=26976,vn=18514,q=0.090,p=0.250, f7g6:vt=9784,vn=6612,q=0.084,p=0.250, f7e8:vt=3233,vn=2084,q=0.062,p=0.250]
+2026-06-01 19:20:47,113: INFO: move_number: 47; Black move: f7f8
+2026-06-01 19:20:47,113: INFO: MCTSTrad; WHITE; move_number: 48; starting search; time_budget: 20.000000s
+2026-06-01 19:21:07,117: INFO: MCTSTrad; WHITE; move_number: 48; time: 20.002868s; move: c4b3; value: 0.9367; new_visits: 31615; total_visits: 31783; iterations: 37760; reused: 16806; policy: robust; proven_root: none; proven_root_stm: none; top3: [c4b3:vt=31783,vn=31615,q=0.937,p=0.081, d4d5:vt=6802,vn=4433,q=0.922,p=0.015, a5c5:vt=2634,vn=45,q=0.910,p=0.015]
+2026-06-01 19:21:07,117: INFO: move_number: 48; White move: c4b3
+2026-06-01 19:21:07,117: INFO: MCTSTrad; BLACK; move_number: 48; starting search; time_budget: 20.000000s
+2026-06-01 19:21:27,118: INFO: MCTSTrad; BLACK; move_number: 48; time: 20.000730s; move: a2b4; value: 0.0755; new_visits: 21778; total_visits: 22173; iterations: 41728; reused: 4392; policy: robust; proven_root: none; proven_root_stm: none; top3: [a2b4:vt=22173,vn=21778,q=0.076,p=0.077, g7g6:vt=6112,vn=5590,q=0.065,p=0.077, a2c1:vt=5755,vn=4553,q=0.065,p=0.077]
+2026-06-01 19:21:27,118: INFO: move_number: 48; Black move: a2b4
+2026-06-01 19:21:27,118: INFO: MCTSTrad; WHITE; move_number: 49; starting search; time_budget: 20.000000s
+2026-06-01 19:21:47,158: INFO: MCTSTrad; WHITE; move_number: 49; time: 20.039809s; move: e5d6; value: 0.9372; new_visits: 30120; total_visits: 30405; iterations: 40832; reused: 8603; policy: robust; proven_root: none; proven_root_stm: none; top3: [e5d6:vt=30405,vn=30120,q=0.937,p=0.044, b3c4:vt=13591,vn=9229,q=0.930,p=0.019, e5g7:vt=1343,vn=226,q=0.860,p=0.231]
+2026-06-01 19:21:47,158: INFO: move_number: 49; White move: e5d6
+2026-06-01 19:21:47,158: INFO: MCTSTrad; BLACK; move_number: 49; starting search; time_budget: 20.000000s
+2026-06-01 19:22:08,159: INFO: MCTSTrad; BLACK; move_number: 49; time: 21.000099s; move: f8e8; value: 0.0593; new_visits: 47616; total_visits: 52213; iterations: 47616; reused: 4598; policy: robust; proven_root: none; proven_root_stm: none; top3: [f8e8:vt=52213,vn=47616,q=0.059,p=1.000]
+2026-06-01 19:22:08,159: INFO: move_number: 49; Black move: f8e8
+2026-06-01 19:22:08,159: INFO: MCTSTrad; WHITE; move_number: 50; starting search; time_budget: 20.000000s
+2026-06-01 19:22:28,207: INFO: MCTSTrad; WHITE; move_number: 50; time: 20.048243s; move: d6b4; value: 0.9497; new_visits: 46803; total_visits: 56598; iterations: 52352; reused: 30404; policy: robust; proven_root: none; proven_root_stm: none; top3: [d6b4:vt=56598,vn=46803,q=0.950,p=0.170, a5e5:vt=9563,vn=553,q=0.944,p=0.049, b3a4:vt=3903,vn=3634,q=0.944,p=0.049]
+2026-06-01 19:22:28,208: INFO: move_number: 50; White move: d6b4
+2026-06-01 19:22:28,208: INFO: MCTSTrad; BLACK; move_number: 50; starting search; time_budget: 20.000000s
+2026-06-01 19:22:48,218: INFO: MCTSTrad; BLACK; move_number: 50; time: 20.009515s; move: a8b8; value: 0.0498; new_visits: 16370; total_visits: 23771; iterations: 49024; reused: 30402; policy: robust; proven_root: none; proven_root_stm: none; top3: [a8b8:vt=23771,vn=16370,q=0.050,p=0.111, e8d7:vt=10218,vn=8857,q=0.046,p=0.111, g7g5:vt=9749,vn=2590,q=0.046,p=0.111]
+2026-06-01 19:22:48,218: INFO: move_number: 50; Black move: a8b8
+2026-06-01 19:22:48,218: INFO: MCTSTrad; WHITE; move_number: 51; starting search; time_budget: 20.000000s
+2026-06-01 19:23:08,250: INFO: MCTSTrad; WHITE; move_number: 51; time: 20.031746s; move: b3a4; value: 0.9649; new_visits: 41623; total_visits: 45857; iterations: 44032; reused: 16857; policy: robust; proven_root: none; proven_root_stm: none; top3: [b3a4:vt=45857,vn=41623,q=0.965,p=0.059, b4d2:vt=8146,vn=86,q=0.957,p=0.017, a5a6:vt=1168,vn=332,q=0.879,p=0.204]
+2026-06-01 19:23:08,250: INFO: move_number: 51; White move: b3a4
+2026-06-01 19:23:08,250: INFO: MCTSTrad; BLACK; move_number: 51; starting search; time_budget: 20.000000s
+2026-06-01 19:23:28,287: INFO: MCTSTrad; BLACK; move_number: 51; time: 20.036616s; move: e8f7; value: 0.0423; new_visits: 33860; total_visits: 38159; iterations: 42752; reused: 10998; policy: robust; proven_root: none; proven_root_stm: none; top3: [e8f7:vt=38159,vn=33860,q=0.042,p=0.333, e8d8:vt=11171,vn=5940,q=0.031,p=0.333, b8b5:vt=4419,vn=2952,q=0.010,p=0.333]
+2026-06-01 19:23:28,287: INFO: move_number: 51; Black move: e8f7
+2026-06-01 19:23:28,287: INFO: MCTSTrad; WHITE; move_number: 52; starting search; time_budget: 20.000000s
+2026-06-01 19:23:48,829: INFO: MCTSTrad; WHITE; move_number: 52; time: 20.541456s; move: b4d2; value: 0.9646; new_visits: 7152; total_visits: 19401; iterations: 46976; reused: 30889; policy: robust; proven_root: none; proven_root_stm: none; top3: [b4d2:vt=19401,vn=7152,q=0.965,p=0.019, b4c3:vt=14497,vn=13264,q=0.964,p=0.019, b4e1:vt=13105,vn=11617,q=0.964,p=0.019]
+2026-06-01 19:23:48,829: INFO: move_number: 52; White move: b4d2
+2026-06-01 19:23:48,829: INFO: MCTSTrad; BLACK; move_number: 52; starting search; time_budget: 20.000000s
+2026-06-01 19:24:08,883: INFO: MCTSTrad; BLACK; move_number: 52; time: 20.053714s; move: b8a8; value: 0.0379; new_visits: 24967; total_visits: 28965; iterations: 48128; reused: 18004; policy: robust; proven_root: none; proven_root_stm: none; top3: [b8a8:vt=28965,vn=24967,q=0.038,p=0.043, b8b2:vt=11131,vn=5382,q=0.037,p=0.043, b8b6:vt=10121,vn=9142,q=0.047,p=0.043]
+2026-06-01 19:24:08,883: INFO: move_number: 52; Black move: b8a8
+2026-06-01 19:24:08,883: INFO: MCTSTrad; WHITE; move_number: 53; starting search; time_budget: 20.000000s
+2026-06-01 19:24:28,911: INFO: MCTSTrad; WHITE; move_number: 53; time: 20.027870s; move: a4b5; value: 0.9789; new_visits: 48027; total_visits: 48602; iterations: 51584; reused: 5395; policy: robust; proven_root: none; proven_root_stm: none; top3: [a4b5:vt=48602,vn=48027,q=0.979,p=0.015, d2h6:vt=1572,vn=585,q=0.922,p=0.188, a5h5:vt=908,vn=280,q=0.955,p=0.015]
+2026-06-01 19:24:28,912: INFO: move_number: 53; White move: a4b5
+2026-06-01 19:24:28,912: INFO: MCTSTrad; BLACK; move_number: 53; starting search; time_budget: 20.000000s
+2026-06-01 19:24:48,913: INFO: MCTSTrad; BLACK; move_number: 53; time: 20.000575s; move: a6b5; value: 0.0227; new_visits: 21061; total_visits: 34928; iterations: 50560; reused: 21398; policy: robust; proven_root: none; proven_root_stm: none; top3: [a6b5:vt=34928,vn=21061,q=0.023,p=0.417, f7g6:vt=13335,vn=12942,q=0.028,p=0.034, a8b8:vt=6372,vn=5340,q=0.026,p=0.034]
+2026-06-01 19:24:48,913: INFO: move_number: 53; Black move: a6b5
+2026-06-01 19:24:48,913: INFO: MCTSTrad; WHITE; move_number: 54; starting search; time_budget: 20.000000s
+2026-06-01 19:25:08,934: INFO: MCTSTrad; WHITE; move_number: 54; time: 20.020602s; move: a5a8; value: 0.9833; new_visits: 77671; total_visits: 103666; iterations: 79232; reused: 28464; policy: robust; proven_root: none; proven_root_stm: none; top3: [a5a8:vt=103666,vn=77671,q=0.983,p=0.190, a5b5:vt=1579,vn=646,q=0.905,p=0.190, d2h6:vt=221,vn=92,q=0.419,p=0.190]
+2026-06-01 19:25:08,934: INFO: move_number: 54; White move: a5a8
+2026-06-01 19:25:08,934: INFO: MCTSTrad; BLACK; move_number: 54; starting search; time_budget: 20.000000s
+2026-06-01 19:25:28,941: INFO: MCTSTrad; BLACK; move_number: 54; time: 20.006905s; move: f7g6; value: 0.0195; new_visits: 22785; total_visits: 26707; iterations: 78464; reused: 32387; policy: robust; proven_root: none; proven_root_stm: none; top3: [f7g6:vt=26707,vn=22785,q=0.020,p=0.125, g7g5:vt=16738,vn=11500,q=0.018,p=0.125, f7e7:vt=16057,vn=11689,q=0.017,p=0.125]
+2026-06-01 19:25:28,941: INFO: move_number: 54; Black move: f7g6
+2026-06-01 19:25:28,941: INFO: MCTSTrad; WHITE; move_number: 55; starting search; time_budget: 20.000000s
+2026-06-01 19:25:48,942: INFO: MCTSTrad; WHITE; move_number: 55; time: 20.000196s; move: f2e3; value: 0.9919; new_visits: 13135; total_visits: 14108; iterations: 1118592; reused: 25410; policy: robust; proven_root: none; proven_root_stm: none; top3: [f2e3:vt=14108,vn=13135,q=0.992,p=0.021, a8b8:vt=10186,vn=3229,q=0.992,p=0.021, d2e1:vt=6186,vn=5421,q=0.991,p=0.021]
+2026-06-01 19:25:48,942: INFO: move_number: 55; White move: f2e3
+2026-06-01 19:25:48,942: INFO: MCTSTrad; BLACK; move_number: 55; starting search; time_budget: 20.000000s
+2026-06-01 19:26:08,985: INFO: MCTSTrad; BLACK; move_number: 55; time: 20.042807s; move: g6h7; value: 0.0132; new_visits: 20037; total_visits: 20191; iterations: 75776; reused: 1209; policy: robust; proven_root: none; proven_root_stm: none; top3: [g6h7:vt=20191,vn=20037,q=0.013,p=0.125, g6g5:vt=10592,vn=10466,q=0.010,p=0.125, g6f7:vt=10153,vn=9949,q=0.010,p=0.125]
+2026-06-01 19:26:08,985: INFO: move_number: 55; Black move: g6h7
+2026-06-01 19:26:08,985: INFO: MCTSTrad; WHITE; move_number: 56; starting search; time_budget: 20.000000s
+2026-06-01 19:26:29,780: INFO: MCTSTrad; WHITE; move_number: 56; time: 20.794929s; move: a8a5; value: 0.9960; new_visits: 10005; total_visits: 10067; iterations: 95232; reused: 1996; policy: robust; proven_root: none; proven_root_stm: none; top3: [a8a5:vt=10067,vn=10005,q=0.996,p=0.024, a8h8:vt=8789,vn=8324,q=0.977,p=0.296, a8a1:vt=8698,vn=8642,q=0.996,p=0.024]
+2026-06-01 19:26:29,781: INFO: move_number: 56; White move: a8a5
+2026-06-01 19:26:29,781: INFO: MCTSTrad; BLACK; move_number: 56; starting search; time_budget: 20.000000s
+2026-06-01 19:26:49,797: INFO: MCTSTrad; BLACK; move_number: 56; time: 20.015923s; move: b5b4; value: 0.0107; new_visits: 40606; total_visits: 40914; iterations: 98176; reused: 2067; policy: robust; proven_root: none; proven_root_stm: none; top3: [b5b4:vt=40914,vn=40606,q=0.011,p=0.143, h7g6:vt=10525,vn=10227,q=0.004,p=0.143, g7g6:vt=10318,vn=10023,q=0.004,p=0.143]
+2026-06-01 19:26:49,797: INFO: move_number: 56; Black move: b5b4
+2026-06-01 19:26:49,797: INFO: MCTSTrad; WHITE; move_number: 57; starting search; time_budget: 20.000000s
+2026-06-01 19:27:11,270: INFO: MCTSTrad; WHITE; move_number: 57; time: 21.472192s; move: d2b4; value: 0.9911; new_visits: 33634; total_visits: 34089; iterations: 85632; reused: 1700; policy: robust; proven_root: none; proven_root_stm: none; top3: [d2b4:vt=34089,vn=33634,q=0.991,p=0.303, a5b5:vt=6313,vn=6265,q=0.994,p=0.025, d2c1:vt=3748,vn=3705,q=0.992,p=0.025]
+2026-06-01 19:27:11,270: INFO: move_number: 57; White move: d2b4
+2026-06-01 19:27:11,270: INFO: MCTSTrad; BLACK; move_number: 57; starting search; time_budget: 20.000000s
+2026-06-01 19:27:31,270: INFO: MCTSTrad; BLACK; move_number: 57; time: 20.000140s; move: g7g6; value: 0.0122; new_visits: 22024; total_visits: 25445; iterations: 131200; reused: 17509; policy: robust; proven_root: none; proven_root_stm: none; top3: [g7g6:vt=25445,vn=22024,q=0.012,p=0.167, h7g6:vt=23094,vn=19888,q=0.012,p=0.167, h7h8:vt=21860,vn=19247,q=0.011,p=0.167]
+2026-06-01 19:27:31,270: INFO: move_number: 57; Black move: g7g6
+2026-06-01 19:27:31,270: INFO: MCTSTrad; WHITE; move_number: 58; starting search; time_budget: 20.000000s
+2026-06-01 19:27:51,284: INFO: MCTSTrad; WHITE; move_number: 58; time: 20.013402s; move: a5a7; value: 0.9833; new_visits: 10172; total_visits: 11881; iterations: 96384; reused: 6526; policy: robust; proven_root: none; proven_root_stm: none; top3: [a5a7:vt=11881,vn=10172,q=0.983,p=0.270, b4e1:vt=9433,vn=9229,q=0.996,p=0.022, b4d2:vt=7998,vn=7796,q=0.996,p=0.022]
+2026-06-01 19:27:51,284: INFO: move_number: 58; White move: a5a7
+2026-06-01 19:27:51,284: INFO: MCTSTrad; BLACK; move_number: 58; starting search; time_budget: 20.000000s
+2026-06-01 19:28:11,311: INFO: MCTSTrad; BLACK; move_number: 58; time: 20.026682s; move: h7g8; value: 0.0140; new_visits: 54463; total_visits: 57115; iterations: 102784; reused: 4853; policy: robust; proven_root: none; proven_root_stm: none; top3: [h7g8:vt=57115,vn=54463,q=0.014,p=0.500, h7h8:vt=50521,vn=48321,q=0.013,p=0.500]
+2026-06-01 19:28:11,311: INFO: move_number: 58; Black move: h7g8
+2026-06-01 19:28:11,311: INFO: MCTSTrad; WHITE; move_number: 59; starting search; time_budget: 20.000000s
+2026-06-01 19:28:32,257: INFO: MCTSTrad; WHITE; move_number: 59; time: 20.945206s; move: a7a8; value: 0.9863; new_visits: 16836; total_visits: 18609; iterations: 100608; reused: 6226; policy: robust; proven_root: none; proven_root_stm: none; top3: [a7a8:vt=18609,vn=16836,q=0.986,p=0.212, a7a6:vt=17458,vn=17285,q=0.993,p=0.017, a7a3:vt=10788,vn=10625,q=0.993,p=0.017]
+2026-06-01 19:28:32,257: INFO: move_number: 59; White move: a7a8
+2026-06-01 19:28:32,257: INFO: MCTSTrad; BLACK; move_number: 59; starting search; time_budget: 20.000000s
+2026-06-01 19:28:52,260: INFO: MCTSTrad; BLACK; move_number: 59; time: 20.002475s; move: g8g7; value: 0.0140; new_visits: 38552; total_visits: 42905; iterations: 108288; reused: 12618; policy: robust; proven_root: none; proven_root_stm: none; top3: [g8g7:vt=42905,vn=38552,q=0.014,p=0.333, g8f7:vt=40126,vn=36246,q=0.014,p=0.333, g8h7:vt=37874,vn=33490,q=0.013,p=0.333]
+2026-06-01 19:28:52,260: INFO: move_number: 59; Black move: g8g7
+2026-06-01 19:28:52,260: INFO: MCTSTrad; WHITE; move_number: 60; starting search; time_budget: 20.000000s
+2026-06-01 19:29:12,272: INFO: MCTSTrad; WHITE; move_number: 60; time: 20.011720s; move: b4d2; value: 0.9937; new_visits: 17184; total_visits: 17317; iterations: 104704; reused: 6228; policy: robust; proven_root: none; proven_root_stm: none; top3: [b4d2:vt=17317,vn=17184,q=0.994,p=0.015, a8a6:vt=15612,vn=15492,q=0.994,p=0.015, b4f8:vt=15536,vn=14333,q=0.987,p=0.178]
+2026-06-01 19:29:12,272: INFO: move_number: 60; White move: b4d2
+2026-06-01 19:29:12,272: INFO: MCTSTrad; BLACK; move_number: 60; starting search; time_budget: 20.000000s
+2026-06-01 19:29:32,273: INFO: MCTSTrad; BLACK; move_number: 60; time: 20.000280s; move: g7f7; value: 0.0088; new_visits: 7442; total_visits: 8447; iterations: 1406976; reused: 4502; policy: robust; proven_root: none; proven_root_stm: none; top3: [g7f7:vt=8447,vn=7442,q=0.009,p=0.200, g7h7:vt=7633,vn=6737,q=0.008,p=0.200, g6g5:vt=7248,vn=6335,q=0.007,p=0.200]
+2026-06-01 19:29:32,273: INFO: move_number: 60; Black move: g7f7
+2026-06-01 19:29:32,273: INFO: MCTSTrad; WHITE; move_number: 61; starting search; time_budget: 20.000000s
+2026-06-01 19:29:52,275: INFO: MCTSTrad; WHITE; move_number: 61; time: 20.001965s; move: a8a7; value: 0.9914; new_visits: 18887; total_visits: 19724; iterations: 95104; reused: 4177; policy: robust; proven_root: none; proven_root_stm: none; top3: [a8a7:vt=19724,vn=18887,q=0.991,p=0.233, a8a6:vt=9608,vn=9501,q=0.998,p=0.019, a8a1:vt=5755,vn=5654,q=0.997,p=0.019]
+2026-06-01 19:29:52,275: INFO: move_number: 61; White move: a8a7
+2026-06-01 19:29:52,275: INFO: MCTSTrad; BLACK; move_number: 61; starting search; time_budget: 20.000000s
+2026-06-01 19:30:12,279: INFO: MCTSTrad; BLACK; move_number: 61; time: 20.003590s; move: f7f8; value: 0.0108; new_visits: 32234; total_visits: 32624; iterations: 124160; reused: 1903; policy: robust; proven_root: none; proven_root_stm: none; top3: [f7f8:vt=32624,vn=32234,q=0.011,p=0.200, f7e8:vt=30830,vn=30420,q=0.011,p=0.200, f7g8:vt=26033,vn=25684,q=0.010,p=0.200]
+2026-06-01 19:30:12,279: INFO: move_number: 61; Black move: f7f8
+2026-06-01 19:30:12,279: INFO: MCTSTrad; WHITE; move_number: 62; starting search; time_budget: 20.000000s
+2026-06-01 19:30:32,286: INFO: MCTSTrad; WHITE; move_number: 62; time: 20.006702s; move: a7a6; value: 0.9971; new_visits: 20092; total_visits: 20201; iterations: 102912; reused: 4666; policy: robust; proven_root: none; proven_root_stm: none; top3: [a7a6:vt=20201,vn=20092,q=0.997,p=0.016, a7a8:vt=19149,vn=18162,q=0.991,p=0.192, d2b4:vt=8574,vn=7975,q=0.983,p=0.192]
+2026-06-01 19:30:32,286: INFO: move_number: 62; White move: a7a6
+2026-06-01 19:30:32,287: INFO: MCTSTrad; BLACK; move_number: 62; starting search; time_budget: 20.000000s
+2026-06-01 19:30:52,290: INFO: MCTSTrad; BLACK; move_number: 62; time: 20.003369s; move: f8f7; value: 0.0059; new_visits: 21570; total_visits: 22050; iterations: 115584; reused: 3273; policy: robust; proven_root: none; proven_root_stm: none; top3: [f8f7:vt=22050,vn=21570,q=0.006,p=0.143, f8g7:vt=19645,vn=19174,q=0.005,p=0.143, h6h5:vt=17349,vn=16884,q=0.005,p=0.143]
+2026-06-01 19:30:52,290: INFO: move_number: 62; Black move: f8f7
+2026-06-01 19:30:52,290: INFO: MCTSTrad; WHITE; move_number: 63; starting search; time_budget: 20.000000s
+2026-06-01 19:31:12,308: INFO: MCTSTrad; WHITE; move_number: 63; time: 20.017205s; move: a6g6; value: 0.9929; new_visits: 18428; total_visits: 19214; iterations: 98688; reused: 2989; policy: robust; proven_root: none; proven_root_stm: none; top3: [a6g6:vt=19214,vn=18428,q=0.993,p=0.270, a6a7:vt=4900,vn=4693,q=0.992,p=0.077, d4d5:vt=4301,vn=4229,q=0.999,p=0.022]
+2026-06-01 19:31:12,308: INFO: move_number: 63; White move: a6g6
+2026-06-01 19:31:12,308: INFO: MCTSTrad; BLACK; move_number: 63; starting search; time_budget: 20.000000s
+2026-06-01 19:31:32,311: INFO: MCTSTrad; BLACK; move_number: 63; time: 20.002651s; move: f7g6; value: 0.0112; new_visits: 97996; total_visits: 102248; iterations: 109696; reused: 5330; policy: robust; proven_root: none; proven_root_stm: none; top3: [f7g6:vt=102248,vn=97996,q=0.011,p=0.753, h6h5:vt=4208,vn=3926,q=0.006,p=0.062, f7e7:vt=2902,vn=2633,q=0.002,p=0.062]
+2026-06-01 19:31:32,311: INFO: move_number: 63; Black move: f7g6
+2026-06-01 19:31:32,311: INFO: MCTSTrad; WHITE; move_number: 64; starting search; time_budget: 20.000000s
+2026-06-01 19:31:52,338: INFO: MCTSTrad; WHITE; move_number: 64; time: 20.027115s; move: e3f4; value: 0.9915; new_visits: 15202; total_visits: 16309; iterations: 108800; reused: 15709; policy: robust; proven_root: none; proven_root_stm: none; top3: [e3f4:vt=16309,vn=15202,q=0.992,p=0.062, d2c3:vt=12314,vn=11332,q=0.991,p=0.062, g2g3:vt=10941,vn=9783,q=0.990,p=0.062]
+2026-06-01 19:31:52,339: INFO: move_number: 64; White move: e3f4
+2026-06-01 19:31:52,339: INFO: MCTSTrad; BLACK; move_number: 64; starting search; time_budget: 20.000000s
+2026-06-01 19:32:12,351: INFO: MCTSTrad; BLACK; move_number: 64; time: 20.011788s; move: g6f6; value: 0.0089; new_visits: 40509; total_visits: 43123; iterations: 146048; reused: 11940; policy: robust; proven_root: none; proven_root_stm: none; top3: [g6f6:vt=43123,vn=40509,q=0.009,p=0.167, h6h5:vt=41964,vn=39658,q=0.009,p=0.167, g6f7:vt=27668,vn=25482,q=0.007,p=0.167]
+2026-06-01 19:32:12,351: INFO: move_number: 64; Black move: g6f6
+2026-06-01 19:32:12,351: INFO: MCTSTrad; WHITE; move_number: 65; starting search; time_budget: 20.000000s
+2026-06-01 19:32:34,690: INFO: MCTSTrad; WHITE; move_number: 65; time: 22.338972s; move: f4g4; value: 0.9918; new_visits: 11974; total_visits: 12238; iterations: 117248; reused: 3691; policy: robust; proven_root: none; proven_root_stm: none; top3: [f4g4:vt=12238,vn=11974,q=0.992,p=0.067, d2c1:vt=11916,vn=11643,q=0.992,p=0.067, d2e3:vt=10620,vn=10330,q=0.991,p=0.067]
+2026-06-01 19:32:34,690: INFO: move_number: 65; White move: f4g4
+2026-06-01 19:32:34,690: INFO: MCTSTrad; BLACK; move_number: 65; starting search; time_budget: 20.000000s
+2026-06-01 19:32:54,694: INFO: MCTSTrad; BLACK; move_number: 65; time: 20.003915s; move: h6h5; value: 0.0098; new_visits: 78997; total_visits: 81586; iterations: 122240; reused: 3704; policy: robust; proven_root: none; proven_root_stm: none; top3: [h6h5:vt=81586,vn=78997,q=0.010,p=0.709, f6g6:vt=16451,vn=16207,q=0.013,p=0.058, f6g7:vt=9059,vn=8836,q=0.011,p=0.058]
+2026-06-01 19:32:54,695: INFO: move_number: 65; Black move: h6h5
+2026-06-01 19:32:54,695: INFO: MCTSTrad; WHITE; move_number: 66; starting search; time_budget: 20.000000s
+2026-06-01 19:33:14,700: INFO: MCTSTrad; WHITE; move_number: 66; time: 20.004757s; move: g4h5; value: 0.9889; new_visits: 96516; total_visits: 103121; iterations: 136064; reused: 8552; policy: robust; proven_root: none; proven_root_stm: none; top3: [g4h5:vt=103121,vn=96516,q=0.989,p=0.753, g4h4:vt=15008,vn=14452,q=0.991,p=0.062, g4f4:vt=12210,vn=11596,q=0.991,p=0.062]
+2026-06-01 19:33:14,700: INFO: move_number: 66; White move: g4h5
+2026-06-01 19:33:14,700: INFO: MCTSTrad; BLACK; move_number: 66; starting search; time_budget: 20.000000s
+2026-06-01 19:33:35,237: INFO: MCTSTrad; BLACK; move_number: 66; time: 20.537135s; move: f6e6; value: 0.0156; new_visits: 96360; total_visits: 116363; iterations: 137472; reused: 59313; policy: robust; proven_root: none; proven_root_stm: none; top3: [f6e6:vt=116363,vn=96360,q=0.016,p=0.200, f6f5:vt=24369,vn=13276,q=0.010,p=0.200, f6e7:vt=22035,vn=11871,q=0.009,p=0.200]
+2026-06-01 19:33:35,237: INFO: move_number: 66; Black move: f6e6
+2026-06-01 19:33:35,237: INFO: MCTSTrad; WHITE; move_number: 67; starting search; time_budget: 20.000000s
+2026-06-01 19:33:55,240: INFO: MCTSTrad; WHITE; move_number: 67; time: 20.000235s; move: d2e3; value: 0.9897; new_visits: 82599; total_visits: 87926; iterations: 380032; reused: 45455; policy: robust; proven_root: none; proven_root_stm: none; top3: [d2e3:vt=87926,vn=82599,q=0.990,p=0.032, d4d5:vt=29472,vn=20585,q=0.978,p=0.391, d2c3:vt=12685,vn=9011,q=0.988,p=0.032]
+2026-06-01 19:33:55,240: INFO: move_number: 67; White move: d2e3
+2026-06-01 19:33:55,241: INFO: MCTSTrad; BLACK; move_number: 67; starting search; time_budget: 20.000000s
+2026-06-01 19:34:16,249: INFO: MCTSTrad; BLACK; move_number: 67; time: 20.998406s; move: e6d5; value: 0.0135; new_visits: 51832; total_visits: 58197; iterations: 141312; reused: 30509; policy: robust; proven_root: none; proven_root_stm: none; top3: [e6d5:vt=58197,vn=51832,q=0.014,p=0.143, e6f5:vt=27352,vn=23163,q=0.011,p=0.143, e6d6:vt=23853,vn=18379,q=0.011,p=0.143]
+2026-06-01 19:34:16,249: INFO: move_number: 67; Black move: e6d5
+2026-06-01 19:34:16,249: INFO: MCTSTrad; WHITE; move_number: 68; starting search; time_budget: 20.000000s
+2026-06-01 19:34:38,590: INFO: MCTSTrad; WHITE; move_number: 68; time: 22.338319s; move: e3g1; value: 0.9914; new_visits: 67088; total_visits: 69043; iterations: 158976; reused: 21087; policy: robust; proven_root: none; proven_root_stm: none; top3: [e3g1:vt=69043,vn=67088,q=0.991,p=0.059, e3f2:vt=15123,vn=13209,q=0.989,p=0.059, h5g4:vt=11876,vn=10191,q=0.988,p=0.059]
+2026-06-01 19:34:38,591: INFO: move_number: 68; White move: e3g1
+2026-06-01 19:34:38,591: INFO: MCTSTrad; BLACK; move_number: 68; starting search; time_budget: 20.000000s
+2026-06-01 19:34:58,593: INFO: MCTSTrad; BLACK; move_number: 68; time: 20.001105s; move: d5e6; value: 0.0100; new_visits: 48386; total_visits: 50157; iterations: 155008; reused: 6181; policy: robust; proven_root: none; proven_root_stm: none; top3: [d5e6:vt=50157,vn=48386,q=0.010,p=0.250, d5c4:vt=47656,vn=46318,q=0.010,p=0.250, d5c6:vt=36698,vn=34999,q=0.009,p=0.250]
+2026-06-01 19:34:58,593: INFO: move_number: 68; Black move: d5e6
+2026-06-01 19:34:58,593: INFO: MCTSTrad; WHITE; move_number: 69; starting search; time_budget: 20.000000s
+2026-06-01 19:35:18,594: INFO: MCTSTrad; WHITE; move_number: 69; time: 20.000225s; move: d4d5; value: 0.9740; new_visits: 8682; total_visits: 13489; iterations: 1414272; reused: 22736; policy: robust; proven_root: none; proven_root_stm: none; top3: [d4d5:vt=13489,vn=8682,q=0.974,p=0.504, h5g4:vt=11898,vn=9787,q=0.994,p=0.041, h5g5:vt=10645,vn=8595,q=0.994,p=0.041]
+2026-06-01 19:35:18,594: INFO: move_number: 69; White move: d4d5
+2026-06-01 19:35:18,594: INFO: MCTSTrad; BLACK; move_number: 69; starting search; time_budget: 20.000000s
+2026-06-01 19:35:38,595: INFO: MCTSTrad; BLACK; move_number: 69; time: 20.000890s; move: e6d5; value: 0.0282; new_visits: 3782; total_visits: 9811; iterations: 2094080; reused: 8335; policy: robust; proven_root: none; proven_root_stm: none; top3: [e6d5:vt=9811,vn=3782,q=0.028,p=0.635, e6e5:vt=911,vn=360,q=0.030,p=0.052, e6d6:vt=703,vn=260,q=0.026,p=0.052]
+2026-06-01 19:35:38,595: INFO: move_number: 69; Black move: e6d5
+2026-06-01 19:35:38,595: INFO: MCTSTrad; WHITE; move_number: 70; starting search; time_budget: 20.000000s
+2026-06-01 19:35:58,597: INFO: MCTSTrad; WHITE; move_number: 70; time: 20.000928s; move: h5g4; value: 0.9805; new_visits: 0; total_visits: 1068; iterations: 2405248; reused: 9811; policy: robust; proven_root: none; proven_root_stm: none; top3: [h5g4:vt=1068,vn=0,q=0.980,p=0.062, h5g5:vt=984,vn=0,q=0.979,p=0.062, g2g3:vt=897,vn=0,q=0.978,p=0.062]
+2026-06-01 19:35:58,597: INFO: move_number: 70; White move: h5g4
+2026-06-01 19:35:58,597: INFO: MCTSTrad; BLACK; move_number: 70; starting search; time_budget: 20.000000s
+2026-06-01 19:36:18,598: INFO: MCTSTrad; BLACK; move_number: 70; time: 20.001128s; move: d5e5; value: 0.0226; new_visits: 36858; total_visits: 37109; iterations: 104832; reused: 1068; policy: robust; proven_root: none; proven_root_stm: none; top3: [d5e5:vt=37109,vn=36858,q=0.023,p=0.200, d5d6:vt=23488,vn=23267,q=0.021,p=0.200, d5c4:vt=17194,vn=16988,q=0.019,p=0.200]
+2026-06-01 19:36:18,598: INFO: move_number: 70; Black move: d5e5
+2026-06-01 19:36:18,599: INFO: MCTSTrad; WHITE; move_number: 71; starting search; time_budget: 20.000000s
+2026-06-01 19:36:38,599: INFO: MCTSTrad; WHITE; move_number: 71; time: 20.000251s; move: f3f4; value: 0.9769; new_visits: 37016; total_visits: 37099; iterations: 138624; reused: 251; policy: robust; proven_root: none; proven_root_stm: none; top3: [f3f4:vt=37099,vn=37016,q=0.977,p=0.326, h2h4:vt=25436,vn=25428,q=0.983,p=0.027, h2h3:vt=17963,vn=17955,q=0.982,p=0.027]
+2026-06-01 19:36:38,599: INFO: move_number: 71; White move: f3f4
+2026-06-01 19:36:38,599: INFO: MCTSTrad; BLACK; move_number: 71; starting search; time_budget: 20.000000s
+2026-06-01 19:36:58,600: INFO: MCTSTrad; BLACK; move_number: 71; time: 20.000722s; move: e5e4; value: 0.0270; new_visits: 14500; total_visits: 16940; iterations: 1978752; reused: 12270; policy: robust; proven_root: none; proven_root_stm: none; top3: [e5e4:vt=16940,vn=14500,q=0.027,p=0.200, e5d6:vt=8532,vn=5347,q=0.022,p=0.200, e5e6:vt=7577,vn=5666,q=0.021,p=0.200]
+2026-06-01 19:36:58,601: INFO: move_number: 71; Black move: e5e4
+2026-06-01 19:36:58,601: INFO: MCTSTrad; WHITE; move_number: 72; starting search; time_budget: 20.000000s
+2026-06-01 19:37:18,602: INFO: MCTSTrad; WHITE; move_number: 72; time: 20.000621s; move: g2g3; value: 0.9817; new_visits: 586; total_visits: 2585; iterations: 2568320; reused: 12537; policy: robust; proven_root: none; proven_root_stm: none; top3: [g2g3:vt=2585,vn=586,q=0.982,p=0.067, g1b6:vt=2282,vn=811,q=0.981,p=0.067, h2h4:vt=1964,vn=593,q=0.979,p=0.067]
+2026-06-01 19:37:18,602: INFO: move_number: 72; White move: g2g3
+2026-06-01 19:37:18,602: INFO: MCTSTrad; BLACK; move_number: 72; starting search; time_budget: 20.000000s
+2026-06-01 19:37:38,603: INFO: MCTSTrad; BLACK; move_number: 72; time: 20.000388s; move: e4d3; value: 0.0199; new_visits: 51648; total_visits: 52952; iterations: 488192; reused: 2585; policy: robust; proven_root: none; proven_root_stm: none; top3: [e4d3:vt=52952,vn=51648,q=0.020,p=0.500, e4d5:vt=43509,vn=42229,q=0.019,p=0.500]
+2026-06-01 19:37:38,603: INFO: move_number: 72; Black move: e4d3
+2026-06-01 19:37:38,603: INFO: MCTSTrad; WHITE; move_number: 73; starting search; time_budget: 20.000000s
+2026-06-01 19:37:58,603: INFO: MCTSTrad; WHITE; move_number: 73; time: 20.000291s; move: g4f3; value: 0.9856; new_visits: 25673; total_visits: 25762; iterations: 839680; reused: 1304; policy: robust; proven_root: none; proven_root_stm: none; top3: [g4f3:vt=25762,vn=25673,q=0.986,p=0.067, g1b6:vt=23612,vn=23504,q=0.985,p=0.067, g1c5:vt=7947,vn=7845,q=0.982,p=0.067]
+2026-06-01 19:37:58,603: INFO: move_number: 73; White move: g4f3
+2026-06-01 19:37:58,604: INFO: MCTSTrad; BLACK; move_number: 73; starting search; time_budget: 20.000000s
+2026-06-01 19:38:18,605: INFO: MCTSTrad; BLACK; move_number: 73; time: 20.000962s; move: d3c3; value: 0.0168; new_visits: 4585; total_visits: 7938; iterations: 2750976; reused: 10896; policy: robust; proven_root: none; proven_root_stm: none; top3: [d3c3:vt=7938,vn=4585,q=0.017,p=0.250, d3d2:vt=6741,vn=4248,q=0.015,p=0.250, d3c4:vt=6206,vn=3323,q=0.014,p=0.250]
+2026-06-01 19:38:18,605: INFO: move_number: 73; Black move: d3c3
+2026-06-01 19:38:18,605: INFO: MCTSTrad; WHITE; move_number: 74; starting search; time_budget: 20.000000s
+2026-06-01 19:38:38,606: INFO: MCTSTrad; WHITE; move_number: 74; time: 20.001012s; move: f3e3; value: 0.9941; new_visits: 13702; total_visits: 14387; iterations: 1447552; reused: 7938; policy: robust; proven_root: none; proven_root_stm: none; top3: [f3e3:vt=14387,vn=13702,q=0.994,p=0.037, g1d4:vt=5595,vn=3845,q=0.955,p=0.448, f3e4:vt=4574,vn=4148,q=0.991,p=0.037]
+2026-06-01 19:38:38,606: INFO: move_number: 74; White move: f3e3
+2026-06-01 19:38:38,607: INFO: MCTSTrad; BLACK; move_number: 74; starting search; time_budget: 20.000000s
+2026-06-01 19:38:58,607: INFO: MCTSTrad; BLACK; move_number: 74; time: 20.000300s; move: c3c4; value: 0.0086; new_visits: 15348; total_visits: 15489; iterations: 1712896; reused: 685; policy: robust; proven_root: none; proven_root_stm: none; top3: [c3c4:vt=15489,vn=15348,q=0.009,p=0.200, c3b4:vt=10871,vn=10735,q=0.006,p=0.200, c3b3:vt=9885,vn=9749,q=0.005,p=0.200]
+2026-06-01 19:38:58,607: INFO: move_number: 74; Black move: c3c4
+2026-06-01 19:38:58,607: INFO: MCTSTrad; WHITE; move_number: 75; starting search; time_budget: 20.000000s
+2026-06-01 19:39:18,609: INFO: MCTSTrad; WHITE; move_number: 75; time: 20.000840s; move: h2h3; value: 0.9935; new_visits: 1428; total_visits: 1784; iterations: 2778624; reused: 3210; policy: robust; proven_root: none; proven_root_stm: none; top3: [h2h3:vt=1784,vn=1428,q=0.994,p=0.100, h2h4:vt=1780,vn=1415,q=0.994,p=0.100, g3g4:vt=1769,vn=1415,q=0.993,p=0.100]
+2026-06-01 19:39:18,609: INFO: move_number: 75; White move: h2h3
+2026-06-01 19:39:18,609: INFO: MCTSTrad; BLACK; move_number: 75; starting search; time_budget: 20.000000s
+2026-06-01 19:39:38,609: INFO: MCTSTrad; BLACK; move_number: 75; time: 20.000129s; move: c4c5; value: 0.0138; new_visits: 1826; total_visits: 2161; iterations: 2520704; reused: 1784; policy: robust; proven_root: none; proven_root_stm: none; top3: [c4c5:vt=2161,vn=1826,q=0.014,p=0.167, c4d5:vt=2049,vn=1749,q=0.013,p=0.167, c4b5:vt=1556,vn=1262,q=0.008,p=0.167]
+2026-06-01 19:39:38,609: INFO: move_number: 75; Black move: c4c5
+2026-06-01 19:39:38,610: INFO: MCTSTrad; WHITE; move_number: 76; starting search; time_budget: 20.000000s
+2026-06-01 19:39:58,610: INFO: MCTSTrad; WHITE; move_number: 76; time: 20.000214s; move: e3e4; value: 0.9871; new_visits: 7178; total_visits: 7244; iterations: 1393024; reused: 335; policy: robust; proven_root: none; proven_root_stm: none; top3: [e3e4:vt=7244,vn=7178,q=0.987,p=0.182, e3f3:vt=7103,vn=7037,q=0.987,p=0.182, e3e2:vt=6636,vn=6569,q=0.986,p=0.182]
+2026-06-01 19:39:58,610: INFO: move_number: 76; White move: e3e4
+2026-06-01 19:39:58,610: INFO: MCTSTrad; BLACK; move_number: 76; starting search; time_budget: 20.000000s
+2026-06-01 19:40:18,611: INFO: MCTSTrad; BLACK; move_number: 76; time: 20.000244s; move: c5d6; value: 0.0162; new_visits: 3784; total_visits: 3874; iterations: 2233984; reused: 415; policy: robust; proven_root: none; proven_root_stm: none; top3: [c5d6:vt=3874,vn=3784,q=0.016,p=0.200, c5b4:vt=3447,vn=3358,q=0.015,p=0.200, c5c4:vt=3011,vn=2933,q=0.012,p=0.200]
+2026-06-01 19:40:18,611: INFO: move_number: 76; Black move: c5d6
+2026-06-01 19:40:18,611: INFO: MCTSTrad; WHITE; move_number: 77; starting search; time_budget: 20.000000s
+2026-06-01 19:40:38,612: INFO: MCTSTrad; WHITE; move_number: 77; time: 20.000857s; move: g1c5; value: 0.9713; new_visits: 693; total_visits: 1297; iterations: 2844800; reused: 1647; policy: robust; proven_root: none; proven_root_stm: none; top3: [g1c5:vt=1297,vn=693,q=0.971,p=0.465, g1h2:vt=229,vn=149,q=0.995,p=0.038, e4d4:vt=207,vn=126,q=0.993,p=0.038]
+2026-06-01 19:40:38,612: INFO: move_number: 77; White move: g1c5
+2026-06-01 19:40:38,613: INFO: MCTSTrad; BLACK; move_number: 77; starting search; time_budget: 20.000000s
+2026-06-01 19:40:58,613: INFO: MCTSTrad; BLACK; move_number: 77; time: 20.000191s; move: d6c5; value: 0.0335; new_visits: 6706; total_visits: 7739; iterations: 2702208; reused: 1297; policy: robust; proven_root: none; proven_root_stm: none; top3: [d6c5:vt=7739,vn=6706,q=0.033,p=0.753, d6c6:vt=331,vn=272,q=0.017,p=0.062, d6e6:vt=325,vn=253,q=0.016,p=0.062]
+2026-06-01 19:40:58,613: INFO: move_number: 77; Black move: d6c5
+2026-06-01 19:40:58,613: INFO: MCTSTrad; WHITE; move_number: 78; starting search; time_budget: 20.000000s
+2026-06-01 19:41:18,614: INFO: MCTSTrad; WHITE; move_number: 78; time: 20.000684s; move: g3g4; value: 0.9736; new_visits: 1264; total_visits: 1405; iterations: 2809344; reused: 1033; policy: robust; proven_root: none; proven_root_stm: none; top3: [g3g4:vt=1405,vn=1264,q=0.974,p=0.125, h3h4:vt=1173,vn=1026,q=0.970,p=0.125, f4f5:vt=1070,vn=932,q=0.969,p=0.125]
+2026-06-01 19:41:18,614: INFO: move_number: 78; White move: g3g4
+2026-06-01 19:41:18,614: INFO: MCTSTrad; BLACK; move_number: 78; starting search; time_budget: 20.000000s
+2026-06-01 19:41:38,615: INFO: MCTSTrad; BLACK; move_number: 78; time: 20.000294s; move: c5d6; value: 0.0322; new_visits: 23; total_visits: 286; iterations: 3792512; reused: 1405; policy: robust; proven_root: none; proven_root_stm: none; top3: [c5d6:vt=286,vn=23,q=0.032,p=0.167, c5c4:vt=263,vn=22,q=0.028,p=0.167, c5c6:vt=249,vn=19,q=0.025,p=0.167]
+2026-06-01 19:41:38,615: INFO: move_number: 78; Black move: c5d6
+2026-06-01 19:41:38,615: INFO: MCTSTrad; WHITE; move_number: 79; starting search; time_budget: 20.000000s
+2026-06-01 19:41:58,616: INFO: MCTSTrad; WHITE; move_number: 79; time: 20.000690s; move: g4g5; value: 0.9769; new_visits: 4; total_visits: 39; iterations: 4492032; reused: 263; policy: robust; proven_root: none; proven_root_stm: none; top3: [g4g5:vt=39,vn=4,q=0.977,p=0.125, e4d4:vt=38,vn=3,q=0.974,p=0.125, e4e3:vt=38,vn=4,q=0.974,p=0.125]
+2026-06-01 19:41:58,616: INFO: move_number: 79; White move: g4g5
+2026-06-01 19:41:58,616: INFO: MCTSTrad; BLACK; move_number: 79; starting search; time_budget: 20.000000s
+2026-06-01 19:42:18,617: INFO: MCTSTrad; BLACK; move_number: 79; time: 20.000646s; move: d6e6; value: 0.0513; new_visits: 3807; total_visits: 3814; iterations: 2139904; reused: 39; policy: robust; proven_root: none; proven_root_stm: none; top3: [d6e6:vt=3814,vn=3807,q=0.051,p=0.167, d6e7:vt=3663,vn=3657,q=0.048,p=0.167, d6d7:vt=1386,vn=1380,q=0.032,p=0.167]
+2026-06-01 19:42:18,617: INFO: move_number: 79; Black move: d6e6
+2026-06-01 19:42:18,618: INFO: MCTSTrad; WHITE; move_number: 80; starting search; time_budget: 20.000000s
+2026-06-01 19:42:38,619: INFO: MCTSTrad; WHITE; move_number: 80; time: 20.000942s; move: f4f5; value: 0.9537; new_visits: 3007; total_visits: 3013; iterations: 2566144; reused: 7; policy: robust; proven_root: none; proven_root_stm: none; top3: [f4f5:vt=3013,vn=3007,q=0.954,p=0.670, h3h4:vt=333,vn=333,q=0.961,p=0.055, g5g6:vt=107,vn=107,q=0.918,p=0.055]
+2026-06-01 19:42:38,619: INFO: move_number: 80; White move: f4f5
+2026-06-01 19:42:38,619: INFO: MCTSTrad; BLACK; move_number: 80; starting search; time_budget: 20.000000s
+2026-06-01 19:42:58,620: INFO: MCTSTrad; BLACK; move_number: 80; time: 20.000555s; move: e6f7; value: 0.0638; new_visits: 0; total_visits: 1363; iterations: 3015808; reused: 3013; policy: robust; proven_root: none; proven_root_stm: none; top3: [e6f7:vt=1363,vn=0,q=0.064,p=0.250, e6e7:vt=637,vn=0,q=0.039,p=0.250, e6d6:vt=535,vn=0,q=0.031,p=0.250]
+2026-06-01 19:42:58,620: INFO: move_number: 80; Black move: e6f7
+2026-06-01 19:42:58,620: INFO: MCTSTrad; WHITE; move_number: 81; starting search; time_budget: 20.000000s
+2026-06-01 19:43:18,621: INFO: MCTSTrad; WHITE; move_number: 81; time: 20.000395s; move: g5g6; value: 0.8913; new_visits: 0; total_visits: 428; iterations: 3307904; reused: 1363; policy: robust; proven_root: none; proven_root_stm: none; top3: [g5g6:vt=428,vn=0,q=0.891,p=0.575, e4d4:vt=126,vn=0,q=0.963,p=0.047, e4f4:vt=122,vn=0,q=0.962,p=0.047]
+2026-06-01 19:43:18,621: INFO: move_number: 81; White move: g5g6
+2026-06-01 19:43:18,621: INFO: MCTSTrad; BLACK; move_number: 81; starting search; time_budget: 20.000000s
+2026-06-01 19:43:38,622: INFO: MCTSTrad; BLACK; move_number: 81; time: 20.000395s; move: f7g8; value: 0.1597; new_visits: 542; total_visits: 582; iterations: 4076928; reused: 428; policy: robust; proven_root: none; proven_root_stm: none; top3: [f7g8:vt=582,vn=542,q=0.160,p=0.167, f7f6:vt=531,vn=372,q=0.158,p=0.167, f7g7:vt=187,vn=124,q=0.111,p=0.167]
+2026-06-01 19:43:38,622: INFO: move_number: 81; Black move: f7g8
+2026-06-01 19:43:38,622: INFO: MCTSTrad; WHITE; move_number: 82; starting search; time_budget: 20.000000s
+2026-06-01 19:43:58,623: INFO: MCTSTrad; WHITE; move_number: 82; time: 20.000597s; move: e4e5; value: 0.8984; new_visits: 867; total_visits: 874; iterations: 3111424; reused: 40; policy: robust; proven_root: none; proven_root_stm: none; top3: [e4e5:vt=874,vn=867,q=0.898,p=0.100, f5f6:vt=709,vn=705,q=0.894,p=0.100, h3h4:vt=676,vn=672,q=0.893,p=0.100]
+2026-06-01 19:43:58,623: INFO: move_number: 82; White move: e4e5
+2026-06-01 19:43:58,623: INFO: MCTSTrad; BLACK; move_number: 82; starting search; time_budget: 20.000000s
+2026-06-01 19:44:18,624: INFO: MCTSTrad; BLACK; move_number: 82; time: 20.000404s; move: g8g7; value: 0.1228; new_visits: 3378; total_visits: 3426; iterations: 5804288; reused: 138; policy: robust; proven_root: none; proven_root_stm: none; top3: [g8g7:vt=3426,vn=3378,q=0.123,p=0.333, g8h8:vt=1516,vn=1471,q=0.102,p=0.333, g8f8:vt=1016,vn=972,q=0.086,p=0.333]
+2026-06-01 19:44:18,624: INFO: move_number: 82; Black move: g8g7
+2026-06-01 19:44:18,624: INFO: MCTSTrad; WHITE; move_number: 83; starting search; time_budget: 20.000000s
+2026-06-01 19:44:38,625: INFO: MCTSTrad; WHITE; move_number: 83; time: 20.000453s; move: f5f6; value: 0.8336; new_visits: 780; total_visits: 956; iterations: 6950016; reused: 421; policy: robust; proven_root: none; proven_root_stm: none; top3: [f5f6:vt=956,vn=780,q=0.834,p=0.635, h3h4:vt=826,vn=759,q=0.904,p=0.052, e5e6:vt=753,vn=689,q=0.903,p=0.052]
+2026-06-01 19:44:38,625: INFO: move_number: 83; White move: f5f6
+2026-06-01 19:44:38,625: INFO: MCTSTrad; BLACK; move_number: 83; starting search; time_budget: 20.000000s
+2026-06-01 19:44:58,626: INFO: MCTSTrad; BLACK; move_number: 83; time: 20.000269s; move: g7g6; value: 0.1521; new_visits: 3203; total_visits: 4017; iterations: 3834368; reused: 956; policy: robust; proven_root: none; proven_root_stm: none; top3: [g7g6:vt=4017,vn=3203,q=0.152,p=0.753, g7h8:vt=82,vn=42,q=0.077,p=0.062, g7f8:vt=78,vn=39,q=0.072,p=0.062]
+2026-06-01 19:44:58,626: INFO: move_number: 83; Black move: g7g6
+2026-06-01 19:44:58,626: INFO: MCTSTrad; WHITE; move_number: 84; starting search; time_budget: 20.000000s
+2026-06-01 19:45:18,627: INFO: MCTSTrad; WHITE; move_number: 84; time: 20.000410s; move: e5e6; value: 0.8741; new_visits: 2594; total_visits: 3024; iterations: 4290560; reused: 814; policy: robust; proven_root: none; proven_root_stm: none; top3: [e5e6:vt=3024,vn=2594,q=0.874,p=0.125, h3h4:vt=442,vn=322,q=0.844,p=0.125, f6f7:vt=112,vn=58,q=0.739,p=0.125]
+2026-06-01 19:45:18,627: INFO: move_number: 84; White move: e5e6
+2026-06-01 19:45:18,627: INFO: MCTSTrad; BLACK; move_number: 84; starting search; time_budget: 20.000000s
+2026-06-01 19:45:38,628: INFO: MCTSTrad; BLACK; move_number: 84; time: 20.000591s; move: g6h7; value: 0.1448; new_visits: 260; total_visits: 1427; iterations: 4744960; reused: 3024; policy: robust; proven_root: none; proven_root_stm: none; top3: [g6h7:vt=1427,vn=260,q=0.145,p=0.250, g6h6:vt=1003,vn=0,q=0.134,p=0.250, g6g5:vt=435,vn=2,q=0.098,p=0.250]
+2026-06-01 19:45:38,628: INFO: move_number: 84; Black move: g6h7
+2026-06-01 19:45:38,628: INFO: MCTSTrad; WHITE; move_number: 85; starting search; time_budget: 20.000000s
+2026-06-01 19:45:58,629: INFO: MCTSTrad; WHITE; move_number: 85; time: 20.000157s; move: h3h4; value: 0.8772; new_visits: 65; total_visits: 269; iterations: 5478144; reused: 1167; policy: robust; proven_root: none; proven_root_stm: none; top3: [h3h4:vt=269,vn=65,q=0.877,p=0.111, e6e7:vt=258,vn=44,q=0.876,p=0.111, f6f7:vt=189,vn=12,q=0.864,p=0.111]
+2026-06-01 19:45:58,629: INFO: move_number: 85; White move: h3h4
+2026-06-01 19:45:58,629: INFO: MCTSTrad; BLACK; move_number: 85; starting search; time_budget: 20.000000s
+2026-06-01 19:46:18,629: INFO: MCTSTrad; BLACK; move_number: 85; time: 20.000229s; move: h7g8; value: 0.1439; new_visits: 32; total_visits: 101; iterations: 6630784; reused: 269; policy: robust; proven_root: none; proven_root_stm: none; top3: [h7g8:vt=101,vn=32,q=0.144,p=0.250, h7g6:vt=94,vn=20,q=0.136,p=0.250, h7h6:vt=84,vn=22,q=0.124,p=0.250]
+2026-06-01 19:46:18,629: INFO: move_number: 85; Black move: h7g8
+2026-06-01 19:46:18,630: INFO: MCTSTrad; WHITE; move_number: 86; starting search; time_budget: 20.000000s
+2026-06-01 19:46:38,630: INFO: MCTSTrad; WHITE; move_number: 86; time: 20.000359s; move: f6f7; value: 0.8307; new_visits: 18; total_visits: 56; iterations: 8134784; reused: 69; policy: robust; proven_root: none; proven_root_stm: none; top3: [f6f7:vt=56,vn=18,q=0.831,p=0.635, e6f5:vt=7,vn=3,q=0.905,p=0.052, h4h5:vt=7,vn=2,q=0.922,p=0.052]
+2026-06-01 19:46:38,630: INFO: move_number: 86; White move: f6f7
+2026-06-01 19:46:38,631: INFO: MCTSTrad; BLACK; move_number: 86; starting search; time_budget: 20.000000s
+2026-06-01 19:46:58,631: INFO: MCTSTrad; BLACK; move_number: 86; time: 20.000311s; move: g8f8; value: 0.2567; new_visits: 0; total_visits: 20; iterations: 12837632; reused: 56; policy: best_q; proven_root: none; proven_root_stm: none; top3: [g8f8:vt=20,vn=0,q=0.257,p=0.250, g8g7:vt=15,vn=0,q=0.191,p=0.250, g8h8:vt=12,vn=0,q=0.118,p=0.250]
+2026-06-01 19:46:58,631: INFO: move_number: 86; Black move: g8f8
+2026-06-01 19:46:58,631: INFO: MCTSTrad; WHITE; move_number: 87; starting search; time_budget: 20.000000s
+2026-06-01 19:47:18,632: INFO: MCTSTrad; WHITE; move_number: 87; time: 20.000231s; move: h4h5; value: 0.8719; new_visits: 0; total_visits: 4; iterations: 20588160; reused: 20; policy: best_q; proven_root: none; proven_root_stm: none; top3: [h4h5:vt=4,vn=0,q=0.872,p=0.143, e6d6:vt=3,vn=0,q=0.701,p=0.143, e6f5:vt=3,vn=0,q=0.706,p=0.143]
+2026-06-01 19:47:18,632: INFO: move_number: 87; White move: h4h5
+2026-06-01 19:47:18,632: INFO: MCTSTrad; BLACK; move_number: 87; starting search; time_budget: 20.000000s
+2026-06-01 19:47:38,633: INFO: MCTSTrad; BLACK; move_number: 87; time: 20.000213s; move: f8g7; value: 0.1944; new_visits: 76; total_visits: 79; iterations: 8746624; reused: 4; policy: robust; proven_root: none; proven_root_stm: none; top3: [f8g7:vt=79,vn=76,q=0.194,p=1.000]
+2026-06-01 19:47:38,633: INFO: move_number: 87; Black move: f8g7
+2026-06-01 19:47:38,633: INFO: MCTSTrad; WHITE; move_number: 88; starting search; time_budget: 20.000000s
+2026-06-01 19:47:58,633: INFO: MCTSTrad; WHITE; move_number: 88; time: 20.000167s; move: f7f8q; value: 0.7754; new_visits: 40; total_visits: 42; iterations: 9955968; reused: 3; policy: robust; proven_root: none; proven_root_stm: none; top3: [f7f8q:vt=42,vn=40,q=0.775,p=0.608, h5h6:vt=17,vn=17,q=0.906,p=0.093, e6e7:vt=5,vn=5,q=0.882,p=0.050]
+2026-06-01 19:47:58,633: INFO: move_number: 88; White move: f7f8q
+2026-06-01 19:47:58,634: INFO: MCTSTrad; BLACK; move_number: 88; starting search; time_budget: 20.000000s
+2026-06-01 19:48:18,634: INFO: MCTSTrad; BLACK; move_number: 88; time: 20.000284s; move: g7f8; value: 0.2512; new_visits: 12; total_visits: 52; iterations: 7391616; reused: 42; policy: robust; proven_root: none; proven_root_stm: none; top3: [g7f8:vt=52,vn=12,q=0.251,p=0.924, g7h7:vt=2,vn=1,q=0.100,p=0.076]
+2026-06-01 19:48:18,634: INFO: move_number: 88; Black move: g7f8
+2026-06-01 19:48:18,634: INFO: MCTSTrad; WHITE; move_number: 89; starting search; time_budget: 20.000000s
+2026-06-01 19:48:38,635: INFO: MCTSTrad; WHITE; move_number: 89; time: 20.000426s; move: e6e5; value: 0.7830; new_visits: 2; total_visits: 8; iterations: 8544256; reused: 40; policy: best_q; proven_root: none; proven_root_stm: none; top3: [e6f6:vt=8,vn=3,q=0.765,p=0.143, e6f5:vt=8,vn=2,q=0.762,p=0.143, e6e5:vt=8,vn=2,q=0.783,p=0.143]
+2026-06-01 19:48:38,635: INFO: move_number: 89; White move: e6e5
+2026-06-01 19:48:38,636: INFO: MCTSTrad; BLACK; move_number: 89; starting search; time_budget: 20.000000s
+2026-06-01 19:48:58,636: INFO: MCTSTrad; BLACK; move_number: 89; time: 20.000296s; move: f8g7; value: 0.4018; new_visits: 2; total_visits: 3; iterations: 11289728; reused: 8; policy: best_q; proven_root: none; proven_root_stm: none; top3: [f8g7:vt=3,vn=2,q=0.402,p=0.200, f8g8:vt=2,vn=1,q=0.209,p=0.200, f8e8:vt=2,vn=1,q=0.196,p=0.200]
+2026-06-01 19:48:58,636: INFO: move_number: 89; Black move: f8g7
+2026-06-01 19:48:58,636: INFO: MCTSTrad; WHITE; move_number: 90; starting search; time_budget: 20.000000s
+2026-06-01 19:49:18,637: INFO: MCTSTrad; WHITE; move_number: 90; time: 20.000179s; move: h5h6; value: 0.5000; new_visits: 2; total_visits: 2; iterations: 19796224; reused: 1; policy: best_q; proven_root: none; proven_root_stm: none; top3: [h5h6:vt=2,vn=2,q=0.500,p=0.635]
+2026-06-01 19:49:18,637: INFO: move_number: 90; White move: h5h6
+2026-06-01 19:49:18,637: INFO: MCTSTrad; BLACK; move_number: 90; starting search; time_budget: 20.000000s
+2026-06-01 19:49:38,638: INFO: MCTSTrad; BLACK; move_number: 90; time: 20.000179s; move: g7h6; value: 0.5000; new_visits: 0; total_visits: 1; iterations: 36836224; reused: 2; policy: best_q; proven_root: none; proven_root_stm: none; top3: [g7h6:vt=1,vn=0,q=0.500,p=0.670,pv=0.5]
+2026-06-01 19:49:38,638: INFO: move_number: 90; Black move: g7h6
+2026-06-01 19:49:38,638: INFO: GAME OVER - Draw by insufficient material
