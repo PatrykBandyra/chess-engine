@@ -47,13 +47,27 @@ param(
     [int]$AdjudicateMoves = 20,
     [switch]$OpeningBook,
     [string]$OpeningsFile,
-    [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe',
+    [string]$StockfishPath = '',
     [string]$OutputSubDir,
     [switch]$Gui
 )
 
+if (-not $StockfishPath) {
+    if ($IsMacOS) {
+        $StockfishPath = '../stockfish_ai/stockfish/stockfish-macos-m1-apple-silicon'
+    } elseif ($IsLinux) {
+        $StockfishPath = '../stockfish_ai/stockfish/stockfish-ubuntu-x86-64-avx2'
+    } else {
+        $StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe'
+    }
+}
+
 $ErrorActionPreference = 'Stop'
-$Python     = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' }
+if ($env:VIRTUAL_ENV) {
+    $Python = if ($IsMacOS -or $IsLinux) { Join-Path $env:VIRTUAL_ENV 'bin/python' } else { Join-Path $env:VIRTUAL_ENV 'Scripts/python.exe' }
+} else {
+    $Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' }
+}
 $MainScript = 'main.py'
 
 # ============================================================================
@@ -151,11 +165,11 @@ function Build-GameArgs {
     if ($dws) { $args_ += @('-dws', "$dws") }
     if ($dbs) { $args_ += @('-dbs', "$dbs") }
 
-    # Stockfish skill -- respect swap
+    # Stockfish skill -- respect swap. Use $null check: skill=0 is valid (and the only way to get the weakest Stockfish).
     $sw = if ($White -eq $Matchup.white) { $Matchup.skill_white } else { $Matchup.skill_black }
     $sb = if ($Black -eq $Matchup.black) { $Matchup.skill_black } else { $Matchup.skill_white }
-    if ($sw) { $args_ += @('-sw', "$sw") }
-    if ($sb) { $args_ += @('-sb', "$sb") }
+    if ($null -ne $sw) { $args_ += @('-sw', "$sw") }
+    if ($null -ne $sb) { $args_ += @('-sb', "$sb") }
 
     # Stockfish path (if either player is Stockfish)
     if ($White -eq 'STOCKFISH' -or $Black -eq 'STOCKFISH') {

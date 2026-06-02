@@ -33,12 +33,22 @@ param(
     [int]$GamesPerPair = 20,
     [double]$MctsTime = 0,
     [string]$ExperimentTag = '',
-    [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe',
+    [string]$StockfishPath = '',
     [int]$StockfishDepth = 10,
     [switch]$Gui
 )
 
 $ErrorActionPreference = 'Stop'
+
+if (-not $StockfishPath) {
+    if ($IsMacOS) {
+        $StockfishPath = '../stockfish_ai/stockfish/stockfish-macos-m1-apple-silicon'
+    } elseif ($IsLinux) {
+        $StockfishPath = '../stockfish_ai/stockfish/stockfish-ubuntu-x86-64-avx2'
+    } else {
+        $StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe'
+    }
+}
 
 # Resolve engine/ directory relative to this script (experiments/exp5/ -> engine/)
 $engineDir = (Resolve-Path "$PSScriptRoot\..\..").Path
@@ -69,7 +79,7 @@ if ($isMcts -and $MctsTime -le 0) {
 # VARIANT DEFINITIONS
 # ============================================================================
 
-$skillLevels = @(0, 3, 5, 8, 10, 13, 15, 20)
+$skillLevels = @(1, 3, 5, 8, 10, 13, 15, 20)
 
 $variants = @(
     @{ name='minimax_trad_d4'; type='MINIMAX_TRAD'; extraArgs=@{ depth_white=4 } },

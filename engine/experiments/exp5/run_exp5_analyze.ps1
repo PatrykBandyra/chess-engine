@@ -22,10 +22,26 @@ param(
     [switch]$SkipReval,
     [int]$RevalDepth = 20,
     [int]$RevalLimit = 0,
-    [string]$StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe'
+    [string]$StockfishPath = ''
 )
 
-if (-not $Python) { $Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' } }
+if (-not $StockfishPath) {
+    if ($IsMacOS) {
+        $StockfishPath = '../stockfish_ai/stockfish/stockfish-macos-m1-apple-silicon'
+    } elseif ($IsLinux) {
+        $StockfishPath = '../stockfish_ai/stockfish/stockfish-ubuntu-x86-64-avx2'
+    } else {
+        $StockfishPath = '..\stockfish_ai\stockfish-windows-x86-64-avx2\stockfish\stockfish-windows-x86-64-avx2.exe'
+    }
+}
+
+if (-not $Python) {
+    if ($env:VIRTUAL_ENV) {
+        $Python = if ($IsMacOS -or $IsLinux) { Join-Path $env:VIRTUAL_ENV 'bin/python' } else { Join-Path $env:VIRTUAL_ENV 'Scripts/python.exe' }
+    } else {
+        $Python = if ($IsMacOS -or $IsLinux) { 'python3' } else { 'python' }
+    }
+}
 
 $engineDir = (Resolve-Path "$PSScriptRoot\..\..").Path
 Set-Location $engineDir
