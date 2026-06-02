@@ -1,0 +1,7 @@
+label,variant_a,variant_b,games,a_wins,draws,b_wins,a_score,decisive,a_win_rate_decisive,p_value,lower_ci,upper_ci,note
+mcts_trad_vs_mcts_nn,mcts_trad,mcts_nn,10,1,8,1,0.5,2,0.5,1.0,0.013,0.987,binomial test on decisive games
+minimax_nn_vs_mcts_nn,minimax_nn,mcts_nn,10,3,7,0,0.65,3,1.0,0.25,0.292,1.0,binomial test on decisive games
+minimax_nn_vs_mcts_trad,minimax_nn,mcts_trad,10,5,4,1,0.7,6,0.833,0.2188,0.359,0.996,binomial test on decisive games
+minimax_trad_vs_mcts_nn,minimax_trad,mcts_nn,10,3,7,0,0.65,3,1.0,0.25,0.292,1.0,binomial test on decisive games
+minimax_trad_vs_mcts_trad,minimax_trad,mcts_trad,10,2,8,0,0.6,2,1.0,0.5,0.158,1.0,binomial test on decisive games
+minimax_trad_vs_minimax_nn,minimax_trad,minimax_nn,10,3,4,3,0.5,6,0.5,1.0,0.118,0.882,binomial test on decisive games
