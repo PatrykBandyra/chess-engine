@@ -10,7 +10,7 @@ Consumes output of analyze_experiment.py (analysis_games.csv) and produces:
   - plots/exp1_pair_significance.png — bar chart per pair with CI
   - plots/exp1_axis_a_effect.png — Minimax vs MCTS aggregate
   - plots/exp1_axis_b_effect.png — TRAD vs NN aggregate
-  - plots/exp1_wdl_matrix.png    — 4x4 result matrix
+  - plots/exp8_wdl_matrix.png    — 4x4 result matrix
 
 The 4 variants:
   MINIMAX_TRAD, MINIMAX_NN, MCTS_TRAD, MCTS_NN
@@ -383,7 +383,7 @@ def main():
         plot_axis_effect(axis_a_df, 'algorithm', plots_dir / 'exp1_axis_a_effect.png')
     if not axis_b_df.empty:
         plot_axis_effect(axis_b_df, 'evaluator', plots_dir / 'exp1_axis_b_effect.png')
-    plot_wdl_matrix(pair_df, plots_dir / 'exp1_wdl_matrix.png')
+    plot_wdl_matrix(pair_df, plots_dir / 'exp8_wdl_matrix.png')
     print(f"  Plots saved to: {plots_dir}")
 
     # Human-readable summary
