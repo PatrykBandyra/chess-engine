@@ -20,7 +20,7 @@ PIECE_NAME_TO_IMAGE_NAME = {
     'K': 'white-king'
 }
 
-STOCKFISH_PATH = '../stockfish_ai/stockfish-windows-x86-64-avx2/stockfish/stockfish-windows-x86-64-avx2.exe'
+STOCKFISH_PATH = '../stockfish_ai/stockfish/stockfish-macos-m1-apple-silicon'
 
 LOGGER = logging.getLogger(__name__)
 LOGGER.setLevel(logging.DEBUG)
